@@ -40,3 +40,17 @@ class TestIPSJob:
         anonymized_raw = job.start().wait_until_finished().download_result()
         anonymized_img = Image.open(io.BytesIO(anonymized_raw))
         assert anonymized_img.size == img.size
+
+    def test_throws_exception_when_not_started(self, ips_url, test_image):
+
+        # GIVEN a running IPS instance and a test image
+
+        # WHEN a job is created but not started
+        job_args = JobArguments(service=ServiceType.dnat, out_type=OutputType.images)
+        job = IPSJob(file=test_image, job_args=job_args, ips_url=ips_url, start_job=False)
+
+        # THEN methods throw exceptions
+        with pytest.raises(RuntimeError):
+            job.get_status()
+        with pytest.raises(RuntimeError):
+            job.download_result()

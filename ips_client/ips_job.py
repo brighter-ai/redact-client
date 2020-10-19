@@ -1,3 +1,4 @@
+import functools
 import requests
 import time
 import urllib.parse
@@ -8,7 +9,7 @@ from pydantic import BaseModel
 from typing import BinaryIO, Optional
 from uuid import UUID
 
-from ips_data_models import IPSJobPostResponse, IPSJobStatus
+from ips_client.ips_data_models import IPSJobPostResponse, IPSJobStatus
 
 
 # requests should always be used with a timeout to avoid hanging indefinitely:
@@ -41,6 +42,17 @@ class JobArguments(BaseModel):
     person: Optional[bool] = None
     block_portraits: Optional[bool] = None
     speed_optimized: Optional[bool] = None
+
+
+def _require_job_started(func):
+    """Decorator that throws an exception when a job does not have an output_id yet."""
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        job = args[0]
+        if not job.output_id:
+            raise RuntimeError(f'Job has no output_id. Did you start it?')
+        return func(*args, **kwargs)
+    return wrapper
 
 
 class IPSJob:
@@ -111,14 +123,16 @@ class IPSJob:
             return self._post_response.output_id
         return None
 
+    @_require_job_started
     def get_status(self) -> IPSJobStatus:
         response_dict = self._get_status_response()
         return IPSJobStatus(**response_dict)
 
+    @_require_job_started
     def _get_status_response(self) -> dict:
 
-        if not self.output_id:
-            raise RuntimeError(f'Job has no output_id. Did you start it?')
+        #if not self.output_id:
+        #    raise RuntimeError(f'Job has no output_id. Did you start it?')
 
         url = urllib.parse.urljoin(self.ips_url, f'/{self.job_args.service}/{self.API_VERSION}/{self.job_args.out_type}/{self.output_id}/status')
         response = requests.get(url, timeout=REQUESTS_TIMEOUT)
@@ -128,13 +142,15 @@ class IPSJob:
 
         return response.json()
 
+    @_require_job_started
     def download_result(self) -> bytes:
         return self._get_result()
 
+    @_require_job_started
     def _get_result(self) -> bytes:
 
-        if not self.output_id:
-            raise RuntimeError(f'Job has no output_id. Did you start it?')
+        #if not self.output_id:
+        #    raise RuntimeError(f'Job has no output_id. Did you start it?')
 
         url = urllib.parse.urljoin(self.ips_url, f'/{self.job_args.service}/{self.API_VERSION}/{self.job_args.out_type}/{self.output_id}')
         response = requests.get(url, timeout=REQUESTS_TIMEOUT)
@@ -144,6 +160,7 @@ class IPSJob:
 
         return response.content
 
+    @_require_job_started
     def wait_until_finished(self, sleep: float = .5) -> 'IPSJob':
         while self.get_status().is_running():
             time.sleep(sleep)
