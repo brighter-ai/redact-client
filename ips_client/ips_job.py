@@ -154,6 +154,20 @@ class IPSJob:
 
         return response.content
 
+    def delete(self):
+        return self._delete()
+
+    @_require_job_started
+    def _delete(self) -> dict():
+
+        url = urllib.parse.urljoin(self.ips_url, f'/{self.job_args.service}/{self.API_VERSION}/{self.job_args.out_type}/{self.output_id}')
+        response = requests.delete(url, timeout=REQUESTS_TIMEOUT)
+
+        if response.status_code != 200:
+            raise RuntimeError(f'Error while deleting job: {response}')
+
+        return response.json()
+
     @_require_job_started
     def wait_until_finished(self, sleep: float = .5) -> 'IPSJob':
         while self.get_status().is_running():

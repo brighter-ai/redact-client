@@ -35,3 +35,24 @@ class TestIPSJob:
             job.get_status()
         with pytest.raises(RuntimeError):
             job.download_result()
+
+    @pytest.mark.timeout(5)
+    def test_delete(self, job):
+
+        # GIVEN an IPS job
+
+        # WHEN the job is finished and then deleted
+        job.start().wait_until_finished()
+        job.delete()
+
+        # (wait for job to be deleted)
+        while True:
+            try:
+                job.get_status()
+            except RuntimeError:
+                break
+
+        # THEN it can not be found anymore
+        with pytest.raises(RuntimeError) as e:
+            job.get_status()
+        assert '404' in str(e)
