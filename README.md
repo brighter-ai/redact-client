@@ -10,14 +10,14 @@ job_args = JobArguments(service='dnat', out_type='images')
 with open('obama.jpg', 'rb') as file:
     job = IPSJob(file=file, job_args=job_args)
     
-result = job.start().wait_until_finished().download_result()
+result: bytes = job.start().wait_until_finished().download_result()
 ```
 
 ## Development
 
 `ips_client` can be build as Pip package with [Flit](https://flit.readthedocs.io/). This way you can **build and install it locally**:
 
-```sh
+```shel
 cd ips-client
 flit build
 pip install .
@@ -25,7 +25,7 @@ pip install .
 
 Alternatively, you can **install a specific version from GitHub**:
 
-```sh
+```shell
 git+ssh://git@github.com/brighter-ai/ips-client.git@v3.0.1
 ```
 
@@ -33,7 +33,7 @@ In any case, you should bump `ips_client.__init__.__version__` when updating som
 
 Also, you may want to tag the new version for GitHub:
 
-```sh
+```shell
 git tag -a b3.0.1 -m "Release v3.0.1"
 git push --tags
 ```
