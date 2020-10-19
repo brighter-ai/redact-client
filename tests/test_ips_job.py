@@ -5,7 +5,7 @@ import pytest
 from PIL import Image
 
 from ips_data_models import IPSJobState
-from ips_job import JobArguments, IPSJob, IPSServiceTypes, IPSInputOutputTypes
+from ips_job import JobArguments, IPSJob, ServiceType, OutputType
 
 
 @pytest.fixture
@@ -20,7 +20,7 @@ class TestIPSJob:
         # GIVEN a running IPS instance and a test image
 
         # WHEN a job is posted
-        job_args = JobArguments(service=IPSServiceTypes.dnat, out_type=IPSInputOutputTypes.images)
+        job_args = JobArguments(service=ServiceType.dnat, out_type=OutputType.images)
         job = IPSJob(file=test_image, job_args=job_args, ips_url=ips_url)
 
         # THEN the job finishes after a while
@@ -33,7 +33,7 @@ class TestIPSJob:
         test_image.seek(0)
 
         # WHEN a job is posted
-        job_args = JobArguments(service=IPSServiceTypes.dnat, out_type=IPSInputOutputTypes.images)
+        job_args = JobArguments(service=ServiceType.dnat, out_type=OutputType.images)
         job = IPSJob(file=test_image, job_args=job_args, ips_url=ips_url)
 
         # THEN its result can be downloaded and has the same size as the input image

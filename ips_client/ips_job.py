@@ -16,26 +16,26 @@ from ips_data_models import IPSJobPostResponse, IPSJobStatus
 REQUESTS_TIMEOUT = 30
 
 
-class IPSServiceTypes(str, Enum):
+class ServiceType(str, Enum):
     blur = 'blur'
     dnat = 'dnat'
 
 
-class IPSInputOutputTypes(str, Enum):
+class OutputType(str, Enum):
     images = 'images'
     videos = 'videos'
 
 
-class IPSRegions(str, Enum):
+class Region(str, Enum):
     european_union = 'european_union'
     mainland_china = 'mainland_china'
     united_states_of_america = 'united_states_of_america'
 
 
 class JobArguments(BaseModel):
-    service: IPSServiceTypes
-    out_type: IPSInputOutputTypes
-    region: IPSRegions = IPSRegions.european_union
+    service: ServiceType
+    out_type: OutputType
+    region: Region = Region.european_union
     face: Optional[bool] = None
     license_plate: Optional[bool] = None
     person: Optional[bool] = None
