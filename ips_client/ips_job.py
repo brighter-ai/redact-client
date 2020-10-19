@@ -6,7 +6,7 @@ import urllib.parse
 from copy import copy
 from enum import Enum
 from pydantic import BaseModel
-from typing import BinaryIO, Optional
+from typing import BinaryIO, Optional, Dict
 from uuid import UUID
 
 from ips_client.ips_data_models import IPSJobPostResponse, IPSJobStatus
@@ -123,7 +123,6 @@ class IPSJob:
             return self._post_response.output_id
         return None
 
-    @_require_job_started
     def get_status(self) -> IPSJobStatus:
         response_dict = self._get_status_response()
         return IPSJobStatus(**response_dict)
@@ -139,7 +138,6 @@ class IPSJob:
 
         return response.json()
 
-    @_require_job_started
     def download_result(self) -> bytes:
         return self._get_result()
 
@@ -158,13 +156,27 @@ class IPSJob:
         return self._delete()
 
     @_require_job_started
-    def _delete(self) -> dict():
+    def _delete(self) -> Dict:
 
         url = urllib.parse.urljoin(self.ips_url, f'/{self.job_args.service}/{self.API_VERSION}/{self.job_args.out_type}/{self.output_id}')
         response = requests.delete(url, timeout=REQUESTS_TIMEOUT)
 
         if response.status_code != 200:
             raise RuntimeError(f'Error while deleting job: {response}')
+
+        return response.json()
+
+    def get_error(self):
+        return self._get_error()
+
+    @_require_job_started
+    def _get_error(self) -> Dict:
+
+        url = urllib.parse.urljoin(self.ips_url, f'/{self.job_args.service}/{self.API_VERSION}/{self.job_args.out_type}/{self.output_id}/error')
+        response = requests.delete(url, timeout=REQUESTS_TIMEOUT)
+
+        if response.status_code != 200:
+            raise RuntimeError(f'Error while getting job errors: {response}')
 
         return response.json()
 
