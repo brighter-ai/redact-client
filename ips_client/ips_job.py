@@ -22,8 +22,8 @@ class IPSServiceTypes(str, Enum):
 
 
 class IPSInputOutputTypes(str, Enum):
-    image = 'images'
-    video = 'videos'
+    images = 'images'
+    videos = 'videos'
 
 
 class IPSRegions(str, Enum):
@@ -127,6 +127,22 @@ class IPSJob:
             raise RuntimeError(f'Error while getting job status: {response}')
 
         return response.json()
+
+    def download_result(self) -> bytes:
+        return self._get_result()
+
+    def _get_result(self) -> bytes:
+
+        if not self.output_id:
+            raise RuntimeError(f'Job has no output_id. Did you start it?')
+
+        url = urllib.parse.urljoin(self.ips_url, f'/{self.job_args.service}/{self.API_VERSION}/{self.job_args.out_type}/{self.output_id}')
+        response = requests.get(url, timeout=REQUESTS_TIMEOUT)
+
+        if response.status_code != 200:
+            raise RuntimeError(f'Error while getting job result: {response}')
+
+        return response.content
 
     def wait_until_finished(self, sleep: float = .5) -> 'IPSJob':
         while self.get_status().is_running():
