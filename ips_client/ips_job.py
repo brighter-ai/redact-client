@@ -131,9 +131,6 @@ class IPSJob:
     @_require_job_started
     def _get_status_response(self) -> dict:
 
-        #if not self.output_id:
-        #    raise RuntimeError(f'Job has no output_id. Did you start it?')
-
         url = urllib.parse.urljoin(self.ips_url, f'/{self.job_args.service}/{self.API_VERSION}/{self.job_args.out_type}/{self.output_id}/status')
         response = requests.get(url, timeout=REQUESTS_TIMEOUT)
 
@@ -148,9 +145,6 @@ class IPSJob:
 
     @_require_job_started
     def _get_result(self) -> bytes:
-
-        #if not self.output_id:
-        #    raise RuntimeError(f'Job has no output_id. Did you start it?')
 
         url = urllib.parse.urljoin(self.ips_url, f'/{self.job_args.service}/{self.API_VERSION}/{self.job_args.out_type}/{self.output_id}')
         response = requests.get(url, timeout=REQUESTS_TIMEOUT)
