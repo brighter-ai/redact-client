@@ -26,10 +26,16 @@ class IPSInputOutputTypes(str, Enum):
     video = 'videos'
 
 
+class IPSRegions(str, Enum):
+    european_union = 'european_union'
+    mainland_china = 'mainland_china'
+    united_states_of_america = 'united_states_of_america'
+
+
 class JobArguments(BaseModel):
     service: IPSServiceTypes
     out_type: IPSInputOutputTypes
-    region: str = 'european_union'
+    region: IPSRegions = IPSRegions.european_union
     face: Optional[bool] = None
     license_plate: Optional[bool] = None
     person: Optional[bool] = None
