@@ -34,6 +34,6 @@ In any case, you should bump `ips_client.__init__.__version__` when updating som
 Also, you may want to tag the new version for GitHub:
 
 ```shell
-git tag -a b3.0.1 -m "Release v3.0.1"
+git tag -a v3.0.1 -m "Release v3.0.1"
 git push --tags
 ```
