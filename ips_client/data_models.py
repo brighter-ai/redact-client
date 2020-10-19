@@ -4,22 +4,22 @@ from typing import Optional
 from uuid import UUID
 
 
-class IPSJobPostResponse(BaseModel):
+class JobPostResponse(BaseModel):
     output_id: UUID
 
 
-class IPSJobState(str, Enum):
+class JobState(str, Enum):
     pending = 'pending'
     active = 'active'
     finished = 'completed'
     failed = 'failed'
 
 
-class IPSJobStatus(BaseModel):
+class JobStatus(BaseModel):
 
     output_id: UUID
-    state: IPSJobState
+    state: JobState
     estimated_time_to_completion: Optional[float] = None
 
     def is_running(self):
-        return self.state in [IPSJobState.active, IPSJobState.pending]
+        return self.state in [JobState.active, JobState.pending]

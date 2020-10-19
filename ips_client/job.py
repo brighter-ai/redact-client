@@ -9,7 +9,7 @@ from pydantic import BaseModel
 from typing import BinaryIO, Optional, Dict
 from uuid import UUID
 
-from ips_client.ips_data_models import IPSJobPostResponse, IPSJobStatus
+from ips_client.data_models import JobPostResponse, JobStatus
 
 
 # requests should always be used with a timeout to avoid hanging indefinitely:
@@ -66,7 +66,7 @@ class IPSJob:
         self.job_args = copy(job_args)
         self.ips_url = self._normalize_url(ips_url)
 
-        self._post_response: Optional[IPSJobPostResponse] = None
+        self._post_response: Optional[JobPostResponse] = None
 
         if start_job:
             self.start()
@@ -76,7 +76,7 @@ class IPSJob:
             self._post_job()
         return self
 
-    def _post_job(self) -> IPSJobPostResponse:
+    def _post_job(self) -> JobPostResponse:
         """
         If not posted yet, post the job and store the response self._post_response.
         """
@@ -85,7 +85,7 @@ class IPSJob:
             raise RuntimeError(f'Job has been posted before: output_id={self.output_id}')
 
         response_dict: dict = self._post_request()
-        response = IPSJobPostResponse(**response_dict)
+        response = JobPostResponse(**response_dict)
 
         self._post_response = response
         return response
@@ -123,9 +123,9 @@ class IPSJob:
             return self._post_response.output_id
         return None
 
-    def get_status(self) -> IPSJobStatus:
+    def get_status(self) -> JobStatus:
         response_dict = self._get_status_response()
-        return IPSJobStatus(**response_dict)
+        return JobStatus(**response_dict)
 
     @_require_job_started
     def _get_status_response(self) -> dict:
