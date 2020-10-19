@@ -14,7 +14,7 @@ from ips_client.data_models import JobPostResponse, JobStatus
 
 # requests should always be used with a timeout to avoid hanging indefinitely:
 # https://requests.readthedocs.io/en/master/user/quickstart/#timeouts
-REQUESTS_TIMEOUT = 30
+REQUESTS_TIMEOUT = 15
 
 
 class ServiceType(str, Enum):
