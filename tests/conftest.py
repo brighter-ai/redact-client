@@ -3,7 +3,7 @@ import pytest
 
 from io import BufferedReader
 
-from ips_job import IPSJob, JobArguments, ServiceType, OutputType
+from ips_client.job import IPSJob, JobArguments, ServiceType, OutputType
 
 
 @pytest.fixture

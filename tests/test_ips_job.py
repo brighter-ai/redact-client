@@ -3,7 +3,7 @@ import pytest
 
 from PIL import Image
 
-from ips_data_models import IPSJobState
+from ips_client.data_models import JobState
 
 
 class TestIPSJob:
@@ -12,7 +12,7 @@ class TestIPSJob:
         # GIVEN an IPS job
         # WHEN a job is started
         # THEN the job finishes after a while
-        assert job.start().wait_until_finished().get_status().state == IPSJobState.finished
+        assert job.start().wait_until_finished().get_status().state == JobState.finished
 
     def test_download_result(self, job, test_image):
 
