@@ -167,6 +167,7 @@ class IPSJob:
         return response.json()
 
     def get_error(self):
+        # TODO: Write test for this endpoint
         return self._get_error()
 
     @_require_job_started
