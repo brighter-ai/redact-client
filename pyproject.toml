@@ -7,4 +7,5 @@ module = "ips_client"
 author = "brighter AI"
 author-email = "dev@brighter.ai"
 home-page = "https://github.com/brighter-ai"
-
+requires-python = ">=3.6"
+requires = ["pydantic"]
