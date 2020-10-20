@@ -3,8 +3,8 @@ import pytest
 
 from io import BufferedReader
 
-from ips_client.job import IPSJob, JobArguments
-from ips_api_wrapper import ServiceType, OutputType
+from ips_client.job import IPSJob
+from data_models import ServiceType, OutputType, JobArguments
 
 
 @pytest.fixture
@@ -24,10 +24,9 @@ def service(request) -> ServiceType:
 
 
 @pytest.fixture
-def job_args(service) -> JobArguments:
-    return JobArguments(service=service, out_type=OutputType.images)
-
-
-@pytest.fixture
-def job(job_args, ips_url, test_image) -> IPSJob:
-    return IPSJob(file=test_image, job_args=job_args, ips_url=ips_url, start_job=False)
+def job(service, ips_url, test_image) -> IPSJob:
+    return IPSJob(file=test_image,
+                  service=service,
+                  out_type=OutputType.images,
+                  ips_url=ips_url,
+                  start_job=False)

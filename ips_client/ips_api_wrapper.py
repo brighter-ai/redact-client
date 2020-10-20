@@ -1,28 +1,15 @@
 import requests
 import urllib.parse
 
-from enum import Enum
 from io import BufferedIOBase
 from typing import Dict
 from uuid import UUID
 
+from data_models import ServiceType, OutputType, JobArguments
 from ips_client.utils import normalize_url
 
 
-# requests should always be used with a timeout to avoid hanging indefinitely:
-# https://requests.readthedocs.io/en/master/user/quickstart/#timeouts
-
 REQUESTS_TIMEOUT = 15
-
-
-class ServiceType(str, Enum):
-    blur = 'blur'
-    dnat = 'dnat'
-
-
-class OutputType(str, Enum):
-    images = 'images'
-    videos = 'videos'
 
 
 class IPSApiWrapper:
@@ -32,7 +19,7 @@ class IPSApiWrapper:
     def __init__(self, ips_url: str = 'http://127.0.0.1:8787/'):
         self.ips_url = normalize_url(ips_url)
 
-    def post_job(self, file: BufferedIOBase, service: ServiceType, out_type: OutputType, **query_args) -> Dict:
+    def post_job(self, file: BufferedIOBase, service: ServiceType, out_type: OutputType, job_args: JobArguments) -> Dict:
         """
         Post the job via a post request.
         """
@@ -42,7 +29,7 @@ class IPSApiWrapper:
 
         response = requests.post(url=url,
                                  files=files,
-                                 params=query_args,
+                                 params=job_args.dict(),
                                  timeout=REQUESTS_TIMEOUT)
 
         if response.status_code != 200:

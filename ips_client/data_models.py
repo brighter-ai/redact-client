@@ -4,6 +4,31 @@ from typing import Optional
 from uuid import UUID
 
 
+class ServiceType(str, Enum):
+    blur = 'blur'
+    dnat = 'dnat'
+
+
+class OutputType(str, Enum):
+    images = 'images'
+    videos = 'videos'
+
+
+class Region(str, Enum):
+    european_union = 'european_union'
+    mainland_china = 'mainland_china'
+    united_states_of_america = 'united_states_of_america'
+
+
+class JobArguments(BaseModel):
+    region: Region = Region.european_union
+    face: Optional[bool] = None
+    license_plate: Optional[bool] = None
+    person: Optional[bool] = None
+    block_portraits: Optional[bool] = None
+    speed_optimized: Optional[bool] = None
+
+
 class JobPostResponse(BaseModel):
     output_id: UUID
 

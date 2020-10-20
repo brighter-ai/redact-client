@@ -2,43 +2,13 @@ import functools
 import time
 
 from copy import copy
-from enum import Enum
 from io import BufferedIOBase
-from pydantic import BaseModel
 from typing import Optional
 from uuid import UUID
 
-from ips_api_wrapper import IPSApiWrapper, ServiceType, OutputType
+from ips_api_wrapper import IPSApiWrapper
+from data_models import ServiceType, OutputType, JobArguments
 from ips_client.data_models import JobPostResponse, JobStatus
-
-
-class Region(str, Enum):
-    european_union = 'european_union'
-    mainland_china = 'mainland_china'
-    united_states_of_america = 'united_states_of_america'
-
-
-class JobArguments(BaseModel):
-
-    # path arguments
-    service: ServiceType
-    out_type: OutputType
-
-    # query arguments
-    region: Region = Region.european_union
-    face: Optional[bool] = None
-    license_plate: Optional[bool] = None
-    person: Optional[bool] = None
-    block_portraits: Optional[bool] = None
-    speed_optimized: Optional[bool] = None
-
-    def get_query_params(self) -> dict:
-        """Returns those arguments that the IPS API expects as query parameters."""
-        params = self.dict()
-        # remove path parameters
-        params.pop('service')
-        params.pop('out_type')
-        return params
 
 
 def _require_job_started(func):
@@ -54,10 +24,13 @@ def _require_job_started(func):
 
 class IPSJob:
 
-    def __init__(self, file: BufferedIOBase, job_args: JobArguments, ips_url: str = 'http://127.0.0.1:8787/',
+    def __init__(self, file: BufferedIOBase, service: ServiceType, out_type: OutputType,
+                 job_args: JobArguments = JobArguments(), ips_url: str = 'http://127.0.0.1:8787/',
                  start_job: bool = True):
 
         self.file = file
+        self.service = service
+        self.out_type = out_type
         self.job_args = copy(job_args)
         self.ips = IPSApiWrapper(ips_url=ips_url)
 
@@ -80,9 +53,9 @@ class IPSJob:
             raise RuntimeError(f'Job has been posted before: output_id={self.output_id}')
 
         response_dict: dict = self.ips.post_job(file=self.file,
-                                                service=self.job_args.service,
-                                                out_type=self.job_args.out_type,
-                                                **self.job_args.get_query_params())
+                                                service=self.service,
+                                                out_type=self.out_type,
+                                                job_args=self.job_args)
 
         response = JobPostResponse(**response_dict)
 
@@ -91,28 +64,28 @@ class IPSJob:
 
     @_require_job_started
     def get_status(self) -> JobStatus:
-        response_dict = self.ips.get_status(service=self.job_args.service,
-                                            out_type=self.job_args.out_type,
+        response_dict = self.ips.get_status(service=self.service,
+                                            out_type=self.out_type,
                                             output_id=self.output_id)
         return JobStatus(**response_dict)
 
     @_require_job_started
     def download_result(self) -> bytes:
-        return self.ips.get_output(service=self.job_args.service,
-                                   out_type=self.job_args.out_type,
+        return self.ips.get_output(service=self.service,
+                                   out_type=self.out_type,
                                    output_id=self.output_id)
 
     @_require_job_started
     def delete(self):
-        return self.ips.delete_output(service=self.job_args.service,
-                                      out_type=self.job_args.out_type,
+        return self.ips.delete_output(service=self.service,
+                                      out_type=self.out_type,
                                       output_id=self.output_id)
 
     @_require_job_started
     def get_error(self):
         # TODO: Write test for this endpoint
-        return self.ips.get_error(service=self.job_args.service,
-                                  out_type=self.job_args.out_type,
+        return self.ips.get_error(service=self.service,
+                                  out_type=self.out_type,
                                   output_id=self.output_id)
 
     @_require_job_started
