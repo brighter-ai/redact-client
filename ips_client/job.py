@@ -2,8 +2,7 @@ import functools
 import time
 
 from copy import copy
-from io import BufferedIOBase
-from typing import Optional
+from typing import Optional, IO
 from uuid import UUID
 
 from ips_client.data_models import ServiceType, OutputType, JobArguments, JobPostResponse, JobStatus
@@ -23,7 +22,7 @@ def _require_job_started(func):
 
 class IPSJob:
 
-    def __init__(self, file: BufferedIOBase, service: ServiceType, out_type: OutputType,
+    def __init__(self, file: IO, service: ServiceType, out_type: OutputType,
                  job_args: JobArguments = JobArguments(), ips_url: str = 'http://127.0.0.1:8787/',
                  start_job: bool = True):
 
