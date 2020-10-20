@@ -1,21 +1,28 @@
-import os
+import pathlib
+from typing import IO
+
 import pytest
 
-from io import BufferedReader
-
-from ips_api_wrapper import IPSApiWrapper
+from ips_client.data_models import ServiceType, OutputType
+from ips_client.ips_api_wrapper import IPSApiWrapper
 from ips_client.job import IPSJob
-from data_models import ServiceType, OutputType
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        '--ips_url', action='store', default='http://127.0.0.1:8787/', help='URL of a running IPS instance'
+    )
 
 
 @pytest.fixture
-def ips_url():
-    return os.environ['IPS_URL']
+def ips_url(request):
+    return request.config.getoption('--ips_url')
 
 
 @pytest.fixture
-def test_image() -> BufferedReader:
-    with open('obama.jpg', 'rb') as f:
+def test_image() -> IO:
+    img_path = pathlib.Path(__file__).parent.joinpath('obama.jpg')
+    with open(img_path, 'rb') as f:
         yield f
 
 
