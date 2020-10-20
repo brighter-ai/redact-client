@@ -5,7 +5,7 @@ from io import BufferedIOBase
 from typing import Dict
 from uuid import UUID
 
-from data_models import ServiceType, OutputType, JobArguments
+from ips_client.data_models import ServiceType, OutputType, JobArguments
 from ips_client.utils import normalize_url
 
 
