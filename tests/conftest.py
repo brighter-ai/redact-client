@@ -3,8 +3,9 @@ import pytest
 
 from io import BufferedReader
 
+from ips_api_wrapper import IPSApiWrapper
 from ips_client.job import IPSJob
-from data_models import ServiceType, OutputType, JobArguments
+from data_models import ServiceType, OutputType
 
 
 @pytest.fixture
@@ -21,6 +22,11 @@ def test_image() -> BufferedReader:
 @pytest.fixture(params=[ServiceType.dnat, ServiceType.blur])
 def service(request) -> ServiceType:
     return request.param
+
+
+@pytest.fixture
+def ips(ips_url) -> IPSApiWrapper:
+    return IPSApiWrapper(ips_url=ips_url)
 
 
 @pytest.fixture

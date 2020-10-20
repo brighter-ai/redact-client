@@ -2,4 +2,4 @@
 Python client for Identity Protection Suite (IPS)
 """
 
-__version__ = "v3.1.1"
+__version__ = "v3.1.2"

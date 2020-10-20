@@ -1,8 +1,7 @@
 import requests
 import urllib.parse
 
-from io import BufferedIOBase
-from typing import Dict
+from typing import Dict, Optional, BinaryIO
 from uuid import UUID
 
 from ips_client.data_models import ServiceType, OutputType, JobArguments
@@ -19,13 +18,24 @@ class IPSApiWrapper:
     def __init__(self, ips_url: str = 'http://127.0.0.1:8787/'):
         self.ips_url = normalize_url(ips_url)
 
-    def post_job(self, file: BufferedIOBase, service: ServiceType, out_type: OutputType, job_args: JobArguments) -> Dict:
+    def post_job(self, file: BinaryIO, service: ServiceType, out_type: OutputType,
+                 job_args: JobArguments = JobArguments(), file_name: Optional[str] = None) -> Dict:
         """
         Post the job via a post request.
         """
 
+        # We need a file name with extension.
+        # For file streams opened from disk, the name is available.
+        # But for other streams it is not.
+        if not file_name:
+            try:
+                file_name = file.name
+            except AttributeError:
+                raise ValueError('Please specify file_name (including extension)!')
+
+        files = {'file': (file_name, file)}
+
         url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}')
-        files = {'file': file}
 
         response = requests.post(url=url,
                                  files=files,
