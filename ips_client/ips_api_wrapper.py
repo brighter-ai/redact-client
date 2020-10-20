@@ -1,7 +1,7 @@
 import requests
 import urllib.parse
 
-from typing import Dict, Optional, BinaryIO
+from typing import Dict, Optional, IO
 from uuid import UUID
 
 from ips_client.data_models import ServiceType, OutputType, JobArguments
@@ -18,7 +18,7 @@ class IPSApiWrapper:
     def __init__(self, ips_url: str = 'http://127.0.0.1:8787/'):
         self.ips_url = normalize_url(ips_url)
 
-    def post_job(self, file: BinaryIO, service: ServiceType, out_type: OutputType,
+    def post_job(self, file: IO, service: ServiceType, out_type: OutputType,
                  job_args: JobArguments = JobArguments(), file_name: Optional[str] = None) -> Dict:
         """
         Post the job via a post request.
