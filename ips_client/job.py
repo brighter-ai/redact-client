@@ -6,9 +6,8 @@ from io import BufferedIOBase
 from typing import Optional
 from uuid import UUID
 
-from ips_api_wrapper import IPSApiWrapper
-from data_models import ServiceType, OutputType, JobArguments
-from ips_client.data_models import JobPostResponse, JobStatus
+from ips_client.data_models import ServiceType, OutputType, JobArguments, JobPostResponse, JobStatus
+from ips_client.ips_api_wrapper import IPSApiWrapper
 
 
 def _require_job_started(func):
