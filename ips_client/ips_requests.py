@@ -11,7 +11,10 @@ from ips_client.utils import normalize_url
 REQUESTS_TIMEOUT = 15
 
 
-class IPSApiWrapper:
+class IPSRequests:
+    """
+    Helper class wrapping requests to the IPS API.
+    """
 
     API_VERSION = 'v3'
 

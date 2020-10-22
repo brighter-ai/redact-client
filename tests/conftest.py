@@ -1,10 +1,10 @@
 import pathlib
-from typing import IO
-
 import pytest
 
+from typing import IO
+
 from ips_client.data_models import ServiceType, OutputType
-from ips_client.ips_api_wrapper import IPSApiWrapper
+from ips_client.ips_api_wrapper import IPSRequests
 from ips_client.job import IPSJob
 
 
@@ -32,8 +32,8 @@ def service(request) -> ServiceType:
 
 
 @pytest.fixture
-def ips(ips_url) -> IPSApiWrapper:
-    return IPSApiWrapper(ips_url=ips_url)
+def ips(ips_url) -> IPSRequests:
+    return IPSRequests(ips_url=ips_url)
 
 
 @pytest.fixture
