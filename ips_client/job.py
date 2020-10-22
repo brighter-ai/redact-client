@@ -7,6 +7,10 @@ from uuid import UUID
 
 from ips_client.data_models import ServiceType, OutputType, JobArguments, JobPostResponse, JobStatus
 from ips_client.ips_requests import IPSRequests
+from ips_client.settings import Settings
+
+
+settings = Settings()
 
 
 def _require_job_started(func):
@@ -23,7 +27,7 @@ def _require_job_started(func):
 class IPSJob:
 
     def __init__(self, file: IO, service: ServiceType, out_type: OutputType,
-                 job_args: JobArguments = JobArguments(), ips_url: str = 'http://127.0.0.1:8787/',
+                 job_args: JobArguments = JobArguments(), ips_url: str = settings.ips_url_default,
                  start_job: bool = True):
 
         self.file = file

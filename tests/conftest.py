@@ -6,11 +6,15 @@ from typing import IO
 from ips_client.data_models import ServiceType, OutputType
 from ips_client.ips_requests import IPSRequests
 from ips_client.job import IPSJob
+from ips_client.settings import Settings
+
+
+settings = Settings()
 
 
 def pytest_addoption(parser):
     parser.addoption(
-        '--ips_url', action='store', default='http://127.0.0.1:8787/', help='URL of a running IPS instance'
+        '--ips_url', action='store', default=settings.ips_url_default, help='URL of a running IPS instance'
     )
 
 
