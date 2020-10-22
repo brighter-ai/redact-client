@@ -4,7 +4,7 @@ import pytest
 from typing import IO
 
 from ips_client.data_models import ServiceType, OutputType
-from ips_client.ips_api_wrapper import IPSRequests
+from ips_client.ips_requests import IPSRequests
 from ips_client.job import IPSJob
 
 

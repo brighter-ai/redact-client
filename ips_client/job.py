@@ -6,7 +6,7 @@ from typing import Optional, IO
 from uuid import UUID
 
 from ips_client.data_models import ServiceType, OutputType, JobArguments, JobPostResponse, JobStatus
-from ips_client.ips_api_wrapper import IPSRequests
+from ips_client.ips_requests import IPSRequests
 
 
 def _require_job_started(func):
