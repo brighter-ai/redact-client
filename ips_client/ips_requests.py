@@ -10,6 +10,9 @@ from ips_client.utils import normalize_url
 from ips_client.settings import Settings
 
 
+settings = Settings()
+
+logging.basicConfig(level=settings.log_level)
 log = logging.getLogger('ips-requests')
 
 
