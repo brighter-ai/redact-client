@@ -1,3 +1,4 @@
+import logging
 import requests
 import urllib.parse
 
@@ -7,6 +8,8 @@ from uuid import UUID
 from ips_client.data_models import ServiceType, OutputType, JobArguments
 from ips_client.utils import normalize_url
 
+
+log = logging.getLogger('ips-requests')
 
 REQUESTS_TIMEOUT = 15
 
@@ -40,6 +43,7 @@ class IPSRequests:
 
         url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}')
 
+        log.debug(f'Posting file to {url} with arguments {job_args} ...')
         response = requests.post(url=url,
                                  files=files,
                                  params=job_args.dict(),
@@ -53,6 +57,7 @@ class IPSRequests:
     def get_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> bytes:
 
         url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}')
+        log.debug(f'Requesting {url} ...')
         response = requests.get(url, timeout=REQUESTS_TIMEOUT)
 
         if response.status_code != 200:
@@ -63,6 +68,7 @@ class IPSRequests:
     def get_status(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
         url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}/status')
+        log.debug(f'Requesting {url} ...')
         response = requests.get(url, timeout=REQUESTS_TIMEOUT)
 
         if response.status_code != 200:
@@ -73,6 +79,7 @@ class IPSRequests:
     def delete_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
         url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}')
+        log.debug(f'Deleting {url} ...')
         response = requests.delete(url, timeout=REQUESTS_TIMEOUT)
 
         if response.status_code != 200:
@@ -83,6 +90,7 @@ class IPSRequests:
     def get_error(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
         url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}/error')
+        log.debug(f'Requesting {url} ...')
         response = requests.get(url, timeout=REQUESTS_TIMEOUT)
 
         if response.status_code != 200:
