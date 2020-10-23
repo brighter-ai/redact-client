@@ -4,6 +4,7 @@ import pytest
 from typing import IO
 
 from ips_client.data_models import ServiceType, OutputType
+from ips_client.ips_async_requests import IPSAsyncRequests
 from ips_client.ips_requests import IPSRequests
 from ips_client.job import IPSJob
 from ips_client.settings import Settings
@@ -38,6 +39,11 @@ def service(request) -> ServiceType:
 @pytest.fixture
 def ips(ips_url) -> IPSRequests:
     return IPSRequests(ips_url=ips_url)
+
+
+@pytest.fixture
+def ips_async(ips_url) -> IPSAsyncRequests:
+    return IPSAsyncRequests(ips_url=ips_url)
 
 
 @pytest.fixture

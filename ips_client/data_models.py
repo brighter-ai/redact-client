@@ -15,9 +15,15 @@ class OutputType(str, Enum):
 
 
 class Region(str, Enum):
+
     european_union = 'european_union'
     mainland_china = 'mainland_china'
     united_states_of_america = 'united_states_of_america'
+
+    def __str__(self):
+        """Return 'european_union' instead of 'Region.european_union'. The latter is more helpful because the outpu
+        is most likely to be used as a query parameter in an HTTP request."""
+        return self.value
 
 
 class JobArguments(BaseModel):

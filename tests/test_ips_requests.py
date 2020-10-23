@@ -3,7 +3,7 @@ from io import BytesIO
 from ips_client.data_models import ServiceType, OutputType
 
 
-class TestIPSWrapper:
+class TestIPSRequests:
 
     def test_upload_from_disk(self, ips, test_image):
         # GIVEN an IPS instance and a test image
