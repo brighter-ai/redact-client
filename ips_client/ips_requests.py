@@ -1,3 +1,4 @@
+import logging
 import requests
 import urllib.parse
 
@@ -6,16 +7,23 @@ from uuid import UUID
 
 from ips_client.data_models import ServiceType, OutputType, JobArguments
 from ips_client.utils import normalize_url
+from ips_client.settings import Settings
 
 
-REQUESTS_TIMEOUT = 15
+settings = Settings()
+
+logging.basicConfig(level=settings.log_level)
+log = logging.getLogger('ips-requests')
 
 
-class IPSApiWrapper:
+class IPSRequests:
+    """
+    Helper class wrapping requests to the IPS API.
+    """
 
     API_VERSION = 'v3'
 
-    def __init__(self, ips_url: str = 'http://127.0.0.1:8787/'):
+    def __init__(self, ips_url: str = settings.ips_url_default):
         self.ips_url = normalize_url(ips_url)
 
     def post_job(self, file: IO, service: ServiceType, out_type: OutputType,
@@ -40,7 +48,7 @@ class IPSApiWrapper:
         response = requests.post(url=url,
                                  files=files,
                                  params=job_args.dict(),
-                                 timeout=REQUESTS_TIMEOUT)
+                                 timeout=settings.requests_timeout)
 
         if response.status_code != 200:
             raise RuntimeError(f'Error while posting job: {response}')
@@ -50,7 +58,7 @@ class IPSApiWrapper:
     def get_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> bytes:
 
         url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}')
-        response = requests.get(url, timeout=REQUESTS_TIMEOUT)
+        response = requests.get(url, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
             raise RuntimeError(f'Error while getting job result: {response}')
@@ -60,7 +68,7 @@ class IPSApiWrapper:
     def get_status(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
         url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}/status')
-        response = requests.get(url, timeout=REQUESTS_TIMEOUT)
+        response = requests.get(url, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
             raise RuntimeError(f'Error while getting job status: {response}')
@@ -70,7 +78,7 @@ class IPSApiWrapper:
     def delete_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
         url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}')
-        response = requests.delete(url, timeout=REQUESTS_TIMEOUT)
+        response = requests.delete(url, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
             raise RuntimeError(f'Error while deleting job: {response}')
@@ -80,7 +88,7 @@ class IPSApiWrapper:
     def get_error(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
         url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}/error')
-        response = requests.get(url, timeout=REQUESTS_TIMEOUT)
+        response = requests.get(url, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
             raise RuntimeError(f'Error while getting job error: {response}')
