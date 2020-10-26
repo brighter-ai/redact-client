@@ -1,5 +1,6 @@
 from enum import Enum
 from pydantic import BaseModel
+from requests import Response
 from typing import Optional
 from uuid import UUID
 
@@ -39,6 +40,11 @@ class JobPostResponse(BaseModel):
     output_id: UUID
 
 
+class JobResult(BaseModel):
+    result: bytes
+    media_type: str
+
+
 class JobState(str, Enum):
     pending = 'pending'
     active = 'active'
@@ -54,3 +60,21 @@ class JobStatus(BaseModel):
 
     def is_running(self):
         return self.state in [JobState.active, JobState.pending]
+
+
+class IPSResponseError(Exception):
+
+    def __init__(self, response: Response, msg: Optional[str] = None):
+        super().__init__()
+        self.response: Response = response
+        self.msg = msg
+
+    @property
+    def status_code(self) -> int:
+        return self.response.status_code
+
+    def __str__(self) -> str:
+        s = str(self.response)
+        if self.msg:
+            s = s + ' ' + self.msg
+        return s
