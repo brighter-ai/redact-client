@@ -5,9 +5,9 @@ import urllib.parse
 from typing import Dict, Optional, IO
 from uuid import UUID
 
-from ips_client.data_models import ServiceType, OutputType, JobArguments
-from ips_client.utils import normalize_url
+from ips_client.data_models import ServiceType, OutputType, JobArguments, JobResult, IPSResponseError
 from ips_client.settings import Settings
+from ips_client.utils import normalize_url, decide_on_filename
 
 
 settings = Settings()
@@ -32,14 +32,8 @@ class IPSRequests:
         Post the job via a post request.
         """
 
-        # We need a file name with extension.
-        # For file streams opened from disk, the name is available.
-        # But for other streams it is not.
-        if not file_name:
-            try:
-                file_name = file.name
-            except AttributeError:
-                raise ValueError('Please specify file_name (including extension)!')
+        # We need a file name with extension because the media type is inferred from it.
+        file_name = decide_on_filename(file=file, file_name=file_name)
 
         files = {'file': (file_name, file)}
 
@@ -51,19 +45,20 @@ class IPSRequests:
                                  timeout=settings.requests_timeout)
 
         if response.status_code != 200:
-            raise RuntimeError(f'Error while posting job: {response}')
+            raise IPSResponseError(response=response, msg=f'Error posting job')
 
         return response.json()
 
-    def get_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> bytes:
+    def get_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> JobResult:
 
         url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}')
         response = requests.get(url, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
-            raise RuntimeError(f'Error while getting job result: {response}')
+            raise IPSResponseError(response=response, msg='Error downloading job result')
 
-        return response.content
+        return JobResult(content=response.content,
+                         media_type=response.headers['Content-Type'])
 
     def get_status(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
@@ -71,7 +66,7 @@ class IPSRequests:
         response = requests.get(url, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
-            raise RuntimeError(f'Error while getting job status: {response}')
+            raise IPSResponseError(response=response, msg='Error getting job status')
 
         return response.json()
 
@@ -81,7 +76,7 @@ class IPSRequests:
         response = requests.delete(url, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
-            raise RuntimeError(f'Error while deleting job: {response}')
+            raise IPSResponseError(response=response, msg='Error deleting job')
 
         return response.json()
 
@@ -91,6 +86,6 @@ class IPSRequests:
         response = requests.get(url, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
-            raise RuntimeError(f'Error while getting job error: {response}')
+            raise IPSResponseError(response=response, msg='Error getting job error')
 
         return response.json()

@@ -3,7 +3,7 @@ import pytest
 
 from PIL import Image
 
-from ips_client.data_models import JobState
+from ips_client.data_models import JobState, IPSResponseError
 
 
 class TestIPSJob:
@@ -21,10 +21,13 @@ class TestIPSJob:
         test_image.seek(0)
 
         # WHEN a job is started and the result downloaded
-        anonymized_raw = job.start().wait_until_finished().download_result()
+        job_result = job.start().wait_until_finished().download_result()
 
-        # THEN it has the same size as the input image
-        anonymized_img = Image.open(io.BytesIO(anonymized_raw))
+        # THEN the response has the right media type
+        assert job_result.media_type.startswith('image')
+
+        # AND it has the same size as the input image
+        anonymized_img = Image.open(io.BytesIO(job_result.content))
         assert anonymized_img.size == img.size
 
     def test_throws_exception_when_not_started(self, job):
@@ -46,13 +49,9 @@ class TestIPSJob:
         job.delete()
 
         # (wait for job to be deleted)
-        while True:
-            try:
+        with pytest.raises(IPSResponseError) as exc_info:
+            while True:
                 job.get_status()
-            except RuntimeError:
-                break
 
         # THEN it can not be found anymore
-        with pytest.raises(RuntimeError) as e:
-            job.get_status()
-        assert '404' in str(e)
+        assert exc_info.value.status_code == 404

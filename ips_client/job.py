@@ -5,7 +5,7 @@ from copy import copy
 from typing import Optional, IO
 from uuid import UUID
 
-from ips_client.data_models import ServiceType, OutputType, JobArguments, JobPostResponse, JobStatus
+from ips_client.data_models import ServiceType, OutputType, JobArguments, JobPostResponse, JobStatus, JobResult
 from ips_client.ips_requests import IPSRequests
 from ips_client.settings import Settings
 
@@ -72,7 +72,7 @@ class IPSJob:
         return JobStatus(**response_dict)
 
     @_require_job_started
-    def download_result(self) -> bytes:
+    def download_result(self) -> JobResult:
         return self.ips.get_output(service=self.service,
                                    out_type=self.out_type,
                                    output_id=self.output_id)
