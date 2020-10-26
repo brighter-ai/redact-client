@@ -6,8 +6,8 @@ from typing import Dict, Optional, IO
 from uuid import UUID
 
 from ips_client.data_models import ServiceType, OutputType, JobArguments, JobResult, IPSResponseError
-from ips_client.utils import normalize_url
 from ips_client.settings import Settings
+from ips_client.utils import normalize_url, decide_on_filename
 
 
 settings = Settings()
@@ -33,7 +33,7 @@ class IPSRequests:
         """
 
         # We need a file name with extension because the media type is inferred from it.
-        file_name = self._get_available_file_name(file=file, file_name=file_name)
+        file_name = decide_on_filename(file=file, file_name=file_name)
 
         files = {'file': (file_name, file)}
 
@@ -48,17 +48,6 @@ class IPSRequests:
             raise IPSResponseError(response=response, msg=f'Error posting job')
 
         return response.json()
-
-    @staticmethod
-    def _get_available_file_name(file: IO, file_name: Optional[str] = None) -> str:
-        if not file_name:
-            try:
-                # For file streams opened from disk, the name is available.
-                # But for other streams it is not.
-                file_name = file.name
-            except AttributeError:
-                raise ValueError('Please specify file_name (including extension)!')
-        return file_name
 
     def get_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> JobResult:
 
