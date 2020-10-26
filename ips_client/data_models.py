@@ -41,7 +41,7 @@ class JobPostResponse(BaseModel):
 
 
 class JobResult(BaseModel):
-    result: bytes
+    content: bytes
     media_type: str
 
 

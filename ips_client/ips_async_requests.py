@@ -72,7 +72,7 @@ class IPSAsyncRequests:
         if response.status_code != 200:
             raise IPSResponseError(response=response, msg='Error downloading job result')
 
-        return JobResult(result=response.content,
+        return JobResult(content=response.content,
                          media_type=response.headers['Content-Type'])
 
     async def get_status(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:

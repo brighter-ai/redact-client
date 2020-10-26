@@ -27,7 +27,7 @@ class TestIPSJob:
         assert job_result.media_type.startswith('image')
 
         # AND it has the same size as the input image
-        anonymized_img = Image.open(io.BytesIO(job_result.result))
+        anonymized_img = Image.open(io.BytesIO(job_result.content))
         assert anonymized_img.size == img.size
 
     def test_throws_exception_when_not_started(self, job):
