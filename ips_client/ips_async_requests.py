@@ -5,7 +5,7 @@ import urllib.parse
 from typing import Dict, Optional, IO
 from uuid import UUID
 
-from ips_client.data_models import ServiceType, OutputType, JobArguments, JobResult, IPSResponseError
+from ips_client.data_models import ServiceType, OutputType, JobArguments, JobResult, IPSResponseError, JobPostResponse
 from ips_client.settings import Settings
 from ips_client.utils import normalize_url, decide_on_filename
 
@@ -27,7 +27,7 @@ class IPSAsyncRequests:
         self.ips_url = normalize_url(ips_url)
 
     async def post_job(self, file: IO, service: ServiceType, out_type: OutputType,
-                       job_args: JobArguments = JobArguments(), file_name: Optional[str] = None) -> Dict:
+                       job_args: JobArguments = JobArguments(), file_name: Optional[str] = None) -> JobPostResponse:
         """
         Post the job via a post request.
         """
@@ -49,7 +49,7 @@ class IPSAsyncRequests:
         if response.status_code != 200:
             raise IPSResponseError(response=response, msg=f'Error posting job')
 
-        return response.json()
+        return JobPostResponse(**response.json())
 
     async def get_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> JobResult:
 

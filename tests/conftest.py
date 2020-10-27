@@ -48,8 +48,7 @@ def ips_async(ips_url) -> IPSAsyncRequests:
 
 @pytest.fixture
 def job(service, ips_url, test_image) -> IPSJob:
-    return IPSJob(file=test_image,
-                  service=service,
-                  out_type=OutputType.images,
-                  ips_url=ips_url,
-                  start_job=False)
+    return IPSJob.start_new(file=test_image,
+                            service=service,
+                            out_type=OutputType.images,
+                            ips_url=ips_url)
