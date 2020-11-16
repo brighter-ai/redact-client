@@ -7,10 +7,10 @@ import typer
 
 from enum import Enum
 from pathlib import Path
-from typing import Optional, List
+from typing import List
 
 from ips_client.data_models import Region
-from ips_client.job import IPSJob, JobArguments, ServiceType, OutputType
+from ips_client.job import JobArguments, ServiceType, OutputType
 from ips_client.settings import Settings
 
 from scripts.utils import files_in_dir, is_image, is_video, is_archive, normalize_path
