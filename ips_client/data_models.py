@@ -1,7 +1,7 @@
 from enum import Enum
 from pydantic import BaseModel
 from requests import Response
-from typing import Optional
+from typing import Optional, List
 from uuid import UUID
 
 
@@ -60,6 +60,11 @@ class JobStatus(BaseModel):
 
     def is_running(self):
         return self.state in [JobState.active, JobState.pending]
+
+
+class JobMetadata(BaseModel):
+    faces: List
+    license_plates: List
 
 
 class IPSResponseError(Exception):

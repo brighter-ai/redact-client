@@ -7,7 +7,7 @@ from uuid import UUID
 
 from ips_client.data_models import ServiceType, OutputType, JobArguments, JobResult, IPSResponseError, JobPostResponse
 from ips_client.settings import Settings
-from ips_client.utils import normalize_url, decide_on_filename
+from ips_client.utils import normalize_url, get_io_filename
 
 
 settings = Settings()
@@ -33,7 +33,7 @@ class IPSRequests:
         """
 
         # We need a file name with extension because the media type is inferred from it.
-        file_name = decide_on_filename(file=file, file_name=file_name)
+        file_name = get_io_filename(file=file, file_name=file_name)
 
         files = {'file': (file_name, file)}
 
@@ -67,6 +67,16 @@ class IPSRequests:
 
         if response.status_code != 200:
             raise IPSResponseError(response=response, msg='Error getting job status')
+
+        return response.json()
+
+    def get_metadata(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
+
+        url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}/metadata')
+        response = requests.get(url, timeout=settings.requests_timeout)
+
+        if response.status_code != 200:
+            raise IPSResponseError(response=response, msg='Error getting job metadata')
 
         return response.json()
 
