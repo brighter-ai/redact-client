@@ -12,7 +12,7 @@ def normalize_url(url: str):
     return url
 
 
-def decide_on_filename(file: IO, file_name: Optional[str] = None) -> str:
+def get_io_filename(file: IO, file_name: Optional[str] = None) -> str:
     """Some IO objects (i.e., FileIO) have a name attribute, but others usually don't. Therefore this helper function
     that tries to access the name attribute. If file_name is given explicitly, that's preferred, though."""
     if not file_name:
