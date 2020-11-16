@@ -1,8 +1,7 @@
-import functools
 import time
 
 from copy import copy
-from typing import Optional, IO
+from typing import IO
 from uuid import UUID
 
 from ips_client.data_models import ServiceType, OutputType, JobArguments, JobPostResponse, JobStatus, JobResult
@@ -27,7 +26,7 @@ class IPSJob:
 
     @classmethod
     def start_new(cls, file: IO, service: ServiceType, out_type: OutputType, job_args: JobArguments = JobArguments(),
-                  ips_url: str = settings.ips_url_default):
+                  ips_url: str = settings.ips_url_default) -> "IPSJob":
 
         ips = IPSRequests(ips_url=ips_url)
         post_response = ips.post_job(file=file,
