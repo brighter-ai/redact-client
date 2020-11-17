@@ -11,9 +11,8 @@ from typing import List
 from ips_client.data_models import Region
 from ips_client.job import JobArguments, ServiceType, OutputType
 from ips_client.settings import Settings
-
-from tools.utils import files_in_dir, is_image, is_video, is_archive, normalize_path
-from tools.anonymize_file import anonymize_file
+from ips_client.tools.utils import files_in_dir, is_image, is_video, is_archive, normalize_path
+from ips_client.tools.anonymize_file import anonymize_file
 
 
 logging.basicConfig(level=logging.INFO)
