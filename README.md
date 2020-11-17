@@ -13,7 +13,7 @@ result: bytes = job.wait_until_finished().download_result()
 
 ## Batch Anonymization
 
-In `ips_client.tools` you can find a script for batch anonymization of a whole folder: 
+In `ips_client.tools` you can find a function for batch anonymization of a whole folder: 
 
 ```python
 from ips_client.tools.anonymize_folder import anonymize_folder
@@ -26,6 +26,14 @@ anonymize_folder(in_dir='~/in_dir',
                  n_parallel_jobs=5,
                  save_metadata=True)
 ```
+
+The function can also be called directly from the command line. For instance:
+
+```shel
+python -m scripts.anonymize_folder --help
+python -m scripts.anonymize_folder ~/input_dir ~/output_dir images images dnat --ips-url 127.0.0.1:8787
+```
+
 
 ## Development
 
