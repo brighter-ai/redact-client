@@ -1,6 +1,7 @@
 import logging
 
 from pathlib import Path
+from requests.exceptions import ConnectionError
 from typing import Optional, Union
 
 from ips_client.data_models import Region
@@ -38,13 +39,16 @@ def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, r
     log.info(f'Job arguments: {job_args}')
 
     # anonymize
-    with open(file_path, 'rb') as file:
-        job: IPSJob = IPSJob.start_new(file=file,
-                                       service=service,
-                                       out_type=out_type,
-                                       job_args=job_args,
-                                       ips_url=ips_url)
-    result = job.wait_until_finished().download_result()
+    try:
+        with open(file_path, 'rb') as file:
+            job: IPSJob = IPSJob.start_new(file=file,
+                                           service=service,
+                                           out_type=out_type,
+                                           job_args=job_args,
+                                           ips_url=ips_url)
+        result = job.wait_until_finished().download_result()
+    except ConnectionError:
+        raise ConnectionError(f'Connection error! Did you provide the proper "ips_url"? Got: {ips_url}')
 
     # write result
     with open(out_path, 'wb') as file:
