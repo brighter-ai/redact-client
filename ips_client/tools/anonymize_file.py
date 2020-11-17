@@ -1,5 +1,4 @@
 import logging
-import typer
 
 from pathlib import Path
 from typing import Optional
@@ -15,10 +14,7 @@ log = logging.getLogger()
 settings = Settings()
 log.debug(f'Settings: {settings}')
 
-app = typer.Typer()
 
-
-@app.command()
 def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, region: Region = Region.european_union,
                    face: bool = True, license_plate: bool = True, ips_url: str = settings.ips_url_default,
                    out_path: Optional[str] = None, skip_existing: bool = True, save_metadata: bool = True):
@@ -62,7 +58,3 @@ def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, r
         metadata_out_path = out_path.parent.joinpath(out_path.stem + '.txt')
         with open(str(metadata_out_path), 'w') as file:
             file.write(metadata.json())
-
-
-if __name__ == '__main__':
-    app()

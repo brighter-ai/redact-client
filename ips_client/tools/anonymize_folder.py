@@ -3,7 +3,6 @@ import functools
 import logging
 import os
 import tqdm
-import typer
 
 from enum import Enum
 from pathlib import Path
@@ -23,8 +22,6 @@ log = logging.getLogger()
 settings = Settings()
 log.debug(f'Settings: {settings}')
 
-app = typer.Typer()
-
 
 class InputTypes(str, Enum):
     images: str = 'images'
@@ -32,7 +29,6 @@ class InputTypes(str, Enum):
     archives: str = 'archives'
 
 
-@app.command()
 def anonymize_folder(in_dir: str, out_dir: str, input_type: InputTypes, out_type: OutputType, service: ServiceType,
                      region: Region = Region.european_union, face: bool = True, license_plate: bool = True,
                      ips_url: str = settings.ips_url_default, n_parallel_jobs: int = 5, save_metadata: bool = True,
@@ -105,7 +101,3 @@ def _anonymize_file_with_relative_path(relative_file_path: str, base_dir_in: str
                    out_path=out_path,
                    skip_existing=skip_existing,
                    save_metadata=save_metadata)
-
-
-if __name__ == '__main__':
-    app()
