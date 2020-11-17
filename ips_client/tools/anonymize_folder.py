@@ -33,12 +33,6 @@ def anonymize_folder(in_dir: str, out_dir: str, input_type: InputTypes, out_type
                      region: Region = Region.european_union, face: bool = True, license_plate: bool = True,
                      ips_url: str = settings.ips_url_default, n_parallel_jobs: int = 5, save_metadata: bool = True,
                      skip_existing: bool = True):
-    """
-    Anonymize files from a folder (including subdirectories) and store the result in a different folder.
-
-    Example usage:
-    python -m scripts.anonymize_folder ~/input ~/input_anonymized/ images images dnat --ips-url 127.0.0.1:8787
-    """
 
     # Normalize paths, e.g.: '~/..' -> '/home'
     in_dir = normalize_path(in_dir)
@@ -50,20 +44,10 @@ def anonymize_folder(in_dir: str, out_dir: str, input_type: InputTypes, out_type
         os.makedirs(out_dir)
 
     # List of relative input paths (only img/vid)
-    file_paths: List[str] = files_in_dir(dir=in_dir)
-
-    if input_type == InputTypes.images:
-        file_paths = [fp for fp in file_paths if is_image(fp)]
-    elif input_type == InputTypes.videos:
-        file_paths = [fp for fp in file_paths if is_video(fp)]
-    elif input_type == InputTypes.archives:
-        file_paths = [fp for fp in file_paths if is_archive(fp)]
-    else:
-        raise ValueError(f'Unsupported input type {input_type}.')
-
-    relative_file_paths = [Path(fp).relative_to(in_dir) for fp in file_paths]
+    relative_file_paths = _get_relative_file_paths(in_dir=in_dir, input_type=input_type)
     log.info(f'Found {len(relative_file_paths)} {input_type.value} to process')
 
+    # assemble job arguments
     job_args = JobArguments(region=region, face=face, license_plate=license_plate)
 
     # Fix input arguments to make method mappable
@@ -81,6 +65,28 @@ def anonymize_folder(in_dir: str, out_dir: str, input_type: InputTypes, out_type
     log.info(f'Starting {n_parallel_jobs} parallel jobs to anonymize files ...')
     with concurrent.futures.ThreadPoolExecutor(max_workers=n_parallel_jobs) as executor:
         list(tqdm.tqdm(executor.map(thread_function, relative_file_paths), total=len(relative_file_paths)))
+
+
+def _get_relative_file_paths(in_dir: str, input_type: InputTypes) -> List[str]:
+    """
+    Return a list of all files in in_dir. But only relative to in_dir itself.
+
+    Example: in_dir/sub/file[1-3].foo -> [sub/file1.foo, sub/file2.foo, sub/file3.foo]
+    """
+
+    file_paths: List[str] = files_in_dir(dir=in_dir)
+
+    if input_type == InputTypes.images:
+        file_paths = [fp for fp in file_paths if is_image(fp)]
+    elif input_type == InputTypes.videos:
+        file_paths = [fp for fp in file_paths if is_video(fp)]
+    elif input_type == InputTypes.archives:
+        file_paths = [fp for fp in file_paths if is_archive(fp)]
+    else:
+        raise ValueError(f'Unsupported input type {input_type}.')
+
+    relative_file_paths = [Path(fp).relative_to(in_dir) for fp in file_paths]
+    return relative_file_paths
 
 
 def _anonymize_file_with_relative_path(relative_file_path: str, base_dir_in: str, base_dir_out: str,

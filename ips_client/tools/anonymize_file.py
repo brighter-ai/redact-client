@@ -1,11 +1,12 @@
 import logging
 
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 from ips_client.data_models import Region
 from ips_client.job import IPSJob, JobArguments, ServiceType, OutputType
 from ips_client.settings import Settings
+from ips_client.tools.utils import normalize_path
 
 
 logging.basicConfig(level=logging.INFO)
@@ -19,42 +20,51 @@ def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, r
                    face: bool = True, license_plate: bool = True, ips_url: str = settings.ips_url_default,
                    out_path: Optional[str] = None, skip_existing: bool = True, save_metadata: bool = True):
     """
-    Example usage:
-    python -m scripts.anonymize_file input.jpg images blur --ips-url 127.0.0.1:8787
-
-    If no out_path is given, <input_filename_anonymized.ext> will be used.
+    If no out_path is given, <input_filename_anonymized> will be used.
     """
 
-    file_path = Path(file_path)
-
-    if not out_path:
-        out_path = Path(file_path.parent).joinpath(f'{file_path.stem}_anonymized{file_path.suffix}')
-    else:
-        out_path = Path(out_path)
-
+    # input and output path
+    file_path = normalize_path(file_path)
+    out_path = _get_out_path(out_path=out_path, file_path=file_path)
     log.info(f'Anonymize {file_path}, writing result to {out_path} ...')
 
+    # skip?
     if skip_existing and Path(out_path).exists():
         log.info(f'Skipping because output already exists: {out_path}')
         return
 
+    # assemble job arguments
     job_args = JobArguments(region=region, face=face, license_plate=license_plate)
     log.info(f'Job arguments: {job_args}')
 
+    # anonymize
     with open(file_path, 'rb') as file:
         job: IPSJob = IPSJob.start_new(file=file,
                                        service=service,
                                        out_type=out_type,
                                        job_args=job_args,
                                        ips_url=ips_url)
-
     result = job.wait_until_finished().download_result()
 
-    with open(str(out_path), 'wb') as file:
+    # write result
+    with open(out_path, 'wb') as file:
         file.write(result.content)
 
+    # write metadata
     if save_metadata:
-        metadata = job.get_metadata()
-        metadata_out_path = out_path.parent.joinpath(out_path.stem + '.txt')
-        with open(str(metadata_out_path), 'w') as file:
-            file.write(metadata.json())
+        with open(_get_metadata_path(out_path), 'w') as f:
+            f.write(job.get_metadata().json())
+
+
+def _get_out_path(out_path: Union[str, Path], file_path: str) -> str:
+    if not out_path:
+        file_path = Path(file_path)
+        return normalize_path(
+            Path(file_path.parent).joinpath(f'{file_path.stem}_anonymized{file_path.suffix}')
+        )
+    return normalize_path(out_path)
+
+
+def _get_metadata_path(out_path: str) -> str:
+    out_path = Path(out_path)
+    return str(out_path.parent.joinpath(out_path.stem + '.txt'))
