@@ -13,6 +13,7 @@ class ServiceType(str, Enum):
 class OutputType(str, Enum):
     images = 'images'
     videos = 'videos'
+    archives = 'archives'
 
 
 class Region(str, Enum):
@@ -63,8 +64,9 @@ class JobStatus(BaseModel):
 
 
 class JobMetadata(BaseModel):
-    faces: List
-    license_plates: List
+    faces: Optional[List]
+    license_plates: Optional[List]
+    frames: Optional[List]
 
 
 class IPSResponseError(Exception):
