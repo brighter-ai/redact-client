@@ -90,6 +90,7 @@ def anonymize_folder(in_dir: str, out_dir: str, input_type: InputTypes, out_type
 def _anonymize_file_with_relative_path(relative_file_path: str, base_dir_in: str, base_dir_out: str,
                                        service: ServiceType, out_type: OutputType, job_args: JobArguments,
                                        ips_url: str, save_metadata: bool = False, skip_existing=True):
+    """This is an internal helper function to be run by a thread."""
 
     in_path = Path(base_dir_in).joinpath(relative_file_path)
     out_path = Path(base_dir_out).joinpath(relative_file_path)
