@@ -1,6 +1,8 @@
 import pathlib
 import pytest
+import shutil
 
+from pathlib import Path
 from typing import IO
 
 from ips_client.data_models import ServiceType, OutputType
@@ -52,3 +54,15 @@ def job(service, ips_url, test_image) -> IPSJob:
                             service=service,
                             out_type=OutputType.images,
                             ips_url=ips_url)
+
+
+@pytest.fixture
+def images_path(tmp_path_factory, test_image) -> Path:
+    """Return a temporary directory that has been prepared with some image files (img_0.jpg, img_1.jpg, ...)."""
+    tmp_img_path = tmp_path_factory.mktemp('imgs_dir')
+    for i in range(3):
+        output_path = tmp_img_path.joinpath(f'img_{i}.jpg')
+        test_image.seek(0)
+        with open(str(output_path), 'wb') as f:
+            shutil.copyfileobj(fsrc=test_image, fdst=f)
+    return tmp_img_path

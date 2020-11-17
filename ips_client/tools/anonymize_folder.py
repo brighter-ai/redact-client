@@ -13,8 +13,8 @@ from ips_client.data_models import Region
 from ips_client.job import JobArguments, ServiceType, OutputType
 from ips_client.settings import Settings
 
-from scripts.utils import files_in_dir, is_image, is_video, is_archive, normalize_path
-from scripts.anonymize_file import anonymize_file
+from tools.utils import files_in_dir, is_image, is_video, is_archive, normalize_path
+from tools.anonymize_file import anonymize_file
 
 
 logging.basicConfig(level=logging.INFO)
@@ -35,7 +35,7 @@ class InputTypes(str, Enum):
 @app.command()
 def anonymize_folder(in_dir: str, out_dir: str, input_type: InputTypes, out_type: OutputType, service: ServiceType,
                      region: Region = Region.european_union, face: bool = True, license_plate: bool = True,
-                     ips_url: str = settings.ips_url_default, n_parallel_jobs: int = 5, save_metadata: bool = False,
+                     ips_url: str = settings.ips_url_default, n_parallel_jobs: int = 5, save_metadata: bool = True,
                      skip_existing: bool = True):
     """
     Anonymize files from a folder (including subdirectories) and store the result in a different folder.

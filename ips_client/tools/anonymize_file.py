@@ -21,7 +21,7 @@ app = typer.Typer()
 @app.command()
 def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, region: Region = Region.european_union,
                    face: bool = True, license_plate: bool = True, ips_url: str = settings.ips_url_default,
-                   out_path: Optional[str] = None, skip_existing: bool = True, save_metadata: bool = False):
+                   out_path: Optional[str] = None, skip_existing: bool = True, save_metadata: bool = True):
     """
     Example usage:
     python -m scripts.anonymize_file input.jpg images blur --ips-url 127.0.0.1:8787

@@ -11,6 +11,22 @@ with open('obama.jpg', 'rb') as file:
 result: bytes = job.wait_until_finished().download_result()
 ```
 
+## Batch Anonymization
+
+In `ips_client.tools` you can find a script for batch anonymization of a whole folder: 
+
+```python
+from ips_client.tools.anonymize_folder import anonymize_folder
+
+anonymize_folder(in_dir='~/in_dir', 
+                 out_dir='~/out_dir', 
+                 input_type='images',
+                 out_type='images',
+                 service='dnat',
+                 n_parallel_jobs=5,
+                 save_metadata=True)
+```
+
 ## Development
 
 `ips_client` can be build as Pip package with [Flit](https://flit.readthedocs.io/). This way you can **build and install it locally**:
