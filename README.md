@@ -39,7 +39,7 @@ python -m scripts.anonymize_folder ~/input_dir ~/output_dir images images dnat -
 
 `ips_client` can be build as Pip package with [Flit](https://flit.readthedocs.io/). This way you can **build and install it locally**:
 
-```shel
+```shell
 cd ips-client
 flit build
 pip install .
