@@ -48,7 +48,7 @@ pip install .
 Alternatively, you can **install a specific version from GitHub**:
 
 ```shell
-git+ssh://git@github.com/brighter-ai/ips-client.git@v3.0.1
+git+ssh://git@github.com/brighter-ai/ips-client.git@v3.6.0
 ```
 
 In any case, you should bump `ips_client.__init__.__version__` when updating something.
