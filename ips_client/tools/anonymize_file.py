@@ -19,7 +19,8 @@ log.debug(f'Settings: {settings}')
 
 def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, region: Region = Region.european_union,
                    face: bool = True, license_plate: bool = True, ips_url: str = settings.ips_url_default,
-                   out_path: Optional[str] = None, skip_existing: bool = True, save_metadata: bool = True):
+                   out_path: Optional[str] = None, skip_existing: bool = True, save_metadata: bool = True,
+                   auto_delete_job: bool = True):
     """
     If no out_path is given, <input_filename_anonymized> will be used.
     """
@@ -58,6 +59,10 @@ def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, r
     if save_metadata:
         with open(_get_metadata_path(out_path), 'w') as f:
             f.write(job.get_metadata().json())
+
+    # delete job
+    if auto_delete_job:
+        job.delete()
 
 
 def _get_out_path(out_path: Union[str, Path], file_path: str) -> str:
