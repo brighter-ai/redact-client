@@ -8,7 +8,7 @@ from enum import Enum
 from pathlib import Path
 from typing import List
 
-from ips_client.data_models import Region
+from ips_client.data_models import Region, IPSResponseError
 from ips_client.job import JobArguments, ServiceType, OutputType
 from ips_client.settings import Settings
 from ips_client.tools.utils import files_in_dir, is_image, is_video, is_archive, normalize_path
@@ -93,16 +93,20 @@ def _anonymize_file_with_relative_path(relative_file_path: str, base_dir_in: str
                                        ips_url: str, save_metadata: bool = False, skip_existing=True):
     """This is an internal helper function to be run by a thread."""
 
-    in_path = Path(base_dir_in).joinpath(relative_file_path)
-    out_path = Path(base_dir_out).joinpath(relative_file_path)
-
-    anonymize_file(file_path=in_path,
-                   out_type=out_type,
-                   service=service,
-                   region=job_args.region,
-                   face=job_args.face,
-                   license_plate=job_args.license_plate,
-                   ips_url=ips_url,
-                   out_path=out_path,
-                   skip_existing=skip_existing,
-                   save_metadata=save_metadata)
+    try:
+        in_path = Path(base_dir_in).joinpath(relative_file_path)
+        out_path = Path(base_dir_out).joinpath(relative_file_path)
+        anonymize_file(file_path=in_path,
+                       out_type=out_type,
+                       service=service,
+                       region=job_args.region,
+                       face=job_args.face,
+                       license_plate=job_args.license_plate,
+                       ips_url=ips_url,
+                       out_path=out_path,
+                       skip_existing=skip_existing,
+                       save_metadata=save_metadata)
+    except IPSResponseError as e:
+        print(e)
+    except Exception as e:
+        print(e)
