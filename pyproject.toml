@@ -8,4 +8,4 @@ author = "brighter AI"
 author-email = "dev@brighter.ai"
 home-page = "https://github.com/brighter-ai"
 requires-python = ">=3.6"
-requires = ["pydantic"]
+requires = ["httpx~=0.16.1", "pydantic~=1.6.1", "requests~=2.24.0"]
