@@ -37,7 +37,7 @@ class IPSRequests:
 
         files = {'file': (file_name, file)}
 
-        url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}')
+        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}')
 
         response = requests.post(url=url,
                                  files=files,
@@ -51,7 +51,7 @@ class IPSRequests:
 
     def get_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> JobResult:
 
-        url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}')
+        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
         response = requests.get(url, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
@@ -62,7 +62,7 @@ class IPSRequests:
 
     def get_status(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
-        url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}/status')
+        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/status')
         response = requests.get(url, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
@@ -72,7 +72,7 @@ class IPSRequests:
 
     def get_metadata(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
-        url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}/metadata')
+        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/metadata')
         response = requests.get(url, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
@@ -82,7 +82,7 @@ class IPSRequests:
 
     def delete_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
-        url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}')
+        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
         response = requests.delete(url, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
@@ -92,7 +92,7 @@ class IPSRequests:
 
     def get_error(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
-        url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}/error')
+        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/error')
         response = requests.get(url, timeout=settings.requests_timeout)
 
         if response.status_code != 200:

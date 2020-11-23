@@ -37,7 +37,7 @@ class IPSAsyncRequests:
 
         files = {'file': (file_name, file)}
 
-        url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}')
+        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}')
 
         query_args = {k: str(v) for k, v in job_args.dict(exclude_none=True).items()}
 
@@ -53,7 +53,7 @@ class IPSAsyncRequests:
 
     async def get_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> JobResult:
 
-        url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}')
+        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
 
         with httpx.AsyncClient() as client:
             response = await client.get(url, timeout=settings.requests_timeout)
@@ -66,7 +66,7 @@ class IPSAsyncRequests:
 
     async def get_status(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
-        url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}/status')
+        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/status')
 
         with httpx.AsyncClient() as client:
             response = await client.get(url, timeout=settings.requests_timeout)
@@ -78,7 +78,7 @@ class IPSAsyncRequests:
 
     async def get_metadata(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
-        url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}/metadata')
+        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/metadata')
 
         with httpx.AsyncClient() as client:
             response = await client.get(url, timeout=settings.requests_timeout)
@@ -90,7 +90,7 @@ class IPSAsyncRequests:
 
     async def delete_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
-        url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}')
+        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
 
         with httpx.AsyncClient() as client:
             response = await client.delete(url, timeout=settings.requests_timeout)
@@ -102,7 +102,7 @@ class IPSAsyncRequests:
 
     async def get_error(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
-        url = urllib.parse.urljoin(self.ips_url, f'/{service}/{self.API_VERSION}/{out_type}/{output_id}/error')
+        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/error')
 
         with httpx.AsyncClient() as client:
             response = client.get(url, timeout=settings.requests_timeout)
