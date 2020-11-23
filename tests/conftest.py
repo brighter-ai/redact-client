@@ -57,10 +57,10 @@ def job(service, ips_url, test_image) -> IPSJob:
 
 
 @pytest.fixture
-def images_path(tmp_path_factory, test_image) -> Path:
+def images_path(tmp_path_factory, test_image, n_images: int = 3) -> Path:
     """Return a temporary directory that has been prepared with some image files (img_0.jpg, img_1.jpg, ...)."""
     tmp_img_path = tmp_path_factory.mktemp('imgs_dir')
-    for i in range(3):
+    for i in range(n_images):
         output_path = tmp_img_path.joinpath(f'img_{i}.jpg')
         test_image.seek(0)
         with open(str(output_path), 'wb') as f:

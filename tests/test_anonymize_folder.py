@@ -22,7 +22,7 @@ class TestAnonymizeFolder:
                          save_metadata=True,
                          ips_url=ips_url)
 
-        # THEN all images the out_dir
+        # THEN all input images are anonymized in the output dir
         files_in_in_dir = os.listdir(str(images_path))
         files_in_out_dir = os.listdir(str(output_path))
         for file in files_in_in_dir:

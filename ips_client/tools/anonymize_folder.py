@@ -8,7 +8,7 @@ from enum import Enum
 from pathlib import Path
 from typing import List
 
-from ips_client.data_models import Region, IPSResponseError
+from ips_client.data_models import IPSResponseError
 from ips_client.job import JobArguments, ServiceType, OutputType
 from ips_client.settings import Settings
 from ips_client.tools.utils import files_in_dir, is_image, is_video, is_archive, normalize_path
@@ -29,9 +29,9 @@ class InputTypes(str, Enum):
 
 
 def anonymize_folder(in_dir: str, out_dir: str, input_type: InputTypes, out_type: OutputType, service: ServiceType,
-                     region: Region = Region.european_union, face: bool = True, license_plate: bool = True,
-                     ips_url: str = settings.ips_url_default, n_parallel_jobs: int = 5, save_metadata: bool = True,
-                     skip_existing: bool = True, auto_delete_job: bool = True):
+                     job_args: JobArguments = JobArguments(), ips_url: str = settings.ips_url_default,
+                     n_parallel_jobs: int = 5, save_metadata: bool = True, skip_existing: bool = True,
+                     auto_delete_job: bool = True):
 
     # Normalize paths, e.g.: '~/..' -> '/home'
     in_dir = normalize_path(in_dir)
@@ -45,9 +45,6 @@ def anonymize_folder(in_dir: str, out_dir: str, input_type: InputTypes, out_type
     # List of relative input paths (only img/vid)
     relative_file_paths = _get_relative_file_paths(in_dir=in_dir, input_type=input_type)
     log.info(f'Found {len(relative_file_paths)} {input_type.value} to process')
-
-    # assemble job arguments
-    job_args = JobArguments(region=region, face=face, license_plate=license_plate)
 
     # Fix input arguments to make method mappable
     thread_function = functools.partial(_anonymize_file_with_relative_path,
@@ -101,9 +98,7 @@ def _anonymize_file_with_relative_path(relative_file_path: str, base_dir_in: str
         anonymize_file(file_path=in_path,
                        out_type=out_type,
                        service=service,
-                       region=job_args.region,
-                       face=job_args.face,
-                       license_plate=job_args.license_plate,
+                       job_args=job_args,
                        ips_url=ips_url,
                        out_path=out_path,
                        skip_existing=skip_existing,
