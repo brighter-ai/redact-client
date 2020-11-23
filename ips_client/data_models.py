@@ -64,6 +64,7 @@ class JobStatus(BaseModel):
 
 
 class JobMetadata(BaseModel):
+    # TODO Model the full data hierarchy
     faces: Optional[List]
     license_plates: Optional[List]
     frames: Optional[List]
