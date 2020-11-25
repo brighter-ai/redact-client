@@ -29,9 +29,9 @@ anonymize_folder(in_dir='~/in_dir',
 
 The function can also be called directly from the command line. For instance:
 
-```shel
-python -m scripts.anonymize_folder --help
-python -m scripts.anonymize_folder ~/input_dir ~/output_dir images images dnat --ips-url 127.0.0.1:8787
+```shell
+python -m ips_client --help
+python -m ips_client anonymize-folfer ~/input_dir ~/output_dir images images dnat --ips-url 127.0.0.1:8787
 ```
 
 
