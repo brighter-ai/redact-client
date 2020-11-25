@@ -35,7 +35,7 @@ def anonymize_folder(in_dir: str, out_dir: str, input_type: InputTypes, out_type
 
 
 def main():
-    app()
+    app(prog_name='ips_client')
 
 
 if __name__ == '__main__':
