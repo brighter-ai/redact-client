@@ -2,6 +2,10 @@
 requires = ["flit_core >=2,<4"]
 build-backend = "flit_core.buildapi"
 
+[tool.flit.scripts]
+ips_anon_file = "ips_client.__main__:anonymize_file_entry_point"
+ips_anon_folder = "ips_client.__main__:anonymize_folder_entry_point"
+
 [tool.flit.metadata]
 module = "ips_client"
 author = "brighter AI"

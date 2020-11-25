@@ -8,11 +8,9 @@ from ips_client.tools.anonymize_file import anonymize_file as anon_file
 from ips_client.tools.anonymize_folder import InputTypes, anonymize_folder as anon_folder
 
 
-app = typer.Typer()
 settings = Settings()
 
 
-@app.command()
 def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, region: Region = Region.european_union,
                    face: bool = True, license_plate: bool = True, ips_url: str = settings.ips_url_default,
                    out_path: Optional[str] = None, skip_existing: bool = True, save_metadata: bool = True,
@@ -23,7 +21,13 @@ def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, r
               auto_delete_job=auto_delete_job)
 
 
-@app.command()
+def anonymize_file_entry_point():
+    """Entry point for ips_anon_file script as defined in 'pyproject.toml'."""
+    app = typer.Typer()
+    app.command()(anonymize_file)
+    app(prog_name='ips_anon_file')
+
+
 def anonymize_folder(in_dir: str, out_dir: str, input_type: InputTypes, out_type: OutputType, service: ServiceType,
                      region: Region = Region.european_union, face: bool = True, license_plate: bool = True,
                      ips_url: str = settings.ips_url_default, n_parallel_jobs: int = 5, save_metadata: bool = True,
@@ -34,7 +38,18 @@ def anonymize_folder(in_dir: str, out_dir: str, input_type: InputTypes, out_type
                 skip_existing=skip_existing, auto_delete_job=auto_delete_job)
 
 
+def anonymize_folder_entry_point():
+    """Entry point for ips_anon_folder script as defined in 'pyproject.toml'."""
+    app = typer.Typer()
+    app.command()(anonymize_folder)
+    app(prog_name='ips_anon_folder')
+
+
 def main():
+    """Package-wide entry point for when 'python -m ips_client' is called"""
+    app = typer.Typer()
+    app.command()(anonymize_file)  # decorate functions with @app.command()
+    app.command()(anonymize_folder)
     app(prog_name='ips_client')
 
 
