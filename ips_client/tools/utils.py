@@ -8,11 +8,11 @@ IMG_EXTENSIONS = ['jpeg', 'jpg', 'bmp', 'png']
 VID_EXTENSIONS = ['mp4', 'avi', 'mov', 'mkv', 'ts', 'webm']
 
 
-def normalize_path(path: str) -> str:
-    return str(Path(path).expanduser().resolve())
+def normalize_path(path: str) -> Path:
+    return Path(path).expanduser().resolve()
 
 
-def files_in_dir(dir: str, recursive=True, sort=False) -> List[str]:
+def files_in_dir(dir: Path, recursive=True, sort=False) -> List[str]:
     """
     Iterates recursively through all files in all subfolders.
     """
@@ -56,7 +56,7 @@ def is_video(file_path: str) -> bool:
     return file_ext in VID_EXTENSIONS
 
 
-def archives_in_dir(dir: str, recursive=True, sort=False):
+def archives_in_dir(dir: Path, recursive=True, sort=False):
     """
     Iterates recursively over all archives in all subfolders.
     """
@@ -66,7 +66,7 @@ def archives_in_dir(dir: str, recursive=True, sort=False):
             yield file
 
 
-def images_in_dir(dir: str, recursive=True, sort=False):
+def images_in_dir(dir: Path, recursive=True, sort=False):
     """
     Iterates recursively over all images in all subfolders.
     """
@@ -76,7 +76,7 @@ def images_in_dir(dir: str, recursive=True, sort=False):
             yield file
 
 
-def videos_in_dir(dir: str, recursive=True, sort=False):
+def videos_in_dir(dir: Path, recursive=True, sort=False):
     """
     Iterates recursively over all videos in all subfolders.
     """
