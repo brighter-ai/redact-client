@@ -66,3 +66,10 @@ def images_path(tmp_path_factory, test_image, n_images: int = 3) -> Path:
         with open(str(output_path), 'wb') as f:
             shutil.copyfileobj(fsrc=test_image, fdst=f)
     return tmp_img_path
+
+
+@pytest.fixture
+def ips_client_venv(venv):
+    """Prepare a virtual environment with 'ips_client' package installed."""
+    venv.install(pkg_name='../', upgrade=True)
+    return venv
