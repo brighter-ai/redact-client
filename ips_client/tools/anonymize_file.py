@@ -27,15 +27,15 @@ def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, j
     file_path = normalize_path(file_path)
     out_path = _get_out_path(out_path=out_path, file_path=file_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    log.info(f'Anonymize {file_path}, writing result to {out_path} ...')
+    log.debug(f'Anonymize {file_path}, writing result to {out_path} ...')
 
     # skip?
     if skip_existing and Path(out_path).exists():
-        log.info(f'Skipping because output already exists: {out_path}')
+        log.debug(f'Skipping because output already exists: {out_path}')
         return
 
     # anonymize
-    log.info(f'Job arguments: {job_args}')
+    log.debug(f'Job arguments: {job_args}')
     try:
         with open(file_path, 'rb') as file:
             job: IPSJob = IPSJob.start_new(file=file,
