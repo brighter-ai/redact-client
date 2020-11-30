@@ -105,6 +105,6 @@ def _anonymize_file_with_relative_path(relative_file_path: str, base_dir_in: str
                        save_metadata=save_metadata,
                        auto_delete_job=auto_delete_job)
     except IPSResponseError as e:
-        print(e)
+        log.error(f'Error while anonymizing {relative_file_path}: {str(e)}')
     except Exception as e:
-        print(e)
+        log.error(f'Error while anonymizing {relative_file_path}: {str(e)}')
