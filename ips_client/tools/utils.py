@@ -1,7 +1,9 @@
-from pathlib import Path
-from typing import List
+import glob
 import logging
 import tqdm
+
+from pathlib import Path
+from typing import List
 
 ARCHIVE_EXTENSIONS = ['tar']
 IMG_EXTENSIONS = ['jpeg', 'jpg', 'bmp', 'png']
@@ -20,11 +22,13 @@ def files_in_dir(dir: Path, recursive=True, sort=False) -> List[str]:
     path = Path(dir)
 
     if recursive:
-        file_list = list(path.rglob('*'))
+        search_path = str(path.joinpath('**'))
+        file_list = glob.glob(search_path, recursive=True)
     else:
-        file_list = list(path.glob('*'))
+        search_path = str(path.joinpath('*'))
+        file_list = glob.glob(search_path, recursive=False)
 
-    file_list = [str(f) for f in file_list if f.is_file()]
+    file_list = [f for f in file_list if Path(f).is_file()]
 
     if sort:
         file_list.sort()
