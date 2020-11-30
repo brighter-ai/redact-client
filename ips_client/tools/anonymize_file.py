@@ -26,6 +26,7 @@ def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, j
     # input and output path
     file_path = normalize_path(file_path)
     out_path = _get_out_path(out_path=out_path, file_path=file_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     log.info(f'Anonymize {file_path}, writing result to {out_path} ...')
 
     # skip?
@@ -60,7 +61,7 @@ def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, j
         job.delete()
 
 
-def _get_out_path(out_path: Union[str, Path], file_path: str) -> str:
+def _get_out_path(out_path: Union[str, Path], file_path: Path) -> Path:
     if out_path:
         return normalize_path(out_path)
     file_path = Path(file_path)
@@ -68,6 +69,5 @@ def _get_out_path(out_path: Union[str, Path], file_path: str) -> str:
     return normalize_path(anonymized_path)
 
 
-def _get_metadata_path(out_path: str) -> str:
-    out_path = Path(out_path)
-    return str(out_path.parent.joinpath(out_path.stem + '.txt'))
+def _get_metadata_path(out_path: Path) -> Path:
+    return out_path.parent.joinpath(out_path.stem + '.txt')

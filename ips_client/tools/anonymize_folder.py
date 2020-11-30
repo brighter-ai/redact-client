@@ -64,7 +64,7 @@ def anonymize_folder(in_dir: str, out_dir: str, input_type: InputTypes, out_type
         list(tqdm.tqdm(executor.map(thread_function, relative_file_paths), total=len(relative_file_paths)))
 
 
-def _get_relative_file_paths(in_dir: str, input_type: InputTypes) -> List[str]:
+def _get_relative_file_paths(in_dir: Path, input_type: InputTypes) -> List[str]:
     """
     Return a list of all files in in_dir. But only relative to in_dir itself.
 

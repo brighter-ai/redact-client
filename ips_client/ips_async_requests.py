@@ -12,7 +12,7 @@ from ips_client.utils import normalize_url, get_io_filename
 
 settings = Settings()
 
-logging.basicConfig(level=settings.log_level)
+logging.basicConfig(level=settings.log_level.upper())
 log = logging.getLogger('ips-requests')
 
 
