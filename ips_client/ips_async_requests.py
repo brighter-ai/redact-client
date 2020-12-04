@@ -56,7 +56,7 @@ class IPSAsyncRequests:
         url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
 
         with httpx.AsyncClient() as client:
-            response = await client.get(url, timeout=settings.requests_timeout)
+            response = await client.get(url, timeout=settings.requests_timeout_files)
 
         if response.status_code != 200:
             raise IPSResponseError(response=response, msg='Error downloading job result')
