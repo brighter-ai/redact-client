@@ -66,7 +66,7 @@ def _parallel_map(func, items: List, n_parallel_jobs=1):
     if n_parallel_jobs <= 1:
         # Anonymize one item at a time. In principle, the ThreadPoolExecutor could do this with one worker only. But
         # this ways we don't risk losing exceptions in the thread.
-        tqdm.tqdm(map(func, items), total=len(items))
+        list(tqdm.tqdm(map(func, items), total=len(items)))
     else:
         # Anonymize files concurrently
         with concurrent.futures.ThreadPoolExecutor(max_workers=n_parallel_jobs) as executor:
