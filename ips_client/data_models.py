@@ -60,6 +60,8 @@ class JobStatus(BaseModel):
     start_timestamp: Optional[float]
     end_timestamp: Optional[float]
     estimated_time_to_completion: Optional[float] = None
+    start_timestamp: Optional[float] = None
+    end_timestamp: Optional[float] = None
 
     def is_running(self):
         return self.state in [JobState.active, JobState.pending]
