@@ -70,13 +70,13 @@ class IPSRequests:
 
         return response.json()
 
-    def get_metadata(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
+    def get_labels(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
-        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/metadata')
+        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/labels')
         response = requests.get(url, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
-            raise IPSResponseError(response=response, msg='Error getting job metadata')
+            raise IPSResponseError(response=response, msg='Error getting labels')
 
         return response.json()
 

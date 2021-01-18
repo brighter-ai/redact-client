@@ -20,7 +20,7 @@ class TestAnonymizeFolder:
                          input_type=InputTypes.images,
                          out_type=OutputType.images,
                          service=ServiceType.blur,
-                         save_metadata=True,
+                         save_labels=True,
                          ips_url=ips_url,
                          n_parallel_jobs=n_parallel_jobs)
 
@@ -30,10 +30,10 @@ class TestAnonymizeFolder:
         for file in files_in_in_dir:
             assert file in files_in_out_dir
 
-        # AND all metadata text-files are found in out_dir
+        # AND all label text-files are found in out_dir
         for file in files_in_in_dir:
-            metadata_filename = self._replace_file_ext(file_path=file, new_ext='.txt')
-            assert metadata_filename in files_in_out_dir
+            labels_filename = self._replace_file_ext(file_path=file, new_ext='.txt')
+            assert labels_filename in files_in_out_dir
 
         # AND no other files have been created
         assert len(files_in_out_dir) == 2 * len(files_in_in_dir)

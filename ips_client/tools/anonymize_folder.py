@@ -30,7 +30,7 @@ class InputTypes(str, Enum):
 
 def anonymize_folder(in_dir: str, out_dir: str, input_type: InputTypes, out_type: OutputType, service: ServiceType,
                      job_args: JobArguments = JobArguments(), ips_url: str = settings.ips_url_default,
-                     n_parallel_jobs: int = 5, save_metadata: bool = True, skip_existing: bool = True,
+                     n_parallel_jobs: int = 5, save_labels: bool = True, skip_existing: bool = True,
                      auto_delete_job: bool = True):
 
     # Normalize paths, e.g.: '~/..' -> '/home'
@@ -54,7 +54,7 @@ def anonymize_folder(in_dir: str, out_dir: str, input_type: InputTypes, out_type
                                         out_type=out_type,
                                         job_args=job_args,
                                         ips_url=ips_url,
-                                        save_metadata=save_metadata,
+                                        save_labels=save_labels,
                                         skip_existing=skip_existing,
                                         auto_delete_job=auto_delete_job)
 
@@ -88,7 +88,7 @@ def _get_relative_file_paths(in_dir: Path, input_type: InputTypes) -> List[str]:
 
 def _anonymize_file_with_relative_path(relative_file_path: str, base_dir_in: str, base_dir_out: str,
                                        service: ServiceType, out_type: OutputType, job_args: JobArguments,
-                                       ips_url: str, save_metadata: bool = False, skip_existing=True,
+                                       ips_url: str, save_labels: bool = False, skip_existing=True,
                                        auto_delete_job: bool = True):
     """This is an internal helper function to be run by a thread."""
 
@@ -102,7 +102,7 @@ def _anonymize_file_with_relative_path(relative_file_path: str, base_dir_in: str
                        ips_url=ips_url,
                        out_path=out_path,
                        skip_existing=skip_existing,
-                       save_metadata=save_metadata,
+                       save_labels=save_labels,
                        auto_delete_job=auto_delete_job)
     except IPSResponseError as e:
         print(e)
