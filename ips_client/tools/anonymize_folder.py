@@ -58,10 +58,19 @@ def anonymize_folder(in_dir: str, out_dir: str, input_type: InputTypes, out_type
                                         skip_existing=skip_existing,
                                         auto_delete_job=auto_delete_job)
 
-    # Anonymize files concurrently
     log.info(f'Starting {n_parallel_jobs} parallel jobs to anonymize files ...')
-    with concurrent.futures.ThreadPoolExecutor(max_workers=n_parallel_jobs) as executor:
-        list(tqdm.tqdm(executor.map(thread_function, relative_file_paths), total=len(relative_file_paths)))
+    _parallel_map(func=thread_function, items=relative_file_paths, n_parallel_jobs=n_parallel_jobs)
+
+
+def _parallel_map(func, items: List, n_parallel_jobs=1):
+    if n_parallel_jobs <= 1:
+        # Anonymize one item at a time. In principle, the ThreadPoolExecutor could do this with one worker only. But
+        # this ways we don't risk losing exceptions in the thread.
+        list(tqdm.tqdm(map(func, items), total=len(items)))
+    else:
+        # Anonymize files concurrently
+        with concurrent.futures.ThreadPoolExecutor(max_workers=n_parallel_jobs) as executor:
+            list(tqdm.tqdm(executor.map(func, items), total=len(items)))
 
 
 def _get_relative_file_paths(in_dir: Path, input_type: InputTypes) -> List[str]:
@@ -105,6 +114,6 @@ def _anonymize_file_with_relative_path(relative_file_path: str, base_dir_in: str
                        save_metadata=save_metadata,
                        auto_delete_job=auto_delete_job)
     except IPSResponseError as e:
-        print(e)
+        log.error(f'Error while anonymizing {relative_file_path}: {str(e)}')
     except Exception as e:
-        print(e)
+        log.error(f'Error while anonymizing {relative_file_path}: {str(e)}')
