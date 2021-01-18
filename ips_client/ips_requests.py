@@ -42,7 +42,7 @@ class IPSRequests:
         response = requests.post(url=url,
                                  files=files,
                                  params=job_args.dict(),
-                                 timeout=settings.requests_timeout)
+                                 timeout=settings.requests_timeout_files)
 
         if response.status_code != 200:
             raise IPSResponseError(response=response, msg=f'Error posting job')
@@ -52,7 +52,7 @@ class IPSRequests:
     def get_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> JobResult:
 
         url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
-        response = requests.get(url, timeout=settings.requests_timeout)
+        response = requests.get(url, timeout=settings.requests_timeout_files)
 
         if response.status_code != 200:
             raise IPSResponseError(response=response, msg='Error downloading job result')

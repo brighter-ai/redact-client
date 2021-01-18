@@ -41,7 +41,7 @@ class TestIPSJob:
         assert len(job_labels.faces) == 1
         assert len(job_labels.faces[0]['boundingBox']) == 4
 
-    @pytest.mark.timeout(5)
+    @pytest.mark.timeout(10)
     def test_delete(self, job):
 
         # GIVEN an IPS job
