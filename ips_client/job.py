@@ -4,7 +4,7 @@ from copy import copy
 from typing import IO
 from uuid import UUID
 
-from ips_client.data_models import ServiceType, OutputType, JobArguments, JobStatus, JobResult, JobMetadata
+from ips_client.data_models import ServiceType, OutputType, JobArguments, JobStatus, JobResult, JobLabels
 from ips_client.ips_requests import IPSRequests
 from ips_client.settings import Settings
 
@@ -47,11 +47,11 @@ class IPSJob:
                                             output_id=self.output_id)
         return JobStatus(**response_dict)
 
-    def get_metadata(self) -> JobMetadata:
-        response_dict = self.ips.get_metadata(service=self.service,
-                                              out_type=self.out_type,
-                                              output_id=self.output_id)
-        return JobMetadata(**response_dict)
+    def get_labels(self) -> JobLabels:
+        response_dict = self.ips.get_labels(service=self.service,
+                                            out_type=self.out_type,
+                                            output_id=self.output_id)
+        return JobLabels(**response_dict)
 
     def download_result(self) -> JobResult:
         return self.ips.get_output(service=self.service,

@@ -18,7 +18,7 @@ log.debug(f'Settings: {settings}')
 
 def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, job_args: JobArguments = JobArguments(),
                    ips_url: str = settings.ips_url_default, out_path: Optional[str] = None, skip_existing: bool = True,
-                   save_metadata: bool = True, auto_delete_job: bool = True):
+                   save_labels: bool = True, auto_delete_job: bool = True):
     """
     If no out_path is given, <input_filename_anonymized> will be used.
     """
@@ -51,10 +51,10 @@ def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, j
     with open(out_path, 'wb') as file:
         file.write(result.content)
 
-    # write metadata
-    if save_metadata:
-        with open(_get_metadata_path(out_path), 'w') as f:
-            f.write(job.get_metadata().json())
+    # write labels
+    if save_labels:
+        with open(_get_labels_path(out_path), 'w') as f:
+            f.write(job.get_labels().json())
 
     # delete job
     if auto_delete_job:
@@ -69,5 +69,5 @@ def _get_out_path(out_path: Union[str, Path], file_path: Path) -> Path:
     return normalize_path(anonymized_path)
 
 
-def _get_metadata_path(out_path: Path) -> Path:
+def _get_labels_path(out_path: Path) -> Path:
     return out_path.parent.joinpath(out_path.stem + '.txt')

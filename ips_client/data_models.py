@@ -67,7 +67,7 @@ class JobStatus(BaseModel):
         return self.state in [JobState.active, JobState.pending]
 
 
-class JobMetadata(BaseModel):
+class JobLabels(BaseModel):
     # TODO Model the full data hierarchy
     faces: Optional[List]
     license_plates: Optional[List]

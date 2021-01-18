@@ -24,7 +24,7 @@ anonymize_folder(in_dir='~/in_dir',
                  out_type='images',
                  service='dnat',
                  n_parallel_jobs=5,
-                 save_metadata=True)
+                 save_labels=True)
 ```
 
 The function can also be called directly from the command line. For instance:

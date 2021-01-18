@@ -30,16 +30,16 @@ class TestIPSJob:
         anonymized_img = Image.open(io.BytesIO(job_result.content))
         assert anonymized_img.size == img.size
 
-    def test_metadata(self, job):
+    def test_labels(self, job):
 
         # GIVEN an IPS job
 
-        # WHEN a job is started and the metadata downloaded
-        job_metadata = job.wait_until_finished().get_metadata()
+        # WHEN a job is started and the labels are downloaded
+        job_labels = job.wait_until_finished().get_labels()
 
         # THEN assert that the result contains the bbox for one face
-        assert len(job_metadata.faces) == 1
-        assert len(job_metadata.faces[0]['boundingBox']) == 4
+        assert len(job_labels.faces) == 1
+        assert len(job_labels.faces[0]['boundingBox']) == 4
 
     @pytest.mark.timeout(10)
     def test_delete(self, job):
