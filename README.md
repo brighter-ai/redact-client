@@ -42,7 +42,7 @@ ips_anon_folder ~/input_dir ~/output_dir images images dnat --ips-url 127.0.0.1:
 ```shell
 cd ips-client
 flit build
-pip install .
+pip install . --upgrade
 ```
 
 Alternatively, you can **install a specific version from GitHub**:
