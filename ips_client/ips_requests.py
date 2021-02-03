@@ -45,7 +45,7 @@ class IPSRequests:
                                  timeout=settings.requests_timeout_files)
 
         if response.status_code != 200:
-            raise IPSResponseError(response=response, msg=f'Error posting job')
+            raise IPSResponseError(response=response, msg='Error posting job')
 
         return JobPostResponse(**response.json())
 

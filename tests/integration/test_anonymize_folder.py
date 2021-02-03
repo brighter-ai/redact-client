@@ -9,7 +9,8 @@ from ips_client.tools.anonymize_folder import anonymize_folder, InputTypes
 class TestAnonymizeFolder:
 
     @pytest.mark.parametrize(argnames='n_parallel_jobs', argvalues=[1, 5], ids=['1 job', '5 jobs'])
-    def test_all_images_in_folder_are_anonymized(self, images_path: Path, tmp_path_factory, ips_url: str, n_parallel_jobs: int):
+    def test_all_images_in_folder_are_anonymized(self, images_path: Path, tmp_path_factory, ips_url: str,
+                                                 n_parallel_jobs: int):
 
         # GIVEN an input dir (with images) and an output dir
         output_path = tmp_path_factory.mktemp('imgs_dir_out')
