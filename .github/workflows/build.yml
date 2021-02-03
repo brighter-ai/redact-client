@@ -23,4 +23,4 @@ jobs:
           pip install flit
       - name: Test build
         run: |
-          make build
+          make test-build
