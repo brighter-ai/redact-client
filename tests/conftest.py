@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import IO
 
 from ips_client.data_models import ServiceType, OutputType
-from ips_client.ips_requests import IPSInstance
+from ips_client.ips_instance import IPSInstance
 from ips_client.job import IPSJob
 from ips_client.settings import Settings
 
