@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import IO
 
 from ips_client.data_models import ServiceType, OutputType
-from ips_client.ips_requests import IPSRequests
+from ips_client.ips_requests import IPSInstance
 from ips_client.job import IPSJob
 from ips_client.settings import Settings
 
@@ -38,8 +38,8 @@ def service(request) -> ServiceType:
 
 
 @pytest.fixture
-def ips(ips_url) -> IPSRequests:
-    return IPSRequests(ips_url=ips_url)
+def ips(ips_url) -> IPSInstance:
+    return IPSInstance(ips_url=ips_url)
 
 
 @pytest.fixture
