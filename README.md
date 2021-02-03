@@ -5,7 +5,7 @@ This client provides convenient access to the IPS API. Example:
 ```python
 from ips_client.job import IPSJob
 
-with open('obama.jpg', 'rb') as file:
+with open('tests/integration/obama.jpg', 'rb') as file:
     job = IPSJob.start_new(file=file, service='dnat', out_type='images')
 
 result: bytes = job.wait_until_finished().download_result()
