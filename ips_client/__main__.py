@@ -13,12 +13,12 @@ settings = Settings()
 
 def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, region: Region = Region.european_union,
                    face: bool = True, license_plate: bool = True, ips_url: str = settings.ips_url_default,
-                   out_path: Optional[str] = None, skip_existing: bool = True, save_labels: bool = True,
-                   auto_delete_job: bool = True):
+                   subscription_key: Optional[str] = None, out_path: Optional[str] = None,
+                   skip_existing: bool = True, save_labels: bool = True, auto_delete_job: bool = True):
     job_args = JobArguments(region=region, face=face, license_plate=license_plate)
     anon_file(file_path=file_path, out_type=out_type, service=service, job_args=job_args, ips_url=ips_url,
-              out_path=out_path, skip_existing=skip_existing, save_labels=save_labels,
-              auto_delete_job=auto_delete_job)
+              subscription_key=subscription_key, out_path=out_path, skip_existing=skip_existing,
+              save_labels=save_labels, auto_delete_job=auto_delete_job)
 
 
 def anonymize_file_entry_point():
@@ -30,12 +30,13 @@ def anonymize_file_entry_point():
 
 def anonymize_folder(in_dir: str, out_dir: str, input_type: InputType, out_type: OutputType, service: ServiceType,
                      region: Region = Region.european_union, face: bool = True, license_plate: bool = True,
-                     ips_url: str = settings.ips_url_default, n_parallel_jobs: int = 5, save_labels: bool = True,
-                     skip_existing: bool = True, auto_delete_job: bool = True):
+                     ips_url: str = settings.ips_url_default, subscription_key: Optional[str] = None,
+                     n_parallel_jobs: int = 5, save_labels: bool = True, skip_existing: bool = True,
+                     auto_delete_job: bool = True):
     job_args = JobArguments(region=region, face=face, license_plate=license_plate)
     anon_folder(in_dir=in_dir, out_dir=out_dir, input_type=input_type, out_type=out_type, service=service,
-                job_args=job_args, ips_url=ips_url, n_parallel_jobs=n_parallel_jobs, save_labels=save_labels,
-                skip_existing=skip_existing, auto_delete_job=auto_delete_job)
+                job_args=job_args, ips_url=ips_url, subscription_key=subscription_key, n_parallel_jobs=n_parallel_jobs,
+                save_labels=save_labels, skip_existing=skip_existing, auto_delete_job=auto_delete_job)
 
 
 def anonymize_folder_entry_point():
