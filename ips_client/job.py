@@ -14,32 +14,15 @@ settings = Settings()
 
 class IPSJob:
 
-    def __init__(self, file: IO, service: ServiceType, out_type: OutputType, output_id: UUID,
-                 job_args: JobArguments = JobArguments(), ips_url: str = settings.ips_url_default):
-        """Intended for internal use. Start a job through start_new() instead."""
+    def __init__(self, ips_requests: IPSRequests, file: IO, service: ServiceType, out_type: OutputType, output_id: UUID,
+                 job_args: JobArguments = JobArguments()):
+        """Intended for internal use. Start a job through IPSInstance.start_job() instead."""
+        self.ips = ips_requests
         self.file = file
         self.service = service
         self.out_type = out_type
         self.output_id: UUID = output_id
         self.job_args = copy(job_args)
-        self.ips = IPSRequests(ips_url=ips_url)
-
-    @classmethod
-    def start_new(cls, file: IO, service: ServiceType, out_type: OutputType, job_args: JobArguments = JobArguments(),
-                  ips_url: str = settings.ips_url_default) -> "IPSJob":
-
-        ips = IPSRequests(ips_url=ips_url)
-        post_response = ips.post_job(file=file,
-                                     service=service,
-                                     out_type=out_type,
-                                     job_args=job_args)
-
-        return cls(file=file,
-                   service=service,
-                   out_type=out_type,
-                   job_args=job_args,
-                   output_id=post_response.output_id,
-                   ips_url=ips_url)
 
     def get_status(self) -> JobStatus:
         response_dict = self.ips.get_status(service=self.service,

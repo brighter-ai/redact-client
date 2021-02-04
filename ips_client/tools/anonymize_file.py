@@ -4,6 +4,7 @@ from pathlib import Path
 from requests.exceptions import ConnectionError
 from typing import Optional, Union
 
+from ips_client.ips_instance import IPSInstance
 from ips_client.job import IPSJob, JobArguments, ServiceType, OutputType
 from ips_client.settings import Settings
 from ips_client.tools.utils import normalize_path
@@ -37,12 +38,9 @@ def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, j
     # anonymize
     log.debug(f'Job arguments: {job_args}')
     try:
+        ips = IPSInstance(service=service, out_type=out_type, ips_url=ips_url)
         with open(file_path, 'rb') as file:
-            job: IPSJob = IPSJob.start_new(file=file,
-                                           service=service,
-                                           out_type=out_type,
-                                           job_args=job_args,
-                                           ips_url=ips_url)
+            job: IPSJob = ips.start_job(file=file, job_args=job_args)
         result = job.wait_until_finished().download_result()
     except ConnectionError:
         raise ConnectionError(f'Connection error! Did you provide the proper "ips_url"? Got: {ips_url}')
