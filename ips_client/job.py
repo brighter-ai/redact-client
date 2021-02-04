@@ -5,7 +5,7 @@ from typing import IO
 from uuid import UUID
 
 from ips_client.data_models import ServiceType, OutputType, JobArguments, JobStatus, JobResult, JobLabels
-from ips_client.ips_instance import IPSInstance
+from ips_client.ips_requests import IPSRequests
 from ips_client.settings import Settings
 
 
@@ -22,13 +22,13 @@ class IPSJob:
         self.out_type = out_type
         self.output_id: UUID = output_id
         self.job_args = copy(job_args)
-        self.ips = IPSInstance(ips_url=ips_url)
+        self.ips = IPSRequests(ips_url=ips_url)
 
     @classmethod
     def start_new(cls, file: IO, service: ServiceType, out_type: OutputType, job_args: JobArguments = JobArguments(),
                   ips_url: str = settings.ips_url_default) -> "IPSJob":
 
-        ips = IPSInstance(ips_url=ips_url)
+        ips = IPSRequests(ips_url=ips_url)
         post_response = ips.post_job(file=file,
                                      service=service,
                                      out_type=out_type,

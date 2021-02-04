@@ -16,7 +16,7 @@ logging.basicConfig(level=settings.log_level.upper())
 log = logging.getLogger('ips-requests')
 
 
-class IPSInstance:
+class IPSRequests:
     """
     Helper class wrapping requests to the IPS API.
     """
