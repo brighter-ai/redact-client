@@ -18,11 +18,9 @@ class IPSJob:
                  job_args: JobArguments = JobArguments()):
         """Intended for internal use. Start a job through IPSInstance.start_job() instead."""
         self.ips = ips_requests
-        self.file = file
         self.service = service
         self.out_type = out_type
         self.output_id: UUID = output_id
-        self.job_args = copy(job_args)
 
     def get_status(self) -> JobStatus:
         response_dict = self.ips.get_status(service=self.service,

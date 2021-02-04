@@ -28,8 +28,6 @@ class IPSInstance:
                                                    job_args=job_args)
 
         return IPSJob(ips_requests=self.ips_requests,
-                      file=file,
                       service=self.service,
                       out_type=self.out_type,
-                      job_args=job_args,
                       output_id=post_response.output_id)
