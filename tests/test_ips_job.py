@@ -30,7 +30,7 @@ class TestIPSJob:
         anonymized_img = Image.open(io.BytesIO(job_result.content))
         assert anonymized_img.size == img.size
 
-    def test_labels(self, job):
+    def test_download_labels(self, job):
 
         # GIVEN an IPS job
 
