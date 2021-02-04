@@ -2,12 +2,12 @@ import logging
 import requests
 import urllib.parse
 
-from typing import Dict, Optional, IO
+from typing import Dict, Optional, IO, Union, Tuple
 from uuid import UUID
 
 from ips_client.data_models import ServiceType, OutputType, JobArguments, JobResult, IPSResponseError, JobPostResponse
 from ips_client.settings import Settings
-from ips_client.utils import normalize_url, get_io_filename
+from ips_client.utils import normalize_url
 
 
 settings = Settings()
@@ -32,16 +32,15 @@ class IPSRequests:
         if subscription_key:
             self._headers['ips-subscription-key'] = self.subscription_key
 
-    def post_job(self, file: IO, service: ServiceType, out_type: OutputType,
-                 job_args: Optional[JobArguments] = None, file_name: Optional[str] = None) -> JobPostResponse:
+    def post_job(self, file: Union[IO, Tuple[str, IO]], service: ServiceType, out_type: OutputType,
+                 job_args: Optional[JobArguments] = None) -> JobPostResponse:
         """
         Post the job via a post request.
+
+        :param file: Requests requires the IO object to have a name attribute to determine its type. Standard file IOs
+            have such a name. But if you have a different IO type like BytesIO, you need to provide the name manually.
+            That's possible through a tuple like (file_name, io_object).
         """
-
-        # We need a file name with extension because the media type is inferred from it.
-        file_name = get_io_filename(file=file, file_name=file_name)
-
-        files = {'file': (file_name, file)}
 
         url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}')
 
@@ -49,7 +48,7 @@ class IPSRequests:
             job_args = JobArguments()
 
         response = requests.post(url=url,
-                                 files=files,
+                                 files={'file': file},
                                  headers=self._headers,
                                  params=job_args.dict(),
                                  timeout=settings.requests_timeout_files)
