@@ -3,7 +3,7 @@ import pytest
 from pathlib import Path
 
 from ips_client.data_models import OutputType, ServiceType
-from ips_client.tools.anonymize_folder import anonymize_folder, InputTypes
+from ips_client.tools.anonymize_folder import anonymize_folder, InputType
 
 
 class TestAnonymizeFolder:
@@ -18,7 +18,7 @@ class TestAnonymizeFolder:
         # WHEN the whole folder is anonymized
         anonymize_folder(in_dir=str(images_path),
                          out_dir=str(output_path),
-                         input_type=InputTypes.images,
+                         input_type=InputType.images,
                          out_type=OutputType.images,
                          service=ServiceType.blur,
                          save_labels=True,

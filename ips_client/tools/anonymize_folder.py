@@ -22,13 +22,13 @@ settings = Settings()
 log.debug(f'Settings: {settings}')
 
 
-class InputTypes(str, Enum):
+class InputType(str, Enum):
     images: str = 'images'
     videos: str = 'videos'
     archives: str = 'archives'
 
 
-def anonymize_folder(in_dir: str, out_dir: str, input_type: InputTypes, out_type: OutputType, service: ServiceType,
+def anonymize_folder(in_dir: str, out_dir: str, input_type: InputType, out_type: OutputType, service: ServiceType,
                      job_args: Optional[JobArguments] = None, ips_url: str = settings.ips_url_default,
                      n_parallel_jobs: int = 5, save_labels: bool = True, skip_existing: bool = True,
                      auto_delete_job: bool = True):
@@ -73,7 +73,7 @@ def _parallel_map(func, items: List, n_parallel_jobs=1):
             list(tqdm.tqdm(executor.map(func, items), total=len(items)))
 
 
-def _get_relative_file_paths(in_dir: Path, input_type: InputTypes) -> List[str]:
+def _get_relative_file_paths(in_dir: Path, input_type: InputType) -> List[str]:
     """
     Return a list of all files in in_dir. But only relative to in_dir itself.
 
@@ -82,11 +82,11 @@ def _get_relative_file_paths(in_dir: Path, input_type: InputTypes) -> List[str]:
 
     file_paths: List[str] = files_in_dir(dir=in_dir)
 
-    if input_type == InputTypes.images:
+    if input_type == InputType.images:
         file_paths = [fp for fp in file_paths if is_image(fp)]
-    elif input_type == InputTypes.videos:
+    elif input_type == InputType.videos:
         file_paths = [fp for fp in file_paths if is_video(fp)]
-    elif input_type == InputTypes.archives:
+    elif input_type == InputType.archives:
         file_paths = [fp for fp in file_paths if is_archive(fp)]
     else:
         raise ValueError(f'Unsupported input type {input_type}.')

@@ -5,7 +5,7 @@ import typer
 from ips_client.data_models import JobArguments, Region, ServiceType, OutputType
 from ips_client.settings import Settings
 from ips_client.tools.anonymize_file import anonymize_file as anon_file
-from ips_client.tools.anonymize_folder import InputTypes, anonymize_folder as anon_folder
+from ips_client.tools.anonymize_folder import InputType, anonymize_folder as anon_folder
 
 
 settings = Settings()
@@ -28,7 +28,7 @@ def anonymize_file_entry_point():
     app(prog_name='ips_anon_file')
 
 
-def anonymize_folder(in_dir: str, out_dir: str, input_type: InputTypes, out_type: OutputType, service: ServiceType,
+def anonymize_folder(in_dir: str, out_dir: str, input_type: InputType, out_type: OutputType, service: ServiceType,
                      region: Region = Region.european_union, face: bool = True, license_plate: bool = True,
                      ips_url: str = settings.ips_url_default, n_parallel_jobs: int = 5, save_labels: bool = True,
                      skip_existing: bool = True, auto_delete_job: bool = True):
