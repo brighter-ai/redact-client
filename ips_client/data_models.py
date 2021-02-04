@@ -14,6 +14,7 @@ class OutputType(str, Enum):
     images = 'images'
     videos = 'videos'
     archives = 'archives'
+    overlays = 'overlays'
 
 
 class Region(str, Enum):
