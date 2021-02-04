@@ -1,6 +1,5 @@
 import time
 
-from copy import copy
 from typing import IO
 from uuid import UUID
 
@@ -14,9 +13,10 @@ settings = Settings()
 
 class IPSJob:
 
-    def __init__(self, ips_requests: IPSRequests, file: IO, service: ServiceType, out_type: OutputType, output_id: UUID,
-                 job_args: JobArguments = JobArguments()):
-        """Intended for internal use. Start a job through IPSInstance.start_job() instead."""
+    def __init__(self, ips_requests: IPSRequests, service: ServiceType, out_type: OutputType, output_id: UUID):
+        """
+        Intended for internal use. Start a job through IPSInstance.start_job() instead.
+        """
         self.ips = ips_requests
         self.service = service
         self.out_type = out_type
