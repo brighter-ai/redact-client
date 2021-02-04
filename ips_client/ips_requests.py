@@ -23,8 +23,14 @@ class IPSRequests:
 
     API_VERSION = 'v3'
 
-    def __init__(self, ips_url: str = settings.ips_url_default):
+    def __init__(self, ips_url: str = settings.ips_url_default, subscription_key: Optional[str] = None):
+
         self.ips_url = normalize_url(ips_url)
+        self.subscription_key = subscription_key
+
+        self._headers = {'Accept': '*/*'}
+        if subscription_key:
+            self._headers['ips-subscription-key'] = self.subscription_key
 
     def post_job(self, file: IO, service: ServiceType, out_type: OutputType,
                  job_args: Optional[JobArguments] = None, file_name: Optional[str] = None) -> JobPostResponse:
@@ -44,6 +50,7 @@ class IPSRequests:
 
         response = requests.post(url=url,
                                  files=files,
+                                 headers=self._headers,
                                  params=job_args.dict(),
                                  timeout=settings.requests_timeout_files)
 
@@ -55,7 +62,7 @@ class IPSRequests:
     def get_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> JobResult:
 
         url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
-        response = requests.get(url, timeout=settings.requests_timeout_files)
+        response = requests.get(url, headers=self._headers, timeout=settings.requests_timeout_files)
 
         if response.status_code != 200:
             raise IPSResponseError(response=response, msg='Error downloading job result')
@@ -66,7 +73,7 @@ class IPSRequests:
     def get_status(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
         url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/status')
-        response = requests.get(url, timeout=settings.requests_timeout)
+        response = requests.get(url, headers=self._headers, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
             raise IPSResponseError(response=response, msg='Error getting job status')
@@ -76,7 +83,7 @@ class IPSRequests:
     def get_labels(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
         url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/labels')
-        response = requests.get(url, timeout=settings.requests_timeout)
+        response = requests.get(url, headers=self._headers, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
             raise IPSResponseError(response=response, msg='Error getting labels')
@@ -86,7 +93,7 @@ class IPSRequests:
     def delete_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
         url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
-        response = requests.delete(url, timeout=settings.requests_timeout)
+        response = requests.delete(url, headers=self._headers, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
             raise IPSResponseError(response=response, msg='Error deleting job')

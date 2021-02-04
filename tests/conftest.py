@@ -19,11 +19,22 @@ def pytest_addoption(parser):
     parser.addoption(
         '--ips_url', action='store', default=settings.ips_url_default, help='URL of a running IPS instance'
     )
+    parser.addoption(
+        '--subscription_key', action='store', default=None, help='Subscription key for IPS Online'
+    )
 
 
 @pytest.fixture
 def ips_url(request):
     return request.config.getoption('--ips_url')
+
+
+@pytest.fixture
+def subscription_key(request):
+    subscription_key = request.config.getoption('--subscription_key')
+    if not subscription_key:
+        raise ValueError("Test requires a valid --subscription_key")
+    return subscription_key
 
 
 @pytest.fixture

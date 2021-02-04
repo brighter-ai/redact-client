@@ -11,10 +11,11 @@ settings = Settings()
 
 class IPSInstance:
 
-    def __init__(self, service: ServiceType, out_type: OutputType, ips_url: str = settings.ips_url_default):
+    def __init__(self, service: ServiceType, out_type: OutputType, ips_url: str = settings.ips_url_default,
+                 subscription_key: Optional[str] = None):
         self.service = service
         self.out_type = out_type
-        self.ips_requests = IPSRequests(ips_url=ips_url)
+        self.ips_requests = IPSRequests(ips_url=ips_url, subscription_key=subscription_key)
 
     def start_job(self, file: IO, job_args: Optional[JobArguments] = None) -> IPSJob:
 

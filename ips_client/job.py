@@ -1,9 +1,8 @@
 import time
 
-from typing import IO
 from uuid import UUID
 
-from ips_client.data_models import ServiceType, OutputType, JobArguments, JobStatus, JobResult, JobLabels
+from ips_client.data_models import ServiceType, OutputType, JobStatus, JobResult, JobLabels
 from ips_client.ips_requests import IPSRequests
 from ips_client.settings import Settings
 
