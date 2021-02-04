@@ -1,11 +1,13 @@
 import logging
 
 from pathlib import Path
+
 from requests.exceptions import ConnectionError
 from typing import Optional, Union
 
+from ips_client.data_models import JobArguments
 from ips_client.ips_instance import IPSInstance
-from ips_client.job import IPSJob, JobArguments, ServiceType, OutputType
+from ips_client.job import IPSJob, ServiceType, OutputType
 from ips_client.settings import Settings
 from ips_client.tools.utils import normalize_path
 
@@ -18,8 +20,9 @@ log.debug(f'Settings: {settings}')
 
 
 def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, job_args: Optional[JobArguments] = None,
-                   ips_url: str = settings.ips_url_default, out_path: Optional[str] = None, skip_existing: bool = True,
-                   save_labels: bool = True, auto_delete_job: bool = True):
+                   ips_url: str = settings.ips_url_default, out_path: Optional[str] = None,
+                   subscription_key: Optional[str] = None, skip_existing: bool = True, save_labels: bool = True,
+                   auto_delete_job: bool = True):
     """
     If no out_path is given, <input_filename_anonymized> will be used.
     """
@@ -42,7 +45,7 @@ def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, j
 
     # anonymize
     try:
-        ips = IPSInstance(service=service, out_type=out_type, ips_url=ips_url)
+        ips = IPSInstance(service=service, out_type=out_type, ips_url=ips_url, subscription_key=subscription_key)
         with open(file_path, 'rb') as file:
             job: IPSJob = ips.start_job(file=file, job_args=job_args)
         result = job.wait_until_finished().download_result()

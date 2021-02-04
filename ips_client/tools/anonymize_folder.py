@@ -8,8 +8,8 @@ from enum import Enum
 from pathlib import Path
 from typing import List, Optional
 
-from ips_client.data_models import IPSResponseError
-from ips_client.job import JobArguments, ServiceType, OutputType
+from ips_client.data_models import IPSResponseError, JobArguments
+from ips_client.job import ServiceType, OutputType
 from ips_client.settings import Settings
 from ips_client.tools.utils import files_in_dir, is_image, is_video, is_archive, normalize_path
 from ips_client.tools.anonymize_file import anonymize_file
