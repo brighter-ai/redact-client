@@ -8,6 +8,7 @@ from uuid import UUID
 class ServiceType(str, Enum):
     blur = 'blur'
     dnat = 'dnat'
+    extract = 'extract'
 
 
 class OutputType(str, Enum):
