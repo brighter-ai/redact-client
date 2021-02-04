@@ -20,7 +20,7 @@ class IPSInstance:
         self.ips_requests = IPSRequests(ips_url=ips_url)
 
     # TODO: Avoid mutable default
-    def start_job(self, file: IO, job_args: JobArguments = JobArguments()) -> IPSJob:
+    def start_job(self, file: IO, job_args: Optional[JobArguments] = None) -> IPSJob:
 
         post_response = self.ips_requests.post_job(file=file,
                                                    service=self.service,

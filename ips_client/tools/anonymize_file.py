@@ -17,7 +17,7 @@ settings = Settings()
 log.debug(f'Settings: {settings}')
 
 
-def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, job_args: JobArguments = JobArguments(),
+def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, job_args: Optional[JobArguments] = None,
                    ips_url: str = settings.ips_url_default, out_path: Optional[str] = None, skip_existing: bool = True,
                    save_labels: bool = True, auto_delete_job: bool = True):
     """
@@ -35,8 +35,12 @@ def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, j
         log.debug(f'Skipping because output already exists: {out_path}')
         return
 
-    # anonymize
+    # (default) job arguments
+    if not job_args:
+        job_args = JobArguments()
     log.debug(f'Job arguments: {job_args}')
+
+    # anonymize
     try:
         ips = IPSInstance(service=service, out_type=out_type, ips_url=ips_url)
         with open(file_path, 'rb') as file:

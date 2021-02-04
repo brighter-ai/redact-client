@@ -27,7 +27,7 @@ class IPSRequests:
         self.ips_url = normalize_url(ips_url)
 
     def post_job(self, file: IO, service: ServiceType, out_type: OutputType,
-                 job_args: JobArguments = JobArguments(), file_name: Optional[str] = None) -> JobPostResponse:
+                 job_args: Optional[JobArguments] = None, file_name: Optional[str] = None) -> JobPostResponse:
         """
         Post the job via a post request.
         """
@@ -38,6 +38,9 @@ class IPSRequests:
         files = {'file': (file_name, file)}
 
         url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}')
+
+        if not job_args:
+            job_args = JobArguments()
 
         response = requests.post(url=url,
                                  files=files,

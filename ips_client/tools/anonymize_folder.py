@@ -6,7 +6,7 @@ import tqdm
 
 from enum import Enum
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 from ips_client.data_models import IPSResponseError
 from ips_client.job import JobArguments, ServiceType, OutputType
@@ -29,7 +29,7 @@ class InputTypes(str, Enum):
 
 
 def anonymize_folder(in_dir: str, out_dir: str, input_type: InputTypes, out_type: OutputType, service: ServiceType,
-                     job_args: JobArguments = JobArguments(), ips_url: str = settings.ips_url_default,
+                     job_args: Optional[JobArguments] = None, ips_url: str = settings.ips_url_default,
                      n_parallel_jobs: int = 5, save_labels: bool = True, skip_existing: bool = True,
                      auto_delete_job: bool = True):
 
