@@ -58,8 +58,9 @@ def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, j
 
     # write labels
     if save_labels:
+        labels = job.get_labels().json()
         with open(_get_labels_path(out_path), 'w') as f:
-            f.write(job.get_labels().json())
+            f.write(labels)
 
     # delete job
     if auto_delete_job:
