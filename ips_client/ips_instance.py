@@ -10,6 +10,9 @@ settings = Settings()
 
 
 class IPSInstance:
+    """
+    Factory for starting new IPS jobs.
+    """
 
     def __init__(self, service: ServiceType, out_type: OutputType, ips_url: str = settings.ips_url_default,
                  subscription_key: Optional[str] = None):

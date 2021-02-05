@@ -11,6 +11,10 @@ settings = Settings()
 
 
 class IPSJob:
+    """
+    IPSJobs is intended to be the default, most convenient way for interacting with IPS. Use factory
+    IPSInstance.start_job() to start new jobs.
+    """
 
     def __init__(self, ips_requests: IPSRequests, service: ServiceType, out_type: OutputType, output_id: UUID):
         """
