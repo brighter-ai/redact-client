@@ -14,13 +14,12 @@ class TestIPSJob:
         # THEN the job finishes after a while
         assert job.wait_until_finished().get_status().state == JobState.finished
 
-    def test_download_result(self, job, test_image):
+    def test_download_result(self, any_ips, test_image):
 
-        # GIVEN a test image
-        img = Image.open(test_image)
-        test_image.seek(0)
+        # GIVEN an image and the corresponding IPS job
+        job = any_ips.start_job(test_image)
 
-        # WHEN a job is started and the result downloaded
+        # WHEN the job is finished and the result downloaded
         job_result = job.wait_until_finished().download_result()
 
         # THEN the response has the right media type
@@ -28,7 +27,9 @@ class TestIPSJob:
 
         # AND it has the same size as the input image
         anonymized_img = Image.open(io.BytesIO(job_result.content))
-        assert anonymized_img.size == img.size
+        test_image.seek(0)
+        original_img = Image.open(test_image)
+        assert anonymized_img.size == original_img.size
 
     def test_download_labels(self, job):
 

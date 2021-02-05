@@ -44,24 +44,20 @@ def test_image() -> IO:
         yield f
 
 
-@pytest.fixture(params=[ServiceType.dnat, ServiceType.blur])
-def service(request) -> ServiceType:
-    return request.param
-
-
 @pytest.fixture
 def ips_requests(ips_url) -> IPSRequests:
     return IPSRequests(ips_url=ips_url)
 
 
-@pytest.fixture
-def ips(service, ips_url) -> IPSInstance:
+@pytest.fixture(params=[ServiceType.dnat, ServiceType.blur, ServiceType.extract])
+def any_ips(ips_url, request) -> IPSInstance:
+    service = request.param
     return IPSInstance(service=service, out_type=OutputType.images, ips_url=ips_url)
 
 
 @pytest.fixture
-def job(ips, test_image) -> IPSJob:
-    return ips.start_job(file=test_image)
+def job(any_ips, test_image) -> IPSJob:
+    return any_ips.start_job(file=test_image)
 
 
 @pytest.fixture
