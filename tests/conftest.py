@@ -50,14 +50,15 @@ def ips_requests(ips_url) -> IPSRequests:
 
 
 @pytest.fixture(params=[ServiceType.dnat, ServiceType.blur, ServiceType.extract])
-def any_ips(ips_url, request) -> IPSInstance:
+def any_img_ips(ips_url, request) -> IPSInstance:
     service = request.param
-    return IPSInstance(service=service, out_type=OutputType.images, ips_url=ips_url)
+    out_type = OutputType.overlays if service == ServiceType.extract else OutputType.images
+    return IPSInstance(service=service, out_type=out_type, ips_url=ips_url)
 
 
 @pytest.fixture
-def job(any_ips, test_image) -> IPSJob:
-    return any_ips.start_job(file=test_image)
+def job(any_img_ips, test_image) -> IPSJob:
+    return any_img_ips.start_job(file=test_image)
 
 
 @pytest.fixture
