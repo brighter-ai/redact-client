@@ -55,8 +55,12 @@ def ips_requests(ips_url) -> IPSRequests:
 
 
 @pytest.fixture
-def job(service, ips_url, test_image) -> IPSJob:
-    ips = IPSInstance(service=service, out_type=OutputType.images, ips_url=ips_url)
+def ips(service, ips_url) -> IPSInstance:
+    return IPSInstance(service=service, out_type=OutputType.images, ips_url=ips_url)
+
+
+@pytest.fixture
+def job(ips, test_image) -> IPSJob:
     return ips.start_job(file=test_image)
 
 
