@@ -20,12 +20,14 @@ class IPSInstance:
         self.out_type = out_type
         self.ips_requests = IPSRequests(ips_url=ips_url, subscription_key=subscription_key)
 
-    def start_job(self, file: IO, job_args: Optional[JobArguments] = None) -> IPSJob:
+    def start_job(self, file: IO, job_args: Optional[JobArguments] = None,
+                  custom_labels: Optional[IO] = None) -> IPSJob:
 
         post_response = self.ips_requests.post_job(file=file,
                                                    service=self.service,
                                                    out_type=self.out_type,
-                                                   job_args=job_args)
+                                                   job_args=job_args,
+                                                   custom_labels=custom_labels)
 
         return IPSJob(ips_requests=self.ips_requests,
                       service=self.service,
