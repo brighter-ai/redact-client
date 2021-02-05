@@ -50,7 +50,7 @@ def service(request) -> ServiceType:
 
 
 @pytest.fixture
-def ips(ips_url) -> IPSRequests:
+def ips_requests(ips_url) -> IPSRequests:
     return IPSRequests(ips_url=ips_url)
 
 
