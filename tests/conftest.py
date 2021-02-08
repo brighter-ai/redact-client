@@ -24,7 +24,7 @@ def pytest_addoption(parser):
     )
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def ips_url(request):
     return request.config.getoption('--ips_url')
 
@@ -37,7 +37,7 @@ def subscription_key(request):
     return subscription_key
 
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 def test_image() -> IO:
     img_path = pathlib.Path(__file__).parent.joinpath('obama.jpg')
     with open(img_path, 'rb') as f:
