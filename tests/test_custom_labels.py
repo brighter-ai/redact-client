@@ -1,9 +1,18 @@
+import pathlib
 import pytest
 
 from io import BytesIO
+from typing import IO
 
 from ips_client.data_models import ServiceType, OutputType, JobLabels
 from ips_client.ips_instance import IPSInstance
+
+
+@pytest.fixture(scope='module')  # Re-use the initial labels for every test
+def test_image() -> IO:
+    img_path = pathlib.Path(__file__).parent.joinpath('obama.jpg')
+    with open(img_path, 'rb') as f:
+        yield f
 
 
 @pytest.fixture(scope='module')
