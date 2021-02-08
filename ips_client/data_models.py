@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from requests import Response
 from typing import Optional, List
 from uuid import UUID
@@ -71,9 +71,9 @@ class JobStatus(BaseModel):
 
 class JobLabels(BaseModel):
     # TODO Model the full data hierarchy
-    faces: Optional[List]
-    license_plates: Optional[List]
-    frames: Optional[List]
+    faces: List = Field(default_factory=list)
+    license_plates: List = Field(default_factory=list)
+    persons: List = Field(default_factory=list)
 
 
 class IPSResponseError(Exception):
