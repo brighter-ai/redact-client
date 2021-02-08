@@ -39,7 +39,7 @@ def subscription_key(request):
 
 @pytest.fixture
 def some_image() -> IO:
-    img_path = pathlib.Path(__file__).parent.joinpath('obama.jpg')
+    img_path = pathlib.Path(__file__).parent.joinpath('resources/obama.jpg')
     with open(img_path, 'rb') as f:
         yield f
 
