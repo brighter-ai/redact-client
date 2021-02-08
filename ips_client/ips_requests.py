@@ -34,7 +34,8 @@ class IPSRequests:
             self._headers['ips-subscription-key'] = self.subscription_key
 
     def post_job(self, file: Union[IO, Tuple[str, IO]], service: ServiceType, out_type: OutputType,
-                 job_args: Optional[JobArguments] = None, custom_labels: Optional[Union[str, IO, JobLabels]] = None) \
+                 job_args: Optional[JobArguments] = None, licence_plate_custom_stamp: Optional[IO] = None,
+                 custom_labels: Optional[Union[str, IO, JobLabels]] = None) \
             -> JobPostResponse:
         """
         Post the job via a post request.
@@ -49,12 +50,14 @@ class IPSRequests:
         if not job_args:
             job_args = JobArguments()
 
-        fields = {'file': file}
+        files = {'file': file}
+        if licence_plate_custom_stamp:
+            files['licence_plate_custom_stamp'] = licence_plate_custom_stamp
         if custom_labels:
-            fields['custom_labels'] = custom_labels.json() if isinstance(custom_labels, JobLabels) else custom_labels
+            files['custom_labels'] = custom_labels.json() if isinstance(custom_labels, JobLabels) else custom_labels
 
         response = requests.post(url=url,
-                                 files=fields,
+                                 files=files,
                                  headers=self._headers,
                                  params=job_args.dict(),
                                  timeout=settings.requests_timeout_files)

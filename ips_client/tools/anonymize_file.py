@@ -20,9 +20,10 @@ log.debug(f'Settings: {settings}')
 
 
 def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, job_args: Optional[JobArguments] = None,
-                   custom_labels_file_path: Optional[str] = None, ips_url: str = settings.ips_url_default,
-                   out_path: Optional[str] = None, subscription_key: Optional[str] = None, skip_existing: bool = True,
-                   save_labels: bool = True, auto_delete_job: bool = True):
+                   licence_plate_custom_stamp_path: Optional[str] = None, custom_labels_file_path: Optional[str] = None,
+                   ips_url: str = settings.ips_url_default, out_path: Optional[str] = None,
+                   subscription_key: Optional[str] = None, skip_existing: bool = True, save_labels: bool = True,
+                   auto_delete_job: bool = True):
     """
     If no out_path is given, <input_filename_anonymized> will be used.
     """
@@ -48,14 +49,25 @@ def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, j
     if custom_labels_file_path:
         custom_labels = JobLabels.parse_file(custom_labels_file_path)
 
+    # custom LP stamps
+    licence_plate_custom_stamp = None
+    if licence_plate_custom_stamp_path:
+        licence_plate_custom_stamp = open(licence_plate_custom_stamp_path, 'rb')
+
     # anonymize
     try:
         ips = IPSInstance(service=service, out_type=out_type, ips_url=ips_url, subscription_key=subscription_key)
         with open(file_path, 'rb') as file:
-            job: IPSJob = ips.start_job(file=file, job_args=job_args, custom_labels=custom_labels)
+            job: IPSJob = ips.start_job(file=file,
+                                        job_args=job_args,
+                                        licence_plate_custom_stamp=licence_plate_custom_stamp,
+                                        custom_labels=custom_labels)
         result = job.wait_until_finished().download_result()
     except ConnectionError:
         raise ConnectionError(f'Connection error! Did you provide the proper "ips_url"? Got: {ips_url}')
+    finally:
+        if licence_plate_custom_stamp:
+            licence_plate_custom_stamp.close()
 
     # write result
     with open(out_path, 'wb') as file:

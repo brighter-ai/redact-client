@@ -45,6 +45,13 @@ def some_image() -> IO:
 
 
 @pytest.fixture
+def some_custom_lp_stamp() -> IO:
+    img_path = pathlib.Path(__file__).parent.joinpath('resources/licence_plate_custom_stamp.png')
+    with open(img_path, 'rb') as f:
+        yield f
+
+
+@pytest.fixture
 def ips_requests(ips_url) -> IPSRequests:
     return IPSRequests(ips_url=ips_url)
 
