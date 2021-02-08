@@ -38,7 +38,7 @@ def subscription_key(request):
 
 
 @pytest.fixture
-def test_image() -> IO:
+def some_image() -> IO:
     img_path = pathlib.Path(__file__).parent.joinpath('obama.jpg')
     with open(img_path, 'rb') as f:
         yield f
@@ -57,18 +57,18 @@ def any_img_ips(ips_url, request) -> IPSInstance:
 
 
 @pytest.fixture
-def job(any_img_ips, test_image) -> IPSJob:
-    return any_img_ips.start_job(file=test_image)
+def job(any_img_ips, some_image) -> IPSJob:
+    return any_img_ips.start_job(file=some_image)
 
 
 @pytest.fixture
-def images_path(tmp_path_factory, test_image, n_images: int = 3) -> Path:
+def images_path(tmp_path_factory, some_image, n_images: int = 3) -> Path:
     """Return a temporary directory that has been prepared with some image files (img_0.jpg, img_1.jpg, ...)."""
     tmp_img_path = tmp_path_factory.mktemp('imgs_dir')
     for i in range(n_images):
         output_path = tmp_img_path.joinpath(f'sub_dir/img_{i}.jpg')
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        test_image.seek(0)
+        some_image.seek(0)
         with open(str(output_path), 'wb') as f:
-            shutil.copyfileobj(fsrc=test_image, fdst=f)
+            shutil.copyfileobj(fsrc=some_image, fdst=f)
     return tmp_img_path

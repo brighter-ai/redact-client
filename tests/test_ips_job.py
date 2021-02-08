@@ -14,10 +14,10 @@ class TestIPSJob:
         # THEN the job finishes after a while
         assert job.wait_until_finished().get_status().state == JobState.finished
 
-    def test_download_result(self, any_img_ips, test_image):
+    def test_download_result(self, any_img_ips, some_image):
 
         # GIVEN an image and the corresponding IPS job
-        job = any_img_ips.start_job(test_image)
+        job = any_img_ips.start_job(some_image)
 
         # WHEN the job is finished and the result downloaded
         job_result = job.wait_until_finished().download_result()
@@ -27,8 +27,8 @@ class TestIPSJob:
 
         # AND it has the same size as the input image
         anonymized_img = Image.open(io.BytesIO(job_result.content))
-        test_image.seek(0)
-        original_img = Image.open(test_image)
+        some_image.seek(0)
+        original_img = Image.open(some_image)
         assert anonymized_img.size == original_img.size
 
     def test_download_labels(self, job):
