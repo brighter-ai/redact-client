@@ -76,4 +76,4 @@ def _get_out_path(out_path: Union[str, Path], file_path: Path) -> Path:
 
 
 def _get_labels_path(out_path: Path) -> Path:
-    return out_path.parent.joinpath(out_path.stem + '.txt')
+    return out_path.parent.joinpath(out_path.stem + '.json')
