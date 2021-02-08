@@ -5,7 +5,8 @@ import urllib.parse
 from typing import Dict, Optional, IO, Union, Tuple
 from uuid import UUID
 
-from ips_client.data_models import ServiceType, OutputType, JobArguments, JobResult, IPSResponseError, JobPostResponse
+from ips_client.data_models import ServiceType, OutputType, JobArguments, JobResult, IPSResponseError, JobPostResponse, \
+    JobLabels
 from ips_client.settings import Settings
 from ips_client.utils import normalize_url
 
@@ -33,7 +34,7 @@ class IPSRequests:
             self._headers['ips-subscription-key'] = self.subscription_key
 
     def post_job(self, file: Union[IO, Tuple[str, IO]], service: ServiceType, out_type: OutputType,
-                 job_args: Optional[JobArguments] = None, custom_labels: Optional[IO] = None) \
+                 job_args: Optional[JobArguments] = None, custom_labels: Optional[Union[str, IO, JobLabels]] = None) \
             -> JobPostResponse:
         """
         Post the job via a post request.
@@ -48,12 +49,12 @@ class IPSRequests:
         if not job_args:
             job_args = JobArguments()
 
-        files = {'file': file}
+        fields = {'file': file}
         if custom_labels:
-            files['custom_labels'] = custom_labels
+            fields['custom_labels'] = custom_labels.json() if isinstance(custom_labels, JobLabels) else custom_labels
 
         response = requests.post(url=url,
-                                 files=files,
+                                 files=fields,
                                  headers=self._headers,
                                  params=job_args.dict(),
                                  timeout=settings.requests_timeout_files)
