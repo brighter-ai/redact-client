@@ -2,7 +2,8 @@ import logging
 import requests
 import urllib.parse
 
-from typing import Dict, Optional, IO, Union, Tuple
+from io import FileIO
+from typing import Dict, Optional, IO, Union
 from uuid import UUID
 
 from ips_client.data_models import ServiceType, OutputType, JobArguments, JobResult, IPSResponseError, JobPostResponse, \
@@ -33,22 +34,23 @@ class IPSRequests:
         if subscription_key:
             self._headers['ips-subscription-key'] = self.subscription_key
 
-    def post_job(self, file: Union[IO, Tuple[str, IO]], service: ServiceType, out_type: OutputType,
+    def post_job(self, file: FileIO, service: ServiceType, out_type: OutputType,
                  job_args: Optional[JobArguments] = None, licence_plate_custom_stamp: Optional[IO] = None,
                  custom_labels: Optional[Union[str, IO, JobLabels]] = None) \
             -> JobPostResponse:
         """
         Post the job via a post request.
-
-        :param file: Requests requires the IO object to have a name attribute to determine its type. Standard file IOs
-            have such a name. But if you have a different IO type like BytesIO, you need to provide the name manually.
-            That's possible through a tuple like (file_name, io_object).
         """
 
         url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}')
 
         if not job_args:
             job_args = JobArguments()
+
+        try:
+            _ = file.name
+        except AttributeError:
+            raise ValueError("Expecting 'file' argument to have a 'name' attribute, i.e., FileIO.")
 
         files = {'file': file}
         if licence_plate_custom_stamp:

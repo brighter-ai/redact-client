@@ -15,5 +15,6 @@ class TestIPSRequests:
         # GIVEN an IPS instance and a test image
         # WHEN the image comes from memory
         img = BytesIO(some_image.read())
+        img.name = 'in-mem.jpg'  # pretend to be a FileIO
         # THEN it can be posted without error by providing a name manually
-        ips_requests.post_job(file=('in-mem.jpg', img), service=ServiceType.blur, out_type=OutputType.images)
+        ips_requests.post_job(file=img, service=ServiceType.blur, out_type=OutputType.images)
