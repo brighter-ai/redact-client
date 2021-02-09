@@ -2,6 +2,7 @@ import pathlib
 import pytest
 import shutil
 
+from io import FileIO
 from pathlib import Path
 from typing import IO
 
@@ -38,7 +39,7 @@ def subscription_key(request):
 
 
 @pytest.fixture
-def some_image() -> IO:
+def some_image() -> FileIO:
     img_path = pathlib.Path(__file__).parent.joinpath('resources/obama.jpg')
     with open(img_path, 'rb') as f:
         yield f
