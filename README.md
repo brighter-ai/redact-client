@@ -56,7 +56,7 @@ ips_anon_folder ./in_dir ./out_dir images images blur --ips-url=127.0.0.1:8787
 ## Library Usage
 
 The described command-line operations can also be performed programmatically through the 
-Python modules `ips_client.tools.anonymize_file` and `ips_client.tools_anonymize_folder`.
+Python modules `ips_client.tools.anonymize_file` and `ips_client.tools.anonymize_folder`.
 
 If you want to have more fine-grained access to the API, you may want to use `IPSInstance` and `IPSJob`:
 
