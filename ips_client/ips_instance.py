@@ -15,6 +15,9 @@ class IPSInstance:
     """
 
     def __init__(self, ips_requests: IPSRequests, service: ServiceType, out_type: OutputType):
+        """
+        The default way for creating IPSInstance objects is through IPSInstance.create().
+        """
         self.ips_requests = ips_requests
         self.service = service
         self.out_type = out_type
@@ -22,6 +25,9 @@ class IPSInstance:
     @classmethod
     def create(cls, service: ServiceType, out_type: OutputType, ips_url: str = settings.ips_url_default,
                subscription_key: Optional[str] = None) -> 'IPSInstance':
+        """
+        The default way of creating IPSInstance objects.
+        """
         ips_requests = IPSRequests(ips_url=ips_url, subscription_key=subscription_key)
         return cls(ips_requests=ips_requests, service=service, out_type=out_type)
 
