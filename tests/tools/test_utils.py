@@ -8,7 +8,7 @@ from ips_client.tools.utils import normalize_path, files_in_dir, images_in_dir
 
 @pytest.mark.parametrize('in_path, out_path', [
     ('~/foo', f'/home/{os.getlogin()}/foo'),
-    ('./foo', str(Path(__file__).parent.joinpath('foo'))),
+    ('./foo', str(Path(os.getcwd()).joinpath('foo'))),
 ])
 def test_normalize_path(in_path: str, out_path: str):
     assert str(normalize_path(in_path)) == out_path
