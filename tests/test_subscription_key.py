@@ -41,10 +41,10 @@ class TestJobWithSubscriptionKey:
     def test_job_with_invalid_subscription_fails(self, some_image):
 
         # GIVEN IPS Online with invalid subscription key
-        ips = IPSInstance(service=ServiceType.blur,
-                          out_type=OutputType.images,
-                          ips_url=IPS_ONLINE_URL,
-                          subscription_key='INVALID_SUBSCRIPTION_KEY')
+        ips = IPSInstance.create(service=ServiceType.blur,
+                                 out_type=OutputType.images,
+                                 ips_url=IPS_ONLINE_URL,
+                                 subscription_key='INVALID_SUBSCRIPTION_KEY')
 
         # WHEN a job is performed
         with pytest.raises(IPSResponseError) as exception_info:
@@ -61,10 +61,10 @@ class TestJobWithSubscriptionKey:
     def test_job_with_valid_subscription(self, some_image, subscription_key):
 
         # GIVEN IPS Online with valid subscription key
-        ips = IPSInstance(service=ServiceType.blur,
-                          out_type=OutputType.images,
-                          ips_url=IPS_ONLINE_URL,
-                          subscription_key=subscription_key)
+        ips = IPSInstance.create(service=ServiceType.blur,
+                                 out_type=OutputType.images,
+                                 ips_url=IPS_ONLINE_URL,
+                                 subscription_key=subscription_key)
 
         # WHEN a job is performed
         # THEN it succeeds without error

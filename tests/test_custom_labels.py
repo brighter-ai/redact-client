@@ -10,7 +10,7 @@ from ips_client.ips_instance import IPSInstance
 
 @pytest.fixture(scope='module')
 def ips(ips_url) -> IPSInstance:
-    return IPSInstance(service=ServiceType.blur, out_type=OutputType.images, ips_url=ips_url)
+    return IPSInstance.create(service=ServiceType.blur, out_type=OutputType.images, ips_url=ips_url)
 
 
 @pytest.fixture(scope='module')  # Re-use the initial labels for every test

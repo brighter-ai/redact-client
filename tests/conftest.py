@@ -60,7 +60,7 @@ def ips_requests(ips_url) -> IPSRequests:
 def any_img_ips(ips_url, request) -> IPSInstance:
     service = request.param
     out_type = OutputType.overlays if service == ServiceType.extract else OutputType.images
-    return IPSInstance(service=service, out_type=out_type, ips_url=ips_url)
+    return IPSInstance.create(service=service, out_type=out_type, ips_url=ips_url)
 
 
 @pytest.fixture

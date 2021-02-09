@@ -56,7 +56,7 @@ def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, j
 
     # anonymize
     try:
-        ips = IPSInstance(service=service, out_type=out_type, ips_url=ips_url, subscription_key=subscription_key)
+        ips = IPSInstance.create(service=service, out_type=out_type, ips_url=ips_url, subscription_key=subscription_key)
         with open(file_path, 'rb') as file:
             job: IPSJob = ips.start_job(file=file,
                                         job_args=job_args,

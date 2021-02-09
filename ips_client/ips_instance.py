@@ -11,14 +11,19 @@ settings = Settings()
 
 class IPSInstance:
     """
-    Factory for starting new IPS jobs.
+    Helper for starting new IPS jobs.
     """
 
-    def __init__(self, service: ServiceType, out_type: OutputType, ips_url: str = settings.ips_url_default,
-                 subscription_key: Optional[str] = None):
+    def __init__(self, ips_requests: IPSRequests, service: ServiceType, out_type: OutputType):
+        self.ips_requests = ips_requests
         self.service = service
         self.out_type = out_type
-        self.ips_requests = IPSRequests(ips_url=ips_url, subscription_key=subscription_key)
+
+    @classmethod
+    def create(cls, service: ServiceType, out_type: OutputType, ips_url: str = settings.ips_url_default,
+               subscription_key: Optional[str] = None) -> 'IPSInstance':
+        ips_requests = IPSRequests(ips_url=ips_url, subscription_key=subscription_key)
+        return cls(ips_requests=ips_requests, service=service, out_type=out_type)
 
     def start_job(self, file: IO, job_args: Optional[JobArguments] = None,
                   licence_plate_custom_stamp: Optional[IO] = None,
