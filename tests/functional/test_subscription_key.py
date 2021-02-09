@@ -21,7 +21,7 @@ class TestRequestsWithSubscriptionKey:
 
         # WHEN a request with invalid subscription_key is sent
         with pytest.raises(IPSResponseError) as exception_info:
-            ips.post_job(file=some_image, service=ServiceType.blur, out_type=OutputType.images, )
+            ips.post_job(file=some_image, service=ServiceType.blur, out_type=OutputType.images)
 
         # THEN the response is 401
         assert exception_info.value.response.status_code == 401
