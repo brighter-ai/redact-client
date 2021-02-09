@@ -32,10 +32,10 @@ class IPSJob:
         return JobStatus(**response_dict)
 
     def get_labels(self) -> JobLabels:
-        response_dict = self.ips.get_labels(service=self.service,
+        labels = self.ips.get_labels(service=self.service,
                                             out_type=self.out_type,
                                             output_id=self.output_id)
-        return JobLabels(**response_dict)
+        return labels
 
     def download_result(self) -> JobResult:
         return self.ips.get_output(service=self.service,

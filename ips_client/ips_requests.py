@@ -90,7 +90,7 @@ class IPSRequests:
 
         return response.json()
 
-    def get_labels(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
+    def get_labels(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> JobLabels:
 
         url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/labels')
         response = requests.get(url, headers=self._headers, timeout=settings.requests_timeout)
@@ -98,7 +98,7 @@ class IPSRequests:
         if response.status_code != 200:
             raise IPSResponseError(response=response, msg='Error getting labels')
 
-        return response.json()
+        return JobLabels.parse_obj(response.json())
 
     def delete_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
