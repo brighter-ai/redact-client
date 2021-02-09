@@ -1,6 +1,14 @@
+[![Brighter AI logo](brighter.png)](https://brighter.ai/)
+
 # IPS Python Client
 
-This project provides convenient access to the [Identity Protection Suite (IPS) API](https://docs.identity.ps/). 
+This project provides convenient access to Brighter AI's [Identity Protection Suite (IPS) API](https://docs.identity.ps/) for the 
+anonymization of faces and license plates.
+
+Lear more:
+- [Brighter AI](https://brighter.ai/)
+- Try [Identity Protection Suite](https://product.brighter.ai/) (IPS) online
+- [API Documentation](https://docs.identity.ps/)
 
 ## Installation
 
@@ -15,8 +23,8 @@ For a specific version, append `@[version]`.
 
 ## Quickstart
 
-The pip package automatically installs two command-line shortcuts (`ips_anon_file` and `ips_anon_folder`) that let you anonymize 
-individual files or whole folders, respectively.
+The pip package automatically installs two command-line shortcuts (`ips_anon_file` and `ips_anon_folder`) that let you 
+anonymize individual files or whole folders, respectively.
 
 ```shell
 Usage: ips_anon_file [OPTIONS] FILE_PATH
