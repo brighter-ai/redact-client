@@ -17,7 +17,7 @@ def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, r
                    custom_labels_file_path: Optional[str] = typer.Option(None, '--labels', help='A JSON file containing custom labels'),
                    ips_url: str = settings.ips_url_default, subscription_key: Optional[str] = None,
                    out_path: Optional[str] = typer.Option(None, help="[default: FILE_anonymized.EXT]"),
-                   skip_existing: bool = True, save_labels: bool = True,
+                   skip_existing: bool = True, save_labels: bool = False,
                    auto_delete_job: bool = True):
     job_args = JobArguments(region=region, face=face, license_plate=license_plate)
     anon_file(file_path=file_path, out_type=out_type, service=service, job_args=job_args,
@@ -37,7 +37,7 @@ def anonymize_file_entry_point():
 def anonymize_folder(in_dir: str, out_dir: str, input_type: InputType, out_type: OutputType, service: ServiceType,
                      region: Region = Region.european_union, face: bool = True, license_plate: bool = True,
                      ips_url: str = settings.ips_url_default, subscription_key: Optional[str] = None,
-                     n_parallel_jobs: int = 5, save_labels: bool = True, skip_existing: bool = True,
+                     n_parallel_jobs: int = 5, save_labels: bool = False, skip_existing: bool = True,
                      auto_delete_job: bool = True):
     job_args = JobArguments(region=region, face=face, license_plate=license_plate)
     anon_folder(in_dir=in_dir, out_dir=out_dir, input_type=input_type, out_type=out_type, service=service,
