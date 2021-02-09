@@ -1,9 +1,8 @@
 import glob
-import logging
-import tqdm
 
 from pathlib import Path
 from typing import List
+
 
 ARCHIVE_EXTENSIONS = ['tar']
 IMG_EXTENSIONS = ['jpeg', 'jpg', 'bmp', 'png']
