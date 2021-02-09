@@ -33,7 +33,7 @@ class TestRequestsWithSubscriptionKey:
 
         # WHEN a request with valid subscription_key is sent
         # THEN no exception is thrown
-        ips.post_job(file=some_image, service=ServiceType.blur, out_type=OutputType.images, )
+        ips.post_job(file=some_image, service=ServiceType.blur, out_type=OutputType.images)
 
 
 class TestJobWithSubscriptionKey:
