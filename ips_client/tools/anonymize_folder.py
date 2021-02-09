@@ -30,7 +30,7 @@ class InputType(str, Enum):
 
 def anonymize_folder(in_dir: str, out_dir: str, input_type: InputType, out_type: OutputType, service: ServiceType,
                      job_args: Optional[JobArguments] = None, ips_url: str = settings.ips_url_default,
-                     subscription_key: Optional[str] = None, n_parallel_jobs: int = 5, save_labels: bool = True,
+                     subscription_key: Optional[str] = None, n_parallel_jobs: int = 5, save_labels: bool = False,
                      skip_existing: bool = True, auto_delete_job: bool = True):
 
     # Normalize paths, e.g.: '~/..' -> '/home'

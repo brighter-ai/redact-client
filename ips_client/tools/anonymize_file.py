@@ -22,7 +22,7 @@ log.debug(f'Settings: {settings}')
 def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, job_args: Optional[JobArguments] = None,
                    licence_plate_custom_stamp_path: Optional[str] = None, custom_labels_file_path: Optional[str] = None,
                    ips_url: str = settings.ips_url_default, out_path: Optional[str] = None,
-                   subscription_key: Optional[str] = None, skip_existing: bool = True, save_labels: bool = True,
+                   subscription_key: Optional[str] = None, skip_existing: bool = True, save_labels: bool = False,
                    auto_delete_job: bool = True):
     """
     If no out_path is given, <input_filename_anonymized> will be used.
