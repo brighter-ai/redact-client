@@ -36,12 +36,14 @@ def anonymize_file_entry_point():
 
 def anonymize_folder(in_dir: str, out_dir: str, input_type: InputType, out_type: OutputType, service: ServiceType,
                      region: Region = Region.european_union, face: bool = True, license_plate: bool = True,
+                     licence_plate_custom_stamp_path: Optional[str] = typer.Option(None, '--custom-lp', help='Image file to use for license plate replacements'),
                      ips_url: str = settings.ips_url_default, subscription_key: Optional[str] = None,
                      n_parallel_jobs: int = 5, save_labels: bool = False, skip_existing: bool = True,
                      auto_delete_job: bool = True):
     job_args = JobArguments(region=region, face=face, license_plate=license_plate)
     anon_folder(in_dir=in_dir, out_dir=out_dir, input_type=input_type, out_type=out_type, service=service,
-                job_args=job_args, ips_url=ips_url, subscription_key=subscription_key, n_parallel_jobs=n_parallel_jobs,
+                job_args=job_args, licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
+                ips_url=ips_url, subscription_key=subscription_key, n_parallel_jobs=n_parallel_jobs,
                 save_labels=save_labels, skip_existing=skip_existing, auto_delete_job=auto_delete_job)
 
 

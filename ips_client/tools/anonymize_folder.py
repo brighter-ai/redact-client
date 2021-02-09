@@ -29,9 +29,10 @@ class InputType(str, Enum):
 
 
 def anonymize_folder(in_dir: str, out_dir: str, input_type: InputType, out_type: OutputType, service: ServiceType,
-                     job_args: Optional[JobArguments] = None, ips_url: str = settings.ips_url_default,
-                     subscription_key: Optional[str] = None, n_parallel_jobs: int = 5, save_labels: bool = False,
-                     skip_existing: bool = True, auto_delete_job: bool = True):
+                     job_args: Optional[JobArguments] = None, licence_plate_custom_stamp_path: Optional[str] = None,
+                     ips_url: str = settings.ips_url_default, subscription_key: Optional[str] = None,
+                     n_parallel_jobs: int = 5, save_labels: bool = False, skip_existing: bool = True,
+                     auto_delete_job: bool = True):
 
     # Normalize paths, e.g.: '~/..' -> '/home'
     in_dir = normalize_path(in_dir)
@@ -54,6 +55,7 @@ def anonymize_folder(in_dir: str, out_dir: str, input_type: InputType, out_type:
                                                 service=service,
                                                 out_type=out_type,
                                                 job_args=job_args,
+                                                licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
                                                 ips_url=ips_url,
                                                 subscription_key=subscription_key,
                                                 save_labels=save_labels,
