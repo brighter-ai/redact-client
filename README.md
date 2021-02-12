@@ -2,8 +2,8 @@
 
 # IPS Python Client
 
-This project provides convenient access to Brighter AI's [Identity Protection Suite (IPS) API](https://docs.identity.ps/) for the 
-anonymization of faces and license plates.
+This project provides convenient access to Brighter AI's [Identity Protection Suite (IPS) API](https://docs.identity.ps/) 
+for the anonymization of faces and license plates.
 
 Lear more:
 - [Brighter AI](https://brighter.ai/)
@@ -63,10 +63,22 @@ ips_anon_folder ./in_dir ./out_dir images images blur --ips-url=127.0.0.1:8787
 
 ## Library Usage
 
-The described command-line operations can also be performed programmatically through the 
-Python modules `ips_client.tools.anonymize_file` and `ips_client.tools.anonymize_folder`.
+The `ips_client` package itself provides different ways to use the IPS API from Python.
 
-If you want to have more fine-grained access to the API, you may want to use `IPSInstance` and `IPSJob`:
+### (Batch) File Processing
+
+The command-line operations described above can be called programmatically through the modules 
+`ips_client.tools.anonymize_file` and `ips_client.tools.anonymize_folder`. The latter one allows for anonymizing
+several objects in parallel which usually results in a significant speed-up.
+
+### API Requests
+
+The class `ips_client.ips_requests.IPSRequests` maps the [API endpoints](https://docs.identity.ps/) to Python methods.  
+It is intended to reduce boiler-plate code around the API calls.
+
+### IPS Jobs
+
+Classes `IPSInstance` and `IPSJob` provide the most convenient high-level access to the API: 
 
 ```python
 from ips_client.ips_instance import IPSInstance
@@ -75,3 +87,5 @@ ips = IPSInstance.create(service='blur', out_type='images', ips_url='http://127.
 with open('image.jpg', 'rb') as f:
     result = ips.start_job(file=f).wait_until_finished().download_result()
 ```
+
+The anonymization can be further configured by adding additional `JobArguments` to `start_job()`. See `example.py`.
