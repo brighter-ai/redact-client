@@ -25,7 +25,7 @@ def some_image_labels(ips, some_image) -> JobLabels:
     some_image.seek(0)
     job = ips.start_job(file=some_image)
     labels = job.wait_until_finished().get_labels()
-    assert len(labels.faces) == 1
+    assert len(labels.frames[0].faces) == 1
     return labels
 
 

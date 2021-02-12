@@ -1,7 +1,7 @@
 from enum import Enum
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, PositiveInt
 from requests import Response
-from typing import Optional, List
+from typing import Optional, List, Tuple
 from uuid import UUID
 
 
@@ -69,11 +69,38 @@ class JobStatus(BaseModel):
         return self.state in [JobState.active, JobState.pending]
 
 
+class Label(BaseModel):
+    bounding_box: Tuple[int, int, int, int]
+    identity: int = 0
+    score: Optional[float] = None
+
+
+class LabelType(str, Enum):
+    face: str = 'face'
+    license_plate: str = 'license_plate'
+    person: str = 'person'
+
+
+class FrameLabels(BaseModel):
+    index: PositiveInt
+    faces: List[Label] = Field(default_factory=list)
+    license_plates: List[Label] = Field(default_factory=list)
+    persons: List[Label] = Field(default_factory=list)
+
+    def append(self, label: Label, label_type: LabelType):
+        label_type = LabelType(label_type)
+        if LabelType(label_type) == LabelType.face:
+            self.faces.append(label)
+        elif LabelType(label_type) == LabelType.license_plate:
+            self.license_plates.append(label)
+        elif LabelType(label_type) == LabelType.person:
+            self.persons.append(label)
+        else:
+            raise ValueError()
+
+
 class JobLabels(BaseModel):
-    # TODO Model the full data hierarchy
-    faces: List = Field(default_factory=list)
-    license_plates: List = Field(default_factory=list)
-    persons: List = Field(default_factory=list)
+    frames: List[FrameLabels]
 
 
 class IPSResponseError(Exception):

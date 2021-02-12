@@ -39,8 +39,8 @@ class TestIPSJob:
         job_labels = job.wait_until_finished().get_labels()
 
         # THEN assert that the result contains the bbox for one face
-        assert len(job_labels.faces) == 1
-        assert len(job_labels.faces[0]['boundingBox']) == 4
+        assert len(job_labels.frames[0].faces) == 1
+        assert len(job_labels.frames[0].faces[0].bounding_box) == 4
 
     @pytest.mark.timeout(10)
     def test_delete(self, job):
