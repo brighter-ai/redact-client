@@ -6,7 +6,7 @@ This project provides convenient access to Brighter AI's [Identity Protection Su
 for the anonymization of faces and license plates.
 
 Lear more:
-- [Brighter AI](https://brighter.ai/)
+- About us: [Brighter AI](https://brighter.ai/)
 - Try [Identity Protection Suite](https://product.brighter.ai/) (IPS) online
 - [API Documentation](https://docs.identity.ps/)
 
@@ -42,9 +42,9 @@ Usage: ips_anon_folder [OPTIONS] IN_DIR OUT_DIR
 Add `--help` to see additional options. 
 
 
-### Example (image)
+### Examples
 
-Anonymize an individual image:
+Anonymize an individual image from the command line:
 
 ```shell
 ips_anon_file image.jpg images blur --ips-url=http://127.0.0.1:8787
@@ -52,9 +52,8 @@ ips_anon_file image.jpg images blur --ips-url=http://127.0.0.1:8787
 
 Per default, the result will be stored in `image_anonymized.jpg`.
 
-### Example (folder)
-
-Larger amounts of data (images in this case) can be anonymized in batches:
+Larger amounts of data (images in this case) can be 
+anonymized in batches:
 
 ```shell
 ips_anon_folder ./in_dir ./out_dir images images blur --ips-url=127.0.0.1:8787
@@ -67,8 +66,8 @@ The `ips_client` package itself provides different ways to use the IPS API from 
 
 ### (Batch) File Processing
 
-The command-line operations described above can be called programmatically through the modules 
-`ips_client.tools.anonymize_file` and `ips_client.tools.anonymize_folder`. The latter one allows for anonymizing
+The command-line shortcuts described above can be called programmatically through modules 
+`ips_client.tools.anonymize_file` and `ips_client.tools.anonymize_folder`. The latter allows for anonymizing
 several objects in parallel which usually results in a significant speed-up.
 
 ### API Requests
@@ -78,7 +77,7 @@ It is intended to reduce boiler-plate code around the API calls.
 
 ### IPS Jobs
 
-Classes `IPSInstance` and `IPSJob` provide the most convenient high-level access to the API: 
+In addition, the classes `IPSInstance` and `IPSJob` provide convenient high-level access to the API: 
 
 ```python
 from ips_client.ips_instance import IPSInstance
