@@ -15,7 +15,7 @@ def ips(ips_url) -> IPSInstance:
 
 @pytest.fixture(scope='module')  # Re-use the initial labels for every test
 def some_image() -> IO:
-    img_path = pathlib.Path(__file__).parent.joinpath('resources/obama.jpg')
+    img_path = pathlib.Path(__file__).parent.parent.joinpath('resources/obama.jpg')
     with open(img_path, 'rb') as f:
         yield f
 
