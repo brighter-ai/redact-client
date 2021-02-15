@@ -1,10 +1,8 @@
 import time
 
-from copy import copy
-from typing import IO
 from uuid import UUID
 
-from ips_client.data_models import ServiceType, OutputType, JobArguments, JobStatus, JobResult, JobLabels
+from ips_client.data_models import ServiceType, OutputType, JobStatus, JobResult, JobLabels
 from ips_client.ips_requests import IPSRequests
 from ips_client.settings import Settings
 
@@ -13,33 +11,19 @@ settings = Settings()
 
 
 class IPSJob:
+    """
+    IPSJobs is intended to be the default, most convenient way for interacting with IPS. Use factory
+    IPSInstance.start_job() to start new jobs.
+    """
 
-    def __init__(self, file: IO, service: ServiceType, out_type: OutputType, output_id: UUID,
-                 job_args: JobArguments = JobArguments(), ips_url: str = settings.ips_url_default):
-        """Intended for internal use. Start a job through start_new() instead."""
-        self.file = file
+    def __init__(self, ips_requests: IPSRequests, service: ServiceType, out_type: OutputType, output_id: UUID):
+        """
+        Intended for internal use. Start a job through IPSInstance.start_job() instead.
+        """
+        self.ips = ips_requests
         self.service = service
         self.out_type = out_type
         self.output_id: UUID = output_id
-        self.job_args = copy(job_args)
-        self.ips = IPSRequests(ips_url=ips_url)
-
-    @classmethod
-    def start_new(cls, file: IO, service: ServiceType, out_type: OutputType, job_args: JobArguments = JobArguments(),
-                  ips_url: str = settings.ips_url_default) -> "IPSJob":
-
-        ips = IPSRequests(ips_url=ips_url)
-        post_response = ips.post_job(file=file,
-                                     service=service,
-                                     out_type=out_type,
-                                     job_args=job_args)
-
-        return cls(file=file,
-                   service=service,
-                   out_type=out_type,
-                   job_args=job_args,
-                   output_id=post_response.output_id,
-                   ips_url=ips_url)
 
     def get_status(self) -> JobStatus:
         response_dict = self.ips.get_status(service=self.service,
@@ -48,10 +32,10 @@ class IPSJob:
         return JobStatus(**response_dict)
 
     def get_labels(self) -> JobLabels:
-        response_dict = self.ips.get_labels(service=self.service,
+        labels = self.ips.get_labels(service=self.service,
                                             out_type=self.out_type,
                                             output_id=self.output_id)
-        return JobLabels(**response_dict)
+        return labels
 
     def download_result(self) -> JobResult:
         return self.ips.get_output(service=self.service,

@@ -1,9 +1,8 @@
 import glob
-import logging
-import tqdm
 
 from pathlib import Path
 from typing import List
+
 
 ARCHIVE_EXTENSIONS = ['tar']
 IMG_EXTENSIONS = ['jpeg', 'jpg', 'bmp', 'png']
@@ -88,19 +87,3 @@ def videos_in_dir(dir: Path, recursive=True, sort=False):
     for file in file_list:
         if is_video(file):
             yield file
-
-
-class TqdmLoggingHandler(logging.Handler):
-
-    def __init__(self, level=logging.NOTSET):
-        super().__init__(level)
-
-    def emit(self, record):
-        try:
-            msg = self.format(record)
-            tqdm.tqdm.write(msg)
-            self.flush()
-        except (KeyboardInterrupt, SystemExit):
-            raise
-        except:
-            self.handleError(record)
