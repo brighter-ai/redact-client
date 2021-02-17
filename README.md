@@ -1,6 +1,6 @@
 [![Brighter AI logo](brighter.png)](https://brighter.ai/)
 
-# IPS Python Client
+# Redact Python Client
 
 This project provides convenient access to Brighter AI's [Identity Protection Suite (IPS) API](https://docs.identity.ps/) 
 for the anonymization of faces and license plates.
@@ -77,12 +77,12 @@ It is intended to reduce boiler-plate code around the API calls.
 
 ### IPS Jobs
 
-In addition, the classes `IPSInstance` and `IPSJob` provide convenient high-level access to the API: 
+In addition, the classes `IPSInstance` and `IPSJob` provide convenient high-level access to the API:
 
 ```python
-from ips_client.ips_instance import IPSInstance
+from redact_client.ips_instance import IPSInstance
 
-ips = IPSInstance.create(service='blur', out_type='images', ips_url='http://127.0.0.1:8787')
+ips = IPSInstance.create(service='blur', out_type='images', redact_url='http://127.0.0.1:8787')
 with open('image.jpg', 'rb') as f:
     result = ips.start_job(file=f).wait_until_finished().download_result()
 ```

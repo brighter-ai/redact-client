@@ -1,5 +1,5 @@
 build:
-	cd ips_client
+	cd redact_client
 	flit build
 
 install:
@@ -8,5 +8,5 @@ install:
 
 test-installation:
 	# Test whether the command endpoints are installed
-	ips_anon_file --help
-	ips_anon_folder --help
+	redact_anon_file --help
+	redact_anon_folder --help

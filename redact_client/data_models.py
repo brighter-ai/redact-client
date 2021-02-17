@@ -103,7 +103,7 @@ class JobLabels(BaseModel):
     frames: List[FrameLabels]
 
 
-class IPSResponseError(Exception):
+class RedactResponseError(Exception):
 
     def __init__(self, response: Response, msg: Optional[str] = None):
         super().__init__()

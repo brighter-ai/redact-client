@@ -6,29 +6,29 @@ from io import FileIO
 from typing import Dict, Optional, IO, Union
 from uuid import UUID
 
-from ips_client.data_models import (ServiceType, OutputType, JobArguments, JobResult, IPSResponseError, JobPostResponse,
-                                    JobLabels)
-from ips_client.settings import Settings
-from ips_client.utils import normalize_url
+from redact_client.data_models import (ServiceType, OutputType, JobArguments, JobResult, RedactResponseError, JobPostResponse,
+                                       JobLabels)
+from redact_client.settings import Settings
+from redact_client.utils import normalize_url
 
 
 settings = Settings()
 
 logging.basicConfig(level=settings.log_level.upper())
-log = logging.getLogger('ips-requests')
+log = logging.getLogger('redact-requests')
 
 
-class IPSRequests:
+class RedactRequests:
     """
-    Helper class wrapping requests to the IPS API.
+    Helper class wrapping requests to the Redact API.
     """
 
     API_VERSION = 'v3'
 
-    def __init__(self, ips_url: str = settings.ips_url_default, subscription_key: Optional[str] = None,
+    def __init__(self, redact_url: str = settings.redact_url_default, subscription_key: Optional[str] = None,
                  session: Optional[requests.Session] = None):
 
-        self.ips_url = normalize_url(ips_url)
+        self.redact_url = normalize_url(redact_url)
         self.subscription_key = subscription_key
         self._session = session if session else requests.Session()
 
@@ -44,7 +44,7 @@ class IPSRequests:
         Post the job via a post request.
         """
 
-        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}')
+        url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}')
 
         if not job_args:
             job_args = JobArguments()
@@ -67,57 +67,57 @@ class IPSRequests:
                                       timeout=settings.requests_timeout_files)
 
         if response.status_code != 200:
-            raise IPSResponseError(response=response, msg='Error posting job')
+            raise RedactResponseError(response=response, msg='Error posting job')
 
         return JobPostResponse(**response.json())
 
     def get_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> JobResult:
 
-        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
+        url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
         response = self._session.get(url, headers=self._headers, timeout=settings.requests_timeout_files)
 
         if response.status_code != 200:
-            raise IPSResponseError(response=response, msg='Error downloading job result')
+            raise RedactResponseError(response=response, msg='Error downloading job result')
 
         return JobResult(content=response.content,
                          media_type=response.headers['Content-Type'])
 
     def get_status(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
-        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/status')
+        url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/status')
         response = self._session.get(url, headers=self._headers, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
-            raise IPSResponseError(response=response, msg='Error getting job status')
+            raise RedactResponseError(response=response, msg='Error getting job status')
 
         return response.json()
 
     def get_labels(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> JobLabels:
 
-        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/labels')
+        url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/labels')
         response = self._session.get(url, headers=self._headers, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
-            raise IPSResponseError(response=response, msg='Error getting labels')
+            raise RedactResponseError(response=response, msg='Error getting labels')
 
         return JobLabels.parse_obj(response.json())
 
     def delete_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
-        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
+        url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
         response = self._session.delete(url, headers=self._headers, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
-            raise IPSResponseError(response=response, msg='Error deleting job')
+            raise RedactResponseError(response=response, msg='Error deleting job')
 
         return response.json()
 
     def get_error(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
-        url = urllib.parse.urljoin(self.ips_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/error')
+        url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/error')
         response = self._session.get(url, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
-            raise IPSResponseError(response=response, msg='Error getting job error')
+            raise RedactResponseError(response=response, msg='Error getting job error')
 
         return response.json()

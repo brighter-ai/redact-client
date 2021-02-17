@@ -8,11 +8,11 @@ from enum import Enum
 from pathlib import Path
 from typing import List, Optional
 
-from ips_client.data_models import IPSResponseError, JobArguments
-from ips_client.job import ServiceType, OutputType
-from ips_client.settings import Settings
-from ips_client.tools.utils import files_in_dir, is_image, is_video, is_archive, normalize_path
-from ips_client.tools.anonymize_file import anonymize_file
+from redact_client.data_models import RedactResponseError, JobArguments
+from redact_client.job import ServiceType, OutputType
+from redact_client.settings import Settings
+from redact_client.tools.utils import files_in_dir, is_image, is_video, is_archive, normalize_path
+from redact_client.tools.anonymize_file import anonymize_file
 
 
 logging.basicConfig(level=logging.INFO)
@@ -30,7 +30,7 @@ class InputType(str, Enum):
 
 def anonymize_folder(in_dir: str, out_dir: str, input_type: InputType, out_type: OutputType, service: ServiceType,
                      job_args: Optional[JobArguments] = None, licence_plate_custom_stamp_path: Optional[str] = None,
-                     ips_url: str = settings.ips_url_default, subscription_key: Optional[str] = None,
+                     redact_url: str = settings.redact_url_default, subscription_key: Optional[str] = None,
                      n_parallel_jobs: int = 5, save_labels: bool = False, skip_existing: bool = True,
                      auto_delete_job: bool = True):
 
@@ -56,7 +56,7 @@ def anonymize_folder(in_dir: str, out_dir: str, input_type: InputType, out_type:
                                                 out_type=out_type,
                                                 job_args=job_args,
                                                 licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
-                                                ips_url=ips_url,
+                                                redact_url=redact_url,
                                                 subscription_key=subscription_key,
                                                 save_labels=save_labels,
                                                 skip_existing=skip_existing,
@@ -108,7 +108,7 @@ def _anon_file_with_relative_path_log_exc(relative_file_path: str, base_dir_in: 
                                       base_dir_in=base_dir_in,
                                       base_dir_out=base_dir_out,
                                       **kwargs)
-    except IPSResponseError as e:
+    except RedactResponseError as e:
         log.error(f'Error while anonymizing {relative_file_path}: {str(e)}')
     except Exception as e:
         log.error(f'Error while anonymizing {relative_file_path}: {str(e)}')
