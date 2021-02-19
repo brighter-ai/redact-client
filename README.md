@@ -15,7 +15,7 @@ Lear more:
 Directly install the latest version from GitHub: 
 
 ```shell
-pip install git+ssh://git@github.com/brighter-ai/redact-client.git
+pip install git+https://github.com/brighter-ai/redact-client.git
 ```
 
 For a specific version, append `@[version]`. 
