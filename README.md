@@ -67,12 +67,12 @@ The `redact` package itself provides different ways to use the Redact API from P
 ### (Batch) File Processing
 
 The command-line shortcuts described above can be called programmatically through modules 
-`redact.tools.redact_file` and `redact.tools.redact_folder`. The latter allows for anonymizing
+`redact.redact_file` and `redact.redact_folder`. The latter allows for anonymizing
 several objects in parallel which usually results in a significant speed-up.
 
 ### API Requests
 
-The class `redact.redact_requests.RedactRequests` maps the [API endpoints](https://docs.identity.ps/) to Python methods.  
+The class `redact.RedactRequests` maps the [API endpoints](https://docs.identity.ps/) to Python methods.  
 It is intended to reduce boiler-plate code around the API calls.
 
 ### Redact Jobs
@@ -80,7 +80,7 @@ It is intended to reduce boiler-plate code around the API calls.
 In addition, the classes `RedactInstance` and `RedactJob` provide convenient high-level access to the API:
 
 ```python
-from redact.redact_instance import RedactInstance
+from redact import RedactInstance
 
 redact = RedactInstance.create(service='blur', out_type='images', redact_url='http://127.0.0.1:8787')
 with open('image.jpg', 'rb') as f:
