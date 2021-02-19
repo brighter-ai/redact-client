@@ -3,7 +3,7 @@ import pytest
 
 from PIL import Image
 
-from redact_client.data_models import JobState, RedactResponseError
+from redact.data_models import JobState, RedactResponseError
 
 
 class TestRedactJob:

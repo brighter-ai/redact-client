@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from redact_client.data_models import ServiceType, OutputType
+from redact.data_models import ServiceType, OutputType
 
 
 class TestRedactRequests:

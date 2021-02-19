@@ -6,10 +6,10 @@ from io import FileIO
 from typing import Dict, Optional, IO, Union
 from uuid import UUID
 
-from redact_client.data_models import (ServiceType, OutputType, JobArguments, JobResult, RedactResponseError, JobPostResponse,
-                                       JobLabels)
-from redact_client.settings import Settings
-from redact_client.utils import normalize_url
+from redact.data_models import (ServiceType, OutputType, JobArguments, JobResult, RedactResponseError, JobPostResponse,
+                                JobLabels)
+from redact.settings import Settings
+from redact.utils import normalize_url
 
 
 settings = Settings()

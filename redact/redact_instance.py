@@ -1,9 +1,9 @@
 from typing import Optional, IO, Union
 
-from redact_client.data_models import ServiceType, OutputType, JobArguments, JobLabels
-from redact_client.redact_requests import RedactRequests
-from redact_client.job import RedactJob
-from redact_client.settings import Settings
+from redact.data_models import ServiceType, OutputType, JobArguments, JobLabels
+from redact.redact_job import RedactJob
+from redact.redact_requests import RedactRequests
+from redact.settings import Settings
 
 
 settings = Settings()

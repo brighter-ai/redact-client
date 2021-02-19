@@ -6,7 +6,7 @@ from io import FileIO
 from pathlib import Path
 from typing import IO
 
-from redact_client.settings import Settings
+from redact.settings import Settings
 
 
 settings = Settings()

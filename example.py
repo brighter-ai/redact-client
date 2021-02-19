@@ -2,8 +2,8 @@ from io import BytesIO
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import imread
 
-from redact_client.data_models import ServiceType, OutputType, JobArguments, Region
-from redact_client.redact_instance import RedactInstance
+from redact.data_models import ServiceType, OutputType, JobArguments, Region
+from redact.redact_instance import RedactInstance
 
 
 def main():

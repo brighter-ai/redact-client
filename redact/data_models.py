@@ -25,7 +25,7 @@ class Region(str, Enum):
     united_states_of_america = 'united_states_of_america'
 
     def __str__(self):
-        """Return 'european_union' instead of 'Region.european_union'. The latter is more helpful because the outpu
+        """Return 'european_union' instead of 'Region.european_union'. The latter is more helpful because the output
         is most likely to be used as a query parameter in an HTTP request."""
         return self.value
 

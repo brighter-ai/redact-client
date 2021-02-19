@@ -2,11 +2,11 @@ import pytest
 
 from pathlib import Path
 
-from redact_client.data_models import OutputType, ServiceType
-from redact_client.tools.anonymize_folder import anonymize_folder, InputType
+from redact.data_models import OutputType, ServiceType
+from redact.tools.redact_folder import redact_folder, InputType
 
 
-class TestAnonymizeFolder:
+class TestRedactFolder:
 
     @pytest.mark.parametrize(argnames='n_parallel_jobs', argvalues=[1, 5], ids=['1 job', '5 jobs'])
     def test_all_images_in_folder_are_anonymized(self, images_path: Path, tmp_path_factory, redact_url,
@@ -16,14 +16,14 @@ class TestAnonymizeFolder:
         output_path = tmp_path_factory.mktemp('imgs_dir_out')
 
         # WHEN the whole folder is anonymized
-        anonymize_folder(in_dir=str(images_path),
-                         out_dir=str(output_path),
-                         input_type=InputType.images,
-                         out_type=OutputType.images,
-                         service=ServiceType.blur,
-                         save_labels=True,
-                         redact_url=redact_url,
-                         n_parallel_jobs=n_parallel_jobs)
+        redact_folder(in_dir=str(images_path),
+                      out_dir=str(output_path),
+                      input_type=InputType.images,
+                      out_type=OutputType.images,
+                      service=ServiceType.blur,
+                      save_labels=True,
+                      redact_url=redact_url,
+                      n_parallel_jobs=n_parallel_jobs)
 
         # THEN all input images are anonymized in the output dir
         files_in_in_dir = [str(p.relative_to(images_path)) for p in images_path.rglob('*.*')]

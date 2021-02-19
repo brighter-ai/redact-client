@@ -2,9 +2,9 @@ import time
 
 from uuid import UUID
 
-from redact_client.data_models import ServiceType, OutputType, JobStatus, JobResult, JobLabels
-from redact_client.redact_requests import RedactRequests
-from redact_client.settings import Settings
+from redact.data_models import ServiceType, OutputType, JobStatus, JobResult, JobLabels
+from redact.redact_requests import RedactRequests
+from redact.settings import Settings
 
 
 settings = Settings()
