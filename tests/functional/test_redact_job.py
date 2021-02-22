@@ -6,6 +6,7 @@ from PIL import Image
 from redact.data_models import JobState, RedactResponseError
 
 
+@pytest.mark.timeout(30)
 class TestRedactJob:
 
     def test_wait_for_status_completed(self, job):
@@ -42,7 +43,6 @@ class TestRedactJob:
         assert len(job_labels.frames[0].faces) == 1
         assert len(job_labels.frames[0].faces[0].bounding_box) == 4
 
-    @pytest.mark.timeout(10)
     def test_delete(self, job):
 
         # GIVEN an Redact job
