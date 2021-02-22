@@ -8,11 +8,11 @@ from enum import Enum
 from pathlib import Path
 from typing import List, Optional
 
-from ips_client.data_models import IPSResponseError, JobArguments
-from ips_client.job import ServiceType, OutputType
-from ips_client.settings import Settings
-from ips_client.tools.utils import files_in_dir, is_image, is_video, is_archive, normalize_path
-from ips_client.tools.anonymize_file import anonymize_file
+from redact.data_models import RedactResponseError, JobArguments
+from redact.redact_job import ServiceType, OutputType
+from redact.settings import Settings
+from redact.tools.redact_file import redact_file
+from redact.tools.utils import files_in_dir, is_image, is_video, is_archive, normalize_path
 
 
 logging.basicConfig(level=logging.INFO)
@@ -28,11 +28,11 @@ class InputType(str, Enum):
     archives: str = 'archives'
 
 
-def anonymize_folder(in_dir: str, out_dir: str, input_type: InputType, out_type: OutputType, service: ServiceType,
-                     job_args: Optional[JobArguments] = None, licence_plate_custom_stamp_path: Optional[str] = None,
-                     ips_url: str = settings.ips_url_default, subscription_key: Optional[str] = None,
-                     n_parallel_jobs: int = 5, save_labels: bool = False, skip_existing: bool = True,
-                     auto_delete_job: bool = True):
+def redact_folder(in_dir: str, out_dir: str, input_type: InputType, out_type: OutputType, service: ServiceType,
+                  job_args: Optional[JobArguments] = None, licence_plate_custom_stamp_path: Optional[str] = None,
+                  redact_url: str = settings.redact_url_default, subscription_key: Optional[str] = None,
+                  n_parallel_jobs: int = 5, save_labels: bool = False, skip_existing: bool = True,
+                  auto_delete_job: bool = True):
 
     # Normalize paths, e.g.: '~/..' -> '/home'
     in_dir = normalize_path(in_dir)
@@ -48,7 +48,7 @@ def anonymize_folder(in_dir: str, out_dir: str, input_type: InputType, out_type:
     log.info(f'Found {len(relative_file_paths)} {input_type.value} to process')
 
     # Fix input arguments to make method mappable
-    thread_function = _anon_file_with_relative_path if n_parallel_jobs == 1 else _anon_file_with_relative_path_log_exc
+    thread_function = _redact_file_with_relative_path if n_parallel_jobs == 1 else _redact_file_with_relative_path_log_exc
     partial_thread_function = functools.partial(thread_function,
                                                 base_dir_in=in_dir,
                                                 base_dir_out=out_dir,
@@ -56,7 +56,7 @@ def anonymize_folder(in_dir: str, out_dir: str, input_type: InputType, out_type:
                                                 out_type=out_type,
                                                 job_args=job_args,
                                                 licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
-                                                ips_url=ips_url,
+                                                redact_url=redact_url,
                                                 subscription_key=subscription_key,
                                                 save_labels=save_labels,
                                                 skip_existing=skip_existing,
@@ -99,23 +99,23 @@ def _get_relative_file_paths(in_dir: Path, input_type: InputType) -> List[str]:
     return relative_file_paths
 
 
-def _anon_file_with_relative_path_log_exc(relative_file_path: str, base_dir_in: str, base_dir_out: str, **kwargs):
+def _redact_file_with_relative_path_log_exc(relative_file_path: str, base_dir_in: str, base_dir_out: str, **kwargs):
     """This is an internal helper function to be run by a thread. We log the exceptions so they don't get lost inside
     the thread."""
 
     try:
-        _anon_file_with_relative_path(relative_file_path=relative_file_path,
-                                      base_dir_in=base_dir_in,
-                                      base_dir_out=base_dir_out,
-                                      **kwargs)
-    except IPSResponseError as e:
+        _redact_file_with_relative_path(relative_file_path=relative_file_path,
+                                        base_dir_in=base_dir_in,
+                                        base_dir_out=base_dir_out,
+                                        **kwargs)
+    except RedactResponseError as e:
         log.error(f'Error while anonymizing {relative_file_path}: {str(e)}')
     except Exception as e:
         log.error(f'Error while anonymizing {relative_file_path}: {str(e)}')
 
 
-def _anon_file_with_relative_path(relative_file_path: str, base_dir_in: str, base_dir_out: str, **kwargs):
+def _redact_file_with_relative_path(relative_file_path: str, base_dir_in: str, base_dir_out: str, **kwargs):
     """This is an internal helper function."""
     in_path = Path(base_dir_in).joinpath(relative_file_path)
     out_path = Path(base_dir_out).joinpath(relative_file_path)
-    anonymize_file(file_path=in_path, out_path=out_path, **kwargs)
+    redact_file(file_path=in_path, out_path=out_path, **kwargs)

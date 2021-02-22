@@ -25,7 +25,7 @@ class Region(str, Enum):
     united_states_of_america = 'united_states_of_america'
 
     def __str__(self):
-        """Return 'european_union' instead of 'Region.european_union'. The latter is more helpful because the outpu
+        """Return 'european_union' instead of 'Region.european_union'. The latter is more helpful because the output
         is most likely to be used as a query parameter in an HTTP request."""
         return self.value
 
@@ -34,8 +34,6 @@ class JobArguments(BaseModel):
     region: Region = Region.european_union
     face: Optional[bool] = None
     license_plate: Optional[bool] = None
-    person: Optional[bool] = None
-    block_portraits: Optional[bool] = None
     speed_optimized: Optional[bool] = None
 
 
@@ -78,14 +76,12 @@ class Label(BaseModel):
 class LabelType(str, Enum):
     face: str = 'face'
     license_plate: str = 'license_plate'
-    person: str = 'person'
 
 
 class FrameLabels(BaseModel):
     index: PositiveInt
     faces: List[Label] = Field(default_factory=list)
     license_plates: List[Label] = Field(default_factory=list)
-    persons: List[Label] = Field(default_factory=list)
 
     def append(self, label: Label, label_type: LabelType):
         label_type = LabelType(label_type)
@@ -93,8 +89,6 @@ class FrameLabels(BaseModel):
             self.faces.append(label)
         elif LabelType(label_type) == LabelType.license_plate:
             self.license_plates.append(label)
-        elif LabelType(label_type) == LabelType.person:
-            self.persons.append(label)
         else:
             raise ValueError()
 
@@ -103,7 +97,7 @@ class JobLabels(BaseModel):
     frames: List[FrameLabels]
 
 
-class IPSResponseError(Exception):
+class RedactResponseError(Exception):
 
     def __init__(self, response: Response, msg: Optional[str] = None):
         super().__init__()

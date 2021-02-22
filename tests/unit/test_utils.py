@@ -1,6 +1,6 @@
 import pytest
 
-from ips_client.utils import normalize_url
+from redact.utils import normalize_url
 
 
 @pytest.mark.parametrize('input_url, output_url', [

@@ -3,7 +3,7 @@ import pytest
 
 from pathlib import Path
 
-from ips_client.tools.utils import normalize_path, files_in_dir, images_in_dir
+from redact.tools.utils import normalize_path, files_in_dir, images_in_dir
 
 
 @pytest.mark.parametrize('in_path, out_path', [

@@ -1,5 +1,5 @@
 build:
-	cd ips_client
+	cd redact
 	flit build
 
 install:
@@ -7,6 +7,4 @@ install:
 	pip install . --upgrade
 
 test-installation:
-	# Test whether the command endpoints are installed
-	ips_anon_file --help
-	ips_anon_folder --help
+	redact_file --help > /dev/null && redact_folder --help > /dev/null && echo "OK: Command-line endpoints installed"

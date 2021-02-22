@@ -5,11 +5,11 @@ from pathlib import Path
 from requests.exceptions import ConnectionError
 from typing import Optional, Union
 
-from ips_client.data_models import JobArguments, JobLabels
-from ips_client.ips_instance import IPSInstance
-from ips_client.job import IPSJob, ServiceType, OutputType
-from ips_client.settings import Settings
-from ips_client.tools.utils import normalize_path
+from redact.data_models import JobArguments, JobLabels
+from redact.redact_instance import RedactInstance
+from redact.redact_job import RedactJob, ServiceType, OutputType
+from redact.settings import Settings
+from redact.tools.utils import normalize_path
 
 
 logging.basicConfig(level=logging.INFO)
@@ -19,13 +19,13 @@ settings = Settings()
 log.debug(f'Settings: {settings}')
 
 
-def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, job_args: Optional[JobArguments] = None,
-                   licence_plate_custom_stamp_path: Optional[str] = None, custom_labels_file_path: Optional[str] = None,
-                   ips_url: str = settings.ips_url_default, out_path: Optional[str] = None,
-                   subscription_key: Optional[str] = None, skip_existing: bool = True, save_labels: bool = False,
-                   auto_delete_job: bool = True):
+def redact_file(file_path: str, out_type: OutputType, service: ServiceType, job_args: Optional[JobArguments] = None,
+                licence_plate_custom_stamp_path: Optional[str] = None, custom_labels_file_path: Optional[str] = None,
+                redact_url: str = settings.redact_url_default, out_path: Optional[str] = None,
+                subscription_key: Optional[str] = None, skip_existing: bool = True, save_labels: bool = False,
+                auto_delete_job: bool = True):
     """
-    If no out_path is given, <input_filename_anonymized> will be used.
+    If no out_path is given, <input_filename_redacted> will be used.
     """
 
     # input and output path
@@ -56,15 +56,15 @@ def anonymize_file(file_path: str, out_type: OutputType, service: ServiceType, j
 
     # anonymize
     try:
-        ips = IPSInstance.create(service=service, out_type=out_type, ips_url=ips_url, subscription_key=subscription_key)
+        redact = RedactInstance.create(service=service, out_type=out_type, redact_url=redact_url, subscription_key=subscription_key)
         with open(file_path, 'rb') as file:
-            job: IPSJob = ips.start_job(file=file,
-                                        job_args=job_args,
-                                        licence_plate_custom_stamp=licence_plate_custom_stamp,
-                                        custom_labels=custom_labels)
+            job: RedactJob = redact.start_job(file=file,
+                                              job_args=job_args,
+                                              licence_plate_custom_stamp=licence_plate_custom_stamp,
+                                              custom_labels=custom_labels)
         result = job.wait_until_finished().download_result()
     except ConnectionError:
-        raise ConnectionError(f'Connection error! Did you provide the proper "ips_url"? Got: {ips_url}')
+        raise ConnectionError(f'Connection error! Did you provide the proper "redact_url"? Got: {redact_url}')
     finally:
         if licence_plate_custom_stamp:
             licence_plate_custom_stamp.close()
@@ -88,7 +88,7 @@ def _get_out_path(out_path: Union[str, Path], file_path: Path) -> Path:
     if out_path:
         return normalize_path(out_path)
     file_path = Path(file_path)
-    anonymized_path = Path(file_path.parent).joinpath(f'{file_path.stem}_anonymized{file_path.suffix}')
+    anonymized_path = Path(file_path.parent).joinpath(f'{file_path.stem}_redacted{file_path.suffix}')
     return normalize_path(anonymized_path)
 
 

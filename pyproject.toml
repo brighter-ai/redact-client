@@ -3,11 +3,11 @@ requires = ["flit_core >=2,<4"]
 build-backend = "flit_core.buildapi"
 
 [tool.flit.scripts]
-ips_anon_file = "ips_client.__main__:anonymize_file_entry_point"
-ips_anon_folder = "ips_client.__main__:anonymize_folder_entry_point"
+redact_file = "redact.__main__:redact_file_entry_point"
+redact_folder = "redact.__main__:redact_folder_entry_point"
 
 [tool.flit.metadata]
-module = "ips_client"
+module = "redact"
 author = "brighter AI"
 author-email = "dev@brighter.ai"
 home-page = "https://github.com/brighter-ai"

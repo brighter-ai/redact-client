@@ -6,7 +6,7 @@ from io import FileIO
 from pathlib import Path
 from typing import IO
 
-from ips_client.settings import Settings
+from redact.settings import Settings
 
 
 settings = Settings()
@@ -14,16 +14,16 @@ settings = Settings()
 
 def pytest_addoption(parser):
     parser.addoption(
-        '--ips_url', action='store', default=settings.ips_url_default, help='URL of a running IPS instance'
+        '--redact_url', action='store', default=settings.redact_url_default, help='URL of a running Redact instance'
     )
     parser.addoption(
-        '--subscription_key', action='store', default=None, help='Subscription key for IPS Online'
+        '--subscription_key', action='store', default=None, help='Subscription key for Redact Online'
     )
 
 
 @pytest.fixture(scope='session')
-def ips_url(request):
-    return request.config.getoption('--ips_url')
+def redact_url(request):
+    return request.config.getoption('--redact_url')
 
 
 @pytest.fixture
