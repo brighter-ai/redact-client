@@ -213,3 +213,7 @@ dmypy.json
 cython_debug/
 
 /.idea/
+
+# ignore pipenv stuff until we support it
+Pipfile
+Pipfile.lock

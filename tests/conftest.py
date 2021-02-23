@@ -1,13 +1,11 @@
 import pathlib
-import pytest
 import shutil
-
-from io import FileIO
 from pathlib import Path
 from typing import IO
 
-from redact.settings import Settings
+import pytest
 
+from redact.settings import Settings
 
 settings = Settings()
 
@@ -35,7 +33,7 @@ def subscription_key(request):
 
 
 @pytest.fixture
-def some_image() -> FileIO:
+def some_image() -> IO:
     img_path = pathlib.Path(__file__).parent.joinpath('resources/obama.jpg')
     with open(img_path, 'rb') as f:
         yield f

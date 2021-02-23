@@ -71,7 +71,7 @@ class TestJobWithSubscriptionKey:
         job = redact.start_job(file=some_image)
         job.wait_until_finished()
         job.download_result()
-        #job.get_labels()  # TODO: Uncomment when label endpoint is deployed to Redact Online
+        # job.get_labels()  # TODO: Uncomment when label endpoint is deployed to Redact Online
         job.get_status()
         job.delete()
 
@@ -141,4 +141,4 @@ class TestRedactToolsWithSubscriptionKey:
                       service=ServiceType.blur,
                       n_parallel_jobs=1,
                       subscription_key=subscription_key,
-                      save_labels = False)
+                      save_labels=False)
