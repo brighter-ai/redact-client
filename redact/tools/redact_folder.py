@@ -23,9 +23,9 @@ log.debug(f'Settings: {settings}')
 
 
 class InputType(str, Enum):
-    images: str = 'images'
-    videos: str = 'videos'
-    archives: str = 'archives'
+    images = 'images'
+    videos = 'videos'
+    archives = 'archives'
 
 
 def redact_folder(in_dir: str, out_dir: str, input_type: InputType, out_type: OutputType, service: ServiceType,
