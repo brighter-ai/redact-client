@@ -141,4 +141,4 @@ class TestRedactToolsWithSubscriptionKey:
                       service=ServiceType.blur,
                       n_parallel_jobs=1,
                       subscription_key=subscription_key,
-                      save_labels = False)
+                      save_labels=False)
