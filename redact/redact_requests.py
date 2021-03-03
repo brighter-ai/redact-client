@@ -64,7 +64,7 @@ class RedactRequests:
                                       files=files,
                                       headers=self._headers,
                                       params=job_args.dict(),
-                                      timeout=settings.requests_timeout_files)
+                                      timeout=settings.requests_timeout)
 
         if response.status_code != 200:
             raise RedactResponseError(response=response, msg='Error posting job')
@@ -74,7 +74,7 @@ class RedactRequests:
     def get_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> JobResult:
 
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
-        response = self._session.get(url, headers=self._headers, timeout=settings.requests_timeout_files)
+        response = self._session.get(url, headers=self._headers, timeout=settings.requests_timeout)
 
         if response.status_code != 200:
             raise RedactResponseError(response=response, msg='Error downloading job result')
