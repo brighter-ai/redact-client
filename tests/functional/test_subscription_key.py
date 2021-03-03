@@ -107,25 +107,24 @@ class TestRedactToolsWithSubscriptionKey:
                     service=ServiceType.blur,
                     save_labels=False)
 
-    def test_redact_folder_with_invalid_subscription_fails(self, images_path, tmp_path_factory):
+    def test_redact_folder_with_invalid_subscription_fails(self, images_path, tmp_path_factory, caplog):
 
         # GIVEN an input dir (with images) and an output dir
         output_path = tmp_path_factory.mktemp('imgs_dir_out')
 
         # WHEN the folder is anonymized through Redact Online with invalid subscription
-        with pytest.raises(RedactResponseError) as exception_info:
-            redact_folder(in_dir=str(images_path),
-                          out_dir=str(output_path),
-                          redact_url=REDACT_ONLINE_URL,
-                          input_type=InputType.images,
-                          out_type=OutputType.images,
-                          service=ServiceType.blur,
-                          n_parallel_jobs=1,
-                          subscription_key='INVALID_SUBSCRIPTION_KEY',
-                          save_labels=False)
+        redact_folder(in_dir=str(images_path),
+                      out_dir=str(output_path),
+                      redact_url=REDACT_ONLINE_URL,
+                      input_type=InputType.images,
+                      out_type=OutputType.images,
+                      service=ServiceType.blur,
+                      n_parallel_jobs=1,
+                      subscription_key='INVALID_SUBSCRIPTION_KEY',
+                      save_labels=False)
 
-        # THEN the response is 401
-        assert exception_info.value.response.status_code == 401
+        # THEN the logging contains error 401 (Not Authorized)
+        assert '[401]' in caplog.text
 
     def test_redact_folder_with_valid_subscription(self, images_path, subscription_key, tmp_path_factory):
 

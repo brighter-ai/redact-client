@@ -2,7 +2,7 @@
 Python client for "brighter Redact"
 """
 
-__version__ = "v3.7.1"
+__version__ = "v3.7.2"
 
 from .redact_instance import RedactInstance  # noqa
 from .redact_job import RedactJob  # noqa

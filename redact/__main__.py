@@ -39,7 +39,7 @@ def redact_folder(in_dir: str, out_dir: str, input_type: InputType, out_type: Ou
                   region: Region = Region.european_union, face: bool = True, license_plate: bool = True,
                   licence_plate_custom_stamp_path: Optional[str] = typer.Option(None, '--custom-lp', help='Image file to use for license plate replacements'),
                   redact_url: str = settings.redact_url_default, subscription_key: Optional[str] = None,
-                  n_parallel_jobs: int = 5, save_labels: bool = False, skip_existing: bool = True,
+                  n_parallel_jobs: int = 1, save_labels: bool = False, skip_existing: bool = True,
                   auto_delete_job: bool = True):
     job_args = JobArguments(region=region, face=face, license_plate=license_plate)
     rdct_folder(in_dir=in_dir, out_dir=out_dir, input_type=input_type, out_type=out_type, service=service,

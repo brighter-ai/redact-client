@@ -31,7 +31,7 @@ class InputType(str, Enum):
 def redact_folder(in_dir: str, out_dir: str, input_type: InputType, out_type: OutputType, service: ServiceType,
                   job_args: Optional[JobArguments] = None, licence_plate_custom_stamp_path: Optional[str] = None,
                   redact_url: str = settings.redact_url_default, subscription_key: Optional[str] = None,
-                  n_parallel_jobs: int = 5, save_labels: bool = False, skip_existing: bool = True,
+                  n_parallel_jobs: int = 1, save_labels: bool = False, skip_existing: bool = True,
                   auto_delete_job: bool = True):
 
     # Normalize paths, e.g.: '~/..' -> '/home'
@@ -48,22 +48,21 @@ def redact_folder(in_dir: str, out_dir: str, input_type: InputType, out_type: Ou
     log.info(f'Found {len(relative_file_paths)} {input_type.value} to process')
 
     # Fix input arguments to make method mappable
-    thread_function = _redact_file_with_relative_path if n_parallel_jobs == 1 else _redact_file_with_relative_path_log_exc
-    partial_thread_function = functools.partial(thread_function,
-                                                base_dir_in=in_dir,
-                                                base_dir_out=out_dir,
-                                                service=service,
-                                                out_type=out_type,
-                                                job_args=job_args,
-                                                licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
-                                                redact_url=redact_url,
-                                                subscription_key=subscription_key,
-                                                save_labels=save_labels,
-                                                skip_existing=skip_existing,
-                                                auto_delete_job=auto_delete_job)
+    worker_function = functools.partial(_try_redact_file_with_relative_path,
+                                        base_dir_in=in_dir,
+                                        base_dir_out=out_dir,
+                                        service=service,
+                                        out_type=out_type,
+                                        job_args=job_args,
+                                        licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
+                                        redact_url=redact_url,
+                                        subscription_key=subscription_key,
+                                        save_labels=save_labels,
+                                        skip_existing=skip_existing,
+                                        auto_delete_job=auto_delete_job)
 
     log.info(f'Starting {n_parallel_jobs} parallel jobs to anonymize files ...')
-    _parallel_map(func=partial_thread_function, items=relative_file_paths, n_parallel_jobs=n_parallel_jobs)
+    _parallel_map(func=worker_function, items=relative_file_paths, n_parallel_jobs=n_parallel_jobs)
 
 
 def _parallel_map(func, items: List, n_parallel_jobs=1):
@@ -99,7 +98,7 @@ def _get_relative_file_paths(in_dir: Path, input_type: InputType) -> List[str]:
     return relative_file_paths
 
 
-def _redact_file_with_relative_path_log_exc(relative_file_path: str, base_dir_in: str, base_dir_out: str, **kwargs):
+def _try_redact_file_with_relative_path(relative_file_path: str, base_dir_in: str, base_dir_out: str, **kwargs):
     """This is an internal helper function to be run by a thread. We log the exceptions so they don't get lost inside
     the thread."""
 

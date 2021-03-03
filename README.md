@@ -67,8 +67,9 @@ The `redact` package itself provides different ways to use the Redact API from P
 ### (Batch) File Processing
 
 The command-line shortcuts described above can be called programmatically through modules 
-`redact.redact_file` and `redact.redact_folder`. The latter allows for anonymizing
-several objects in parallel which usually results in a significant speed-up.
+`redact.redact_file` and `redact.redact_folder`. The latter has the optional argument `--n-parallel-jobs` for 
+anonymizing several objects in parallel which can result in a significant speed-up when processing many
+small files.
 
 ### API Requests
 
