@@ -15,6 +15,7 @@ requires-python = ">=3.6"
 requires = [
     "pydantic~=1.6.1",
     "requests~=2.24.0",
+    "tenacity~=6.2.0",
     "tqdm~=4.52.0",
     "typer~=0.3.2"
 ]

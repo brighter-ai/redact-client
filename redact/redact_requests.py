@@ -3,6 +3,7 @@ import requests
 import urllib.parse
 
 from io import FileIO
+from tenacity import retry, retry_if_exception, stop_after_attempt, wait_random_exponential
 from typing import Dict, Optional, IO, Union
 from uuid import UUID
 
@@ -71,6 +72,10 @@ class RedactRequests:
 
         return JobPostResponse(**response.json())
 
+    @retry(stop=stop_after_attempt(settings.retry_attempts),
+           retry=retry_if_exception(RedactResponseError),
+           wait=wait_random_exponential(),
+           reraise=True)
     def get_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> JobResult:
 
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
