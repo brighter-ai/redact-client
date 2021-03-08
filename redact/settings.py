@@ -9,4 +9,4 @@ class Settings(BaseSettings):
     redact_url_default: str = 'http://127.0.0.1:8787/'
 
     requests_timeout: int = 60
-    retry_attempts: int = 3
+    retry_attempts: int = 10

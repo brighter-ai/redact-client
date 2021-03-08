@@ -74,7 +74,7 @@ class RedactRequests:
 
     @retry(stop=stop_after_attempt(settings.retry_attempts),
            retry=retry_if_exception(RedactResponseError),
-           wait=wait_random_exponential(),
+           wait=wait_random_exponential(multiplier=1, max=30),
            reraise=True)
     def get_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> JobResult:
 
