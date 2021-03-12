@@ -5,6 +5,5 @@ pydantic==1.7.3
 pytest==6.2.2
 pytest-timeout==1.4.2
 requests==2.25.1
-tenacity==6.2.0
 tqdm==4.56.0
 typer==0.3.2
