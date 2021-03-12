@@ -1,3 +1,4 @@
+import functools
 import httpx
 import logging
 import urllib.parse
@@ -7,7 +8,7 @@ from typing import Dict, Optional, IO, Union
 from uuid import UUID
 
 from redact.data_models import (ServiceType, OutputType, JobArguments, JobResult, RedactResponseError, JobPostResponse,
-                                JobLabels)
+                                JobLabels, RedactConnectError)
 from redact.settings import Settings
 from redact.utils import normalize_url
 
@@ -16,6 +17,21 @@ settings = Settings()
 
 logging.basicConfig(level=settings.log_level.upper())
 log = logging.getLogger('redact-requests')
+
+
+def _handle_connection_errors(func):
+    """
+    Decorator that translates connection errors (from httpx) to request's own error types.
+    """
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except httpx.ConnectError as e:
+            raise RedactConnectError(f'Error connecting to {args[0].redact_url}: {e}')
+        except httpx.ConnectTimeout:
+            raise RedactConnectError(f'Timeout connecting to {args[0].redact_url}')
+    return wrapper
 
 
 class RedactRequests:
@@ -36,6 +52,7 @@ class RedactRequests:
 
         self._client = httpx.Client(headers=self._headers)
 
+    @_handle_connection_errors
     def post_job(self, file: FileIO, service: ServiceType, out_type: OutputType,
                  job_args: Optional[JobArguments] = None, licence_plate_custom_stamp: Optional[IO] = None,
                  custom_labels: Optional[Union[str, IO, JobLabels]] = None) \
@@ -44,15 +61,15 @@ class RedactRequests:
         Post the job via a post request.
         """
 
-        url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}')
-
-        if not job_args:
-            job_args = JobArguments()
-
         try:
             _ = file.name
         except AttributeError:
             raise ValueError("Expecting 'file' argument to have a 'name' attribute, i.e., FileIO.")
+
+        url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}')
+
+        if not job_args:
+            job_args = JobArguments()
 
         files = {'file': file}
         if licence_plate_custom_stamp:
@@ -68,6 +85,7 @@ class RedactRequests:
 
         return JobPostResponse(**response.json())
 
+    @_handle_connection_errors
     def get_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> JobResult:
 
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
@@ -81,6 +99,7 @@ class RedactRequests:
         return JobResult(content=response.content,
                          media_type=response.headers['Content-Type'])
 
+    @_handle_connection_errors
     def get_status(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/status')
@@ -93,6 +112,7 @@ class RedactRequests:
 
         return response.json()
 
+    @_handle_connection_errors
     def get_labels(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> JobLabels:
 
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/labels')
@@ -105,6 +125,7 @@ class RedactRequests:
 
         return JobLabels.parse_obj(response.json())
 
+    @_handle_connection_errors
     def delete_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
@@ -117,6 +138,7 @@ class RedactRequests:
 
         return response.json()
 
+    @_handle_connection_errors
     def get_error(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/error')

@@ -1,10 +1,9 @@
-import httpx
 import logging
 
 from pathlib import Path
 from typing import Optional, Union
 
-from redact.data_models import JobArguments, JobLabels, RedactConnectError
+from redact.data_models import JobArguments, JobLabels
 from redact.redact_instance import RedactInstance
 from redact.redact_job import RedactJob, ServiceType, OutputType
 from redact.settings import Settings
@@ -62,10 +61,6 @@ def redact_file(file_path: str, out_type: OutputType, service: ServiceType, job_
                                               licence_plate_custom_stamp=licence_plate_custom_stamp,
                                               custom_labels=custom_labels)
         result = job.wait_until_finished().download_result()
-    except httpx.ConnectError:
-        raise RedactConnectError(f'Connection error! Did you provide the proper "redact_url"? Got: {redact_url}')
-    except httpx.ConnectTimeout:
-        raise RedactConnectError(f'Connection timeout for {redact_url}')
     finally:
         if licence_plate_custom_stamp:
             licence_plate_custom_stamp.close()
