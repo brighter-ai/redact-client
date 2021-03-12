@@ -118,7 +118,7 @@ class RedactRequests:
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/labels')
 
         with self._client as client:
-            response = client.get(url, headers=self._headers, timeout=settings.requests_timeout)
+            response = client.get(url)
 
         if response.status_code != 200:
             raise RedactResponseError(response=response, msg='Error getting labels')
