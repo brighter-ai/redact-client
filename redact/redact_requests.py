@@ -19,7 +19,7 @@ logging.basicConfig(level=settings.log_level.upper())
 log = logging.getLogger('redact-requests')
 
 
-def _handle_connection_errors(func):
+def _reraise_custom_errors(func):
     """
     Decorator that translates connection errors (from httpx) to request's own error types.
     """
@@ -52,7 +52,7 @@ class RedactRequests:
 
         self._client = httpx.Client(headers=self._headers)
 
-    @_handle_connection_errors
+    @_reraise_custom_errors
     def post_job(self, file: FileIO, service: ServiceType, out_type: OutputType,
                  job_args: Optional[JobArguments] = None, licence_plate_custom_stamp: Optional[IO] = None,
                  custom_labels: Optional[Union[str, IO, JobLabels]] = None) \
@@ -85,7 +85,7 @@ class RedactRequests:
 
         return JobPostResponse(**response.json())
 
-    @_handle_connection_errors
+    @_reraise_custom_errors
     def get_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> JobResult:
 
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
@@ -99,7 +99,7 @@ class RedactRequests:
         return JobResult(content=response.content,
                          media_type=response.headers['Content-Type'])
 
-    @_handle_connection_errors
+    @_reraise_custom_errors
     def get_status(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/status')
@@ -112,7 +112,7 @@ class RedactRequests:
 
         return response.json()
 
-    @_handle_connection_errors
+    @_reraise_custom_errors
     def get_labels(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> JobLabels:
 
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/labels')
@@ -125,7 +125,7 @@ class RedactRequests:
 
         return JobLabels.parse_obj(response.json())
 
-    @_handle_connection_errors
+    @_reraise_custom_errors
     def delete_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
@@ -138,7 +138,7 @@ class RedactRequests:
 
         return response.json()
 
-    @_handle_connection_errors
+    @_reraise_custom_errors
     def get_error(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> Dict:
 
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/error')
