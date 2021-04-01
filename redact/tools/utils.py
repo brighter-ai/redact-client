@@ -13,6 +13,14 @@ def normalize_path(path: str) -> Path:
     return Path(path).expanduser().resolve()
 
 
+def file_extension(path: str) -> str:
+    """
+    Extracts canonical file extension from path (no leading dot and all lowercase)
+    e.g. mp4, avi, jpeg, ts
+    """
+    return Path(path).suffix[1:].lower()
+
+
 def files_in_dir(dir: Path, recursive=True, sort=False) -> List[str]:
     """
     Iterates recursively through all files in all subfolders.
@@ -39,7 +47,7 @@ def is_archive(file_path: str) -> bool:
     """
     Determine of a given file is an archive (according to its extension).
     """
-    file_ext = Path(file_path).suffix[1:]
+    file_ext = file_extension(file_path)
     return file_ext in ARCHIVE_EXTENSIONS
 
 
@@ -47,7 +55,7 @@ def is_image(file_path: str) -> bool:
     """
     Determine of a given file is an image (according to its extension).
     """
-    file_ext = Path(file_path).suffix[1:]
+    file_ext = file_extension(file_path)
     return file_ext in IMG_EXTENSIONS
 
 
@@ -55,7 +63,7 @@ def is_video(file_path: str) -> bool:
     """
     Determine of a given file is an video (according to its extension).
     """
-    file_ext = Path(file_path).suffix[1:]
+    file_ext = file_extension(file_path)
     return file_ext in VID_EXTENSIONS
 
 

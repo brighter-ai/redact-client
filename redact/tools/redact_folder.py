@@ -8,7 +8,7 @@ from enum import Enum
 from pathlib import Path
 from typing import List, Optional
 
-from redact.data_models import RedactResponseError, JobArguments
+from redact.data_models import RedactResponseError, JobArguments, RedactConnectError
 from redact.redact_job import ServiceType, OutputType
 from redact.settings import Settings
 from redact.tools.redact_file import redact_file
@@ -107,8 +107,10 @@ def _try_redact_file_with_relative_path(relative_file_path: str, base_dir_in: st
                                         base_dir_in=base_dir_in,
                                         base_dir_out=base_dir_out,
                                         **kwargs)
+    except RedactConnectError as e:
+        log.error(f'Connection error while anonymizing {relative_file_path}: {str(e)}')
     except RedactResponseError as e:
-        log.error(f'Error while anonymizing {relative_file_path}: {str(e)}')
+        log.error(f'Unexpected response while anonymizing {relative_file_path}: {str(e)}')
     except Exception as e:
         log.error(f'Error while anonymizing {relative_file_path}: {str(e)}')
 

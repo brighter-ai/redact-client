@@ -97,6 +97,16 @@ class JobLabels(BaseModel):
     frames: List[FrameLabels]
 
 
+class RedactConnectError(Exception):
+
+    def __init__(self, msg: Optional[str] = None):
+        super(RedactConnectError, self).__init__()
+        self.msg = msg
+
+    def __str__(self):
+        return self.msg
+
+
 class RedactResponseError(Exception):
 
     def __init__(self, response: Response, msg: Optional[str] = None):

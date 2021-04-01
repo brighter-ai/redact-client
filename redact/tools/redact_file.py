@@ -1,8 +1,6 @@
 import logging
 
 from pathlib import Path
-
-from requests.exceptions import ConnectionError
 from typing import Optional, Union
 
 from redact.data_models import JobArguments, JobLabels
@@ -63,8 +61,6 @@ def redact_file(file_path: str, out_type: OutputType, service: ServiceType, job_
                                               licence_plate_custom_stamp=licence_plate_custom_stamp,
                                               custom_labels=custom_labels)
         result = job.wait_until_finished().download_result()
-    except ConnectionError:
-        raise ConnectionError(f'Connection error! Did you provide the proper "redact_url"? Got: {redact_url}')
     finally:
         if licence_plate_custom_stamp:
             licence_plate_custom_stamp.close()

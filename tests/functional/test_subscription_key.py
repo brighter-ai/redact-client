@@ -124,7 +124,7 @@ class TestRedactToolsWithSubscriptionKey:
                       save_labels=False)
 
         # THEN the logging contains error 401 (Not Authorized)
-        assert '[401]' in caplog.text
+        assert '[401 Access Denied]' in caplog.text
 
     def test_redact_folder_with_valid_subscription(self, images_path, subscription_key, tmp_path_factory):
 
