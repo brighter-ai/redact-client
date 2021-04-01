@@ -6,7 +6,7 @@ from typing import List
 
 ARCHIVE_EXTENSIONS = ['tar']
 IMG_EXTENSIONS = ['jpeg', 'jpg', 'bmp', 'png']
-VID_EXTENSIONS = ['mp4', 'avi', 'mov', 'mkv', 'ts', 'webm']
+VID_EXTENSIONS = ['mp4', 'avi', 'mov', 'mkv', 'mts', 'ts', 'webm']
 
 
 def normalize_path(path: str) -> Path:
