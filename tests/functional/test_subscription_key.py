@@ -12,6 +12,7 @@ settings = Settings()
 REDACT_ONLINE_URL = settings.redact_online_url
 
 
+@pytest.mark.timeout(30)
 class TestRequestsWithSubscriptionKey:
 
     def test_post_with_invalid_key_fails(self, some_image):
@@ -36,6 +37,7 @@ class TestRequestsWithSubscriptionKey:
         redact.post_job(file=some_image, service=ServiceType.blur, out_type=OutputType.images)
 
 
+@pytest.mark.timeout(30)
 class TestJobWithSubscriptionKey:
 
     def test_job_with_invalid_subscription_fails(self, some_image):
@@ -76,6 +78,7 @@ class TestJobWithSubscriptionKey:
         job.delete()
 
 
+@pytest.mark.timeout(30)
 class TestRedactToolsWithSubscriptionKey:
 
     def test_redact_file_with_invalid_subscription_fails(self, images_path):
