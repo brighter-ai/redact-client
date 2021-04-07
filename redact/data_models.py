@@ -1,6 +1,6 @@
 from enum import Enum
+from httpx import Response
 from pydantic import BaseModel, Field, PositiveInt
-from requests import Response
 from typing import Optional, List, Tuple
 from uuid import UUID
 
