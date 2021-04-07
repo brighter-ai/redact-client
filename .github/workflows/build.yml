@@ -20,7 +20,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pip-autoremove
           pip install flit
-      - name: Test Package Installation
+      - name: Build & Install Package
         run: |
           make install
       - name: Remove Aux. Dependencies
