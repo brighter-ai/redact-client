@@ -7,4 +7,4 @@ install:
 	pip install . --upgrade
 
 test-installation:
-	redact_file --help > /dev/null && redact_folder --help > /dev/null && echo "OK: Command-line endpoints installed"
+	redact_file --help && redact_folder --help && echo "OK: Command-line endpoints installed"
