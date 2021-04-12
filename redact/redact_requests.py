@@ -78,7 +78,8 @@ class RedactRequests:
             files['custom_labels'] = custom_labels.json() if isinstance(custom_labels, JobLabels) else custom_labels
 
         with self._client as client:
-            response = client.post(url=url, files=files, json=job_args.dict())
+            # TODO: Remove the timeout when Redact responds quicker after uploading large files
+            response = client.post(url=url, files=files, json=job_args.dict(), timeout=15)
 
         if response.status_code != 200:
             raise RedactResponseError(response=response, msg='Error posting job')
