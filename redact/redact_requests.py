@@ -79,7 +79,7 @@ class RedactRequests:
 
         with self._client as client:
             # TODO: Remove the timeout when Redact responds quicker after uploading large files
-            response = client.post(url=url, files=files, params=job_args.dict(), timeout=15)
+            response = client.post(url=url, files=files, params=job_args.dict(exclude_none=True), timeout=15)
         if response.status_code != 200:
             raise RedactResponseError(response=response, msg='Error posting job')
 
