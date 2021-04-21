@@ -34,7 +34,7 @@ class JobArguments(BaseModel):
     region: Region = Region.european_union
     face: Optional[bool] = None
     license_plate: Optional[bool] = None
-    speed_optimized: Optional[bool] = None
+    speed_optimized: Optional[bool] = False
 
 
 class JobPostResponse(BaseModel):
