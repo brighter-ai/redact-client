@@ -1,10 +1,10 @@
 fastapi==0.63.0
-flit==3.1.0
+flit==3.2.0
 httpcore==0.12.3
-httpx==0.17.0
-pydantic==1.7.3
-pytest==6.2.2
+httpx==0.17.1
+pydantic==1.8.1
+pytest==6.2.3
 pytest-timeout==1.4.2
-tqdm==4.56.0
+tqdm==4.60.0
 typer==0.3.2
 uvicorn==0.13.4
