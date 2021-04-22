@@ -36,6 +36,10 @@ def mock_redact_server(expected_path: Optional[str] = None, expected_job_args: O
 def _mock_redact_request_handler(request: Request,
                                  expected_path: Optional[str] = None,
                                  expected_job_args: Optional[JobArguments] = None) -> Response:
+    """
+    Handle requests by taking a look at the requested path and the query arguments and comparing them to expected ones.
+    If there is a mismatch, a 500 message with details is returned.
+    """
 
     # path
     actual_path = request.path_params['path']
