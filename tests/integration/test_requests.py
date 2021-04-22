@@ -6,7 +6,7 @@ from integration.mock_server import mock_redact_server
 
 
 @pytest.mark.parametrize(argnames='service', argvalues=[ServiceType.blur, ServiceType.dnat])
-def test_proper_job_args_are_request(some_image, service: ServiceType):
+def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType):
 
     # GIVEN a Redact server
     job_args = JobArguments(region=Region.mainland_china, face=False, license_plate=False, speed_optimized=True)
