@@ -15,7 +15,7 @@ def pytest_addoption(parser):
         '--redact_url', action='store', default=settings.redact_url_default, help='URL of a running Redact instance'
     )
     parser.addoption(
-        '--subscription_key', action='store', default=None, help='Subscription key for Redact Online'
+        '--api_key', action='store', default=None, help='API key for Redact Online'
     )
 
 
@@ -26,9 +26,9 @@ def redact_url(request):
 
 @pytest.fixture
 def subscription_key(request):
-    subscription_key = request.config.getoption('--subscription_key')
+    subscription_key = request.config.getoption('--api_key')
     if not subscription_key:
-        raise ValueError("Test requires a valid --subscription_key")
+        raise ValueError("Test requires a valid --api_key")
     return subscription_key
 
 

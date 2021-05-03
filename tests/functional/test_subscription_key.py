@@ -18,7 +18,7 @@ class TestRequestsWithSubscriptionKey:
     def test_post_with_invalid_key_fails(self, some_image):
 
         # GIVEN Redact Online
-        redact = RedactRequests(redact_url=REDACT_ONLINE_URL, subscription_key="INVALID_SUBSCRIPTION_KEY")
+        redact = RedactRequests(redact_url=REDACT_ONLINE_URL, subscription_key="INVALID_API_KEY")
 
         # WHEN a request with invalid subscription_key is sent
         with pytest.raises(RedactResponseError) as exception_info:
@@ -46,7 +46,7 @@ class TestJobWithSubscriptionKey:
         redact = RedactInstance.create(service=ServiceType.blur,
                                        out_type=OutputType.images,
                                        redact_url=REDACT_ONLINE_URL,
-                                       subscription_key='INVALID_SUBSCRIPTION_KEY')
+                                       subscription_key='INVALID_API_KEY')
 
         # WHEN a job is performed
         with pytest.raises(RedactResponseError) as exception_info:
@@ -92,7 +92,7 @@ class TestRedactToolsWithSubscriptionKey:
                         redact_url=REDACT_ONLINE_URL,
                         out_type=OutputType.images,
                         service=ServiceType.blur,
-                        subscription_key='INVALID_SUBSCRIPTION_KEY')
+                        subscription_key='INVALID_API_KEY')
 
         # THEN the response is 401
         assert exception_info.value.response.status_code == 401
@@ -123,7 +123,7 @@ class TestRedactToolsWithSubscriptionKey:
                       out_type=OutputType.images,
                       service=ServiceType.blur,
                       n_parallel_jobs=1,
-                      subscription_key='INVALID_SUBSCRIPTION_KEY',
+                      subscription_key='INVALID_API_KEY',
                       save_labels=False)
 
         # THEN the logging contains error 401 (Not Authorized)

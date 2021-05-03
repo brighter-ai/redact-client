@@ -48,7 +48,7 @@ class RedactRequests:
 
         self._headers = {'Accept': '*/*'}
         if subscription_key:
-            self._headers['ips-subscription-key'] = self.subscription_key
+            self._headers['api-key'] = self.subscription_key
 
         self._client = httpx.Client(headers=self._headers)
 
