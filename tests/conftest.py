@@ -25,11 +25,11 @@ def redact_url(request):
 
 
 @pytest.fixture
-def subscription_key(request):
-    subscription_key = request.config.getoption('--api_key')
-    if not subscription_key:
+def api_key(request):
+    api_key = request.config.getoption('--api_key')
+    if not api_key:
         raise ValueError("Test requires a valid --api_key")
-    return subscription_key
+    return api_key
 
 
 @pytest.fixture

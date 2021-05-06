@@ -41,14 +41,14 @@ class RedactRequests:
 
     API_VERSION = 'v3'
 
-    def __init__(self, redact_url: str = settings.redact_url_default, subscription_key: Optional[str] = None):
+    def __init__(self, redact_url: str = settings.redact_url_default, api_key: Optional[str] = None):
 
         self.redact_url = normalize_url(redact_url)
-        self.subscription_key = subscription_key
+        self.api_key = api_key
 
         self._headers = {'Accept': '*/*'}
-        if subscription_key:
-            self._headers['api-key'] = self.subscription_key
+        if api_key:
+            self._headers['api-key'] = self.api_key
 
         self._client = httpx.Client(headers=self._headers)
 
