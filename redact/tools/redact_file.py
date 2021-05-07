@@ -20,7 +20,7 @@ log.debug(f'Settings: {settings}')
 def redact_file(file_path: str, out_type: OutputType, service: ServiceType, job_args: Optional[JobArguments] = None,
                 licence_plate_custom_stamp_path: Optional[str] = None, custom_labels_file_path: Optional[str] = None,
                 redact_url: str = settings.redact_url_default, out_path: Optional[str] = None,
-                subscription_key: Optional[str] = None, skip_existing: bool = True, save_labels: bool = False,
+                api_key: Optional[str] = None, skip_existing: bool = True, save_labels: bool = False,
                 auto_delete_job: bool = True):
     """
     If no out_path is given, <input_filename_redacted> will be used.
@@ -54,7 +54,7 @@ def redact_file(file_path: str, out_type: OutputType, service: ServiceType, job_
 
     # anonymize
     try:
-        redact = RedactInstance.create(service=service, out_type=out_type, redact_url=redact_url, subscription_key=subscription_key)
+        redact = RedactInstance.create(service=service, out_type=out_type, redact_url=redact_url, api_key=api_key)
         with open(file_path, 'rb') as file:
             job: RedactJob = redact.start_job(file=file,
                                               job_args=job_args,
