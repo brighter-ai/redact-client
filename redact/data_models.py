@@ -35,6 +35,10 @@ class JobArguments(BaseModel):
     face: Optional[bool] = None
     license_plate: Optional[bool] = None
     speed_optimized: Optional[bool] = None
+    vehicle_recorded_data: Optional[bool] = None
+    single_frame_optimized: Optional[bool] = None
+    lp_determination_threshold: Optional[float] = Field(ge=0, le=1)
+    face_determination_threshold: Optional[float] = Field(ge=0, le=1)
 
 
 class JobPostResponse(BaseModel):
