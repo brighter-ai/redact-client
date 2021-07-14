@@ -13,12 +13,13 @@ settings = Settings()
 
 
 def redact_file(file_path: str,
+                out_type: OutputType,
+                service: ServiceType,
                 out_path: Optional[str] = typer.Option(None, help="[default: FILE_redacted.EXT]"),
-                out_type: OutputType = typer.Option(help='Specify output type of the file'),
-                service: ServiceType = typer.Option(help='Specify service you would like to perform on the file'),
                 region: Region = typer.Option(Region.european_union, help='Selects the region that license plate detection should look for and that license plate replacements will be generated for'),
                 face: bool = typer.Option(True, help='Select whether faces should be anonymized'),
                 license_plate: bool = typer.Option(True, help='Select whether license plates should be anonymized'),
+                custom_labels_file_path: Optional[str] = typer.Option(None, '--labels', help='A JSON file containing custom labels'),
                 vehicle_recorded_data: bool = typer.Option(False, help='Used to run a job with a variety of iptimizations geared toward vehicle recorded data'),
                 speed_optimized: bool = typer.Option(False, help='Used to run a job faster with lower accuracy and replacement quality'),
                 single_frame_optimized: bool = typer.Option(False, help='Used to run a video or archive only as a set of individual images without tracking or interpolation'),
@@ -57,9 +58,9 @@ def redact_file_entry_point():
 
 def redact_folder(in_dir: str,
                   out_dir: str,
-                  input_type: InputType = typer.Option(help='Specify input type of the file'),
-                  out_type: OutputType = typer.Option(help='Specify output type of the file'),
-                  service: ServiceType = typer.Option(help='Specify service you would like to perform on the file'),
+                  input_type: InputType,
+                  out_type: OutputType,
+                  service: ServiceType,
                   region: Region = typer.Option(Region.european_union, help='Selects the region that license plate detection should look for and that license plate replacements will be generated for'),
                   face: bool = typer.Option(True, help='Select whether faces should be anonymized'),
                   license_plate: bool = typer.Option(True, help='Select whether license plates should be anonymized'),
