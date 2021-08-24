@@ -47,7 +47,7 @@ class RedactRequests:
 
         self.redact_url = normalize_url(redact_url)
         self.api_key = api_key
-        self.client_id = client_id
+        self.subscription_id = subscription_id
         self._headers = {'Accept': '*/*'}
 
         if api_key:
