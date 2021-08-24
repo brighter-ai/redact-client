@@ -28,7 +28,7 @@ class RedactInstance:
         """
         The default way of creating RedactInstance objects.
         """
-        redact_requests = RedactRequests(redact_url=redact_url, api_key=api_key)
+        redact_requests = RedactRequests(redact_url=redact_url, subscription_id=subscription_id, api_key=api_key)
         return cls(redact_requests=redact_requests, service=service, out_type=out_type)
 
     def start_job(self, file: IO, job_args: Optional[JobArguments] = None,
