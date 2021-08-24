@@ -12,7 +12,6 @@ from redact.data_models import (ServiceType, OutputType, JobArguments, JobResult
 from redact.settings import Settings
 from redact.utils import normalize_url
 
-
 settings = Settings()
 
 logging.basicConfig(level=settings.log_level.upper())
@@ -23,6 +22,7 @@ def _reraise_custom_errors(func):
     """
     Decorator that translates connection errors (from httpx) to request's own error types.
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         try:
@@ -31,6 +31,7 @@ def _reraise_custom_errors(func):
             raise RedactConnectError(f'Error connecting to {args[0].redact_url}: {e}')
         except httpx.ConnectTimeout:
             raise RedactConnectError(f'Timeout connecting to {args[0].redact_url}')
+
     return wrapper
 
 
@@ -41,14 +42,18 @@ class RedactRequests:
 
     API_VERSION = 'v3'
 
-    def __init__(self, redact_url: str = settings.redact_url_default, api_key: Optional[str] = None):
+    def __init__(self, redact_url: str = settings.redact_url_default, subscription_id: Optional[str] = None,
+                 api_key: Optional[str] = None):
 
         self.redact_url = normalize_url(redact_url)
         self.api_key = api_key
-
+        self.subscription_id = subscription_id
         self._headers = {'Accept': '*/*'}
+
         if api_key:
             self._headers['api-key'] = self.api_key
+        if subscription_id:
+            self._headers['Subscription-Id'] = self.subscription_id
 
         self._client = httpx.Client(headers=self._headers)
 
