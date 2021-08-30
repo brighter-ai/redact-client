@@ -1,9 +1,11 @@
 [![Brighter AI logo](brighter.png)](https://brighter.ai/)
 
+# Redact Python Client
+
 [![Pytest](https://github.com/brighter-ai/redact-client/actions/workflows/pytest.yml/badge.svg)](https://github.com/brighter-ai/redact-client/actions/workflows/pytest.yml)    [![Python Linter](https://github.com/brighter-ai/redact-client/actions/workflows/flake8.yml/badge.svg)](https://github.com/brighter-ai/redact-client/actions/workflows/flake8.yml)  [![Python Package Build](https://github.com/brighter-ai/redact-client/actions/workflows/build.yml/badge.svg)](https://github.com/brighter-ai/redact-client/actions/workflows/build.yml)
 
 
-- [Redact Python Client](#redact-python-client)
+- [Overview](#overview)
 - [Installation](#installation)
 - [Quickstart](#quickstart)
     + [Examples](#examples)
@@ -13,10 +15,9 @@
     + [Redact Jobs](#redact-jobs)
 
 
-# Redact Python Client
+# Overview
 
-This project provides convenient access to [brighter AI's](https://brighter.ai/) [Redact API](https://docs.identity.ps/)
-for the anonymization of faces and license plates.
+This repository provides access to [brighter AI's](https://brighter.ai/) [Redact API](https://docs.identity.ps/) for the anonymization of faces and license plates.
 
 Learn more:
 - About us: [Brighter AI](https://brighter.ai/)
