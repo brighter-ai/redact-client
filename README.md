@@ -1,5 +1,8 @@
 [![Brighter AI logo](brighter.png)](https://brighter.ai/)
 
+[![Pytest](https://github.com/brighter-ai/redact-client/actions/workflows/pytest.yml/badge.svg)](https://github.com/brighter-ai/redact-client/actions/workflows/pytest.yml)    [![Python Linter](https://github.com/brighter-ai/redact-client/actions/workflows/flake8.yml/badge.svg)](https://github.com/brighter-ai/redact-client/actions/workflows/flake8.yml)  [![Python Package Build](https://github.com/brighter-ai/redact-client/actions/workflows/build.yml/badge.svg)](https://github.com/brighter-ai/redact-client/actions/workflows/build.yml)
+
+
 - [Redact Python Client](#redact-python-client)
 - [Installation](#installation)
 - [Quickstart](#quickstart)
