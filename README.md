@@ -17,12 +17,12 @@
 
 # Overview
 
-This repository provides access to [brighter AI's](https://brighter.ai/) [Redact API](https://docs.identity.ps/) for the anonymization of faces and license plates.
+This repository provides access to [brighter AI's](https://brighter.ai/) [Redact API](https://docs.brighter.ai/docs/) for the anonymization of faces and license plates.
 
 Learn more:
 - About us: [Brighter AI](https://brighter.ai/)
-- Try [Redact](https://product.brighter.ai/) online
-- [API Documentation](https://docs.identity.ps/)
+- Try [Redact](https://brighter.ai/product/) online
+- [API Documentation](https://docs.brighter.ai/docs/)
 
 ## Installation
 
