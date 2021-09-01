@@ -1,7 +1,6 @@
-import datetime
 from enum import Enum
 from httpx import Response
-from pydantic import BaseModel, Field, PositiveInt, NonNegativeFloat
+from pydantic import BaseModel, Field, PositiveInt
 from typing import Optional, List, Tuple
 from uuid import UUID
 
@@ -62,9 +61,9 @@ class JobStatus(BaseModel):
 
     output_id: UUID
     state: JobState
-    start_timestamp: datetime.datetime = None
-    end_timestamp: Optional[datetime.datetime] = None
-    estimated_time_to_completion: NonNegativeFloat = 0.0
+    start_timestamp: Optional[float] = None
+    end_timestamp: Optional[float] = None
+    estimated_time_to_completion: Optional[float] = None
 
     def is_running(self):
         return self.state in [JobState.active, JobState.pending]

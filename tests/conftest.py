@@ -25,8 +25,8 @@ def redact_url(request):
 
 
 @pytest.fixture
-def api_key():
-    api_key = settings.api_key
+def api_key(request):
+    api_key = request.config.getoption('--api_key')
     if not api_key:
         raise ValueError("Test requires a valid --api_key")
     return api_key

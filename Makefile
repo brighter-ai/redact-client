@@ -13,7 +13,7 @@ install:
 	pip install . --upgrade
 
 test-functional:
-	source tests/.test.env && python3 -m pytest tests/functional/
+	source tests/.test.env && python3 -m pytest tests/functional/ --api_key "64628bfc4270401d98f8d91ea0f301db"
 
 test-unit:
 	source tests/.test.env && python3 -m pytest tests/unit/
