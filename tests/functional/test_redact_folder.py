@@ -1,4 +1,3 @@
-import os
 import pytest
 
 from pathlib import Path
@@ -61,4 +60,3 @@ class TestRedactFolder:
     #                   save_labels=True,
     #                   redact_url=redact_url,
     #                   n_parallel_jobs=1)
-
