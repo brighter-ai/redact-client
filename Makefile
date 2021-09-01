@@ -13,13 +13,13 @@ install:
 	pip install . --upgrade
 
 test-functional:
-	source tests/.test.env && python3 -m pytest tests/functional/ --api_key "64628bfc4270401d98f8d91ea0f301db"
+	python3 -m pytest tests/functional/ --api_key 64628bfc4270401d98f8d91ea0f301db --redact_url http://192.168.77.10:14121/
 
 test-unit:
-	source tests/.test.env && python3 -m pytest tests/unit/
+	python3 -m pytest tests/unit/
 
 test-integration:
-	source tests/.test.env && python3 -m pytest tests/integration/
+	python3 -m pytest tests/integration/
 
 test-cmd-install:
 	redact_file --help && redact_folder --help && echo "OK: Command-line endpoints installed"

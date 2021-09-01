@@ -29,6 +29,7 @@ class RedactJob:
         response_dict = self.redact.get_status(service=self.service,
                                                out_type=self.out_type,
                                                output_id=self.output_id)
+        print(f"\n\n\n\n response start timestamp is {response_dict['start_timestamp']} ")
         return JobStatus(**response_dict)
 
     def get_labels(self) -> JobLabels:
