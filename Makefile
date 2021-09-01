@@ -2,7 +2,7 @@ VERSION=v4.3.0
 
 SHELL := /bin/bash
 
-.PHONY: build install test-functional
+.PHONY: build install test-functional test-unit test-integration test-cmd-install
 
 build:
 	cd redact
@@ -20,3 +20,6 @@ test-unit:
 
 test-integration:
 	source tests/.test.env && python3 -m pytest tests/integration/
+
+test-cmd-install:
+	redact_file --help && redact_folder --help && echo "OK: Command-line endpoints installed"
