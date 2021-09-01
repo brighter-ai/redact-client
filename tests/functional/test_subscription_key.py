@@ -1,3 +1,4 @@
+import os
 import pytest
 
 from redact.data_models import ServiceType, OutputType, RedactResponseError

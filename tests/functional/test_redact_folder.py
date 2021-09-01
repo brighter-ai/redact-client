@@ -1,3 +1,4 @@
+import os
 import pytest
 
 from pathlib import Path
@@ -7,7 +8,6 @@ from redact.tools.redact_folder import redact_folder, InputType
 
 
 class TestRedactFolder:
-
     @pytest.mark.parametrize(argnames='n_parallel_jobs', argvalues=[1, 5], ids=['1 job', '5 jobs'])
     def test_all_images_in_folder_are_anonymized(self, images_path: Path, tmp_path_factory, redact_url,
                                                  n_parallel_jobs: int):
@@ -44,3 +44,21 @@ class TestRedactFolder:
         """/some/file.abc -> /some/file.xyz"""
         file_path = Path(file_path)
         return str(file_path.parent.joinpath(f'{file_path.stem}{new_ext}'))
+
+    # def test_redact_folder_videos_to_archives(self, tmp_path_factory, redact_url):
+
+    #     # GIVEN an input dir (with images) and an output dir
+    #     output_path = tmp_path_factory.mktemp('imgs_dir_out')
+
+    #     path_resources = os.path.abspath(os.path.join(os.path.dirname(__file__), "../", "resources/videos"))
+
+    #     # WHEN the whole folder is anonymized
+    #     redact_folder(in_dir=str(path_resources),
+    #                   out_dir=str(output_path),
+    #                   input_type=InputType.images,
+    #                   out_type=OutputType.images,
+    #                   service=ServiceType.blur,
+    #                   save_labels=True,
+    #                   redact_url=redact_url,
+    #                   n_parallel_jobs=1)
+
