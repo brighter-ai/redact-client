@@ -1,4 +1,4 @@
-name: Pytest
+name: Unit + Integration Tests
 
 on: [push]
 
@@ -21,7 +21,7 @@ jobs:
           pip install -r tests/requirements.txt
       - name: Unit tests
         run: |
-          python -m pytest tests/unit
+          make test-unit
       - name: Integration tests
         run: |
-          python -m pytest tests/integration
+          make test-integration

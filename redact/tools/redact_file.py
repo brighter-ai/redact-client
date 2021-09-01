@@ -7,7 +7,7 @@ from redact.data_models import JobArguments, JobLabels
 from redact.redact_instance import RedactInstance
 from redact.redact_job import RedactJob, ServiceType, OutputType
 from redact.settings import Settings
-from redact.tools.utils import normalize_path
+from redact.tools.utils import ARCHIVE_EXTENSIONS, VID_EXTENSIONS, normalize_path
 
 
 logging.basicConfig(level=logging.INFO)
@@ -28,6 +28,15 @@ def redact_file(file_path: str, out_type: OutputType, service: ServiceType, job_
 
     # input and output path
     file_path = normalize_path(file_path)
+
+    # videos to archives
+    if Path(file_path).suffix[1:].lower() in VID_EXTENSIONS and out_type == OutputType.archives:
+        out_path = Path(file_path.parent).joinpath(f'{file_path.stem}_redacted.{ARCHIVE_EXTENSIONS[0]}')
+
+    # archives to videos
+    elif Path(file_path).suffix[1:].lower() in ARCHIVE_EXTENSIONS and out_type == OutputType.videos:
+        out_path = Path(file_path.parent).joinpath(f'{file_path.stem}_redacted.{VID_EXTENSIONS[0]}')
+
     out_path = _get_out_path(out_path=out_path, file_path=file_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     log.debug(f'Anonymize {file_path}, writing result to {out_path} ...')

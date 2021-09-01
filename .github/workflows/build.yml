@@ -28,4 +28,4 @@ jobs:
           pip-autoremove flit -y
       - name: Test CLI Endpoints
         run: |
-          make test-installation
+          make test-cmd-install
