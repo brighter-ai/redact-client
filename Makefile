@@ -13,7 +13,7 @@ install:
 	pip install . --upgrade
 
 test-functional:
-	python3 -m pytest tests/functional/ --api_key 64628bfc4270401d98f8d91ea0f301db --redact_url http://192.168.77.10:14121/
+	python3 -m pytest tests/functional/ --api_key <API_KEY> --redact_url <redact_instance_url>
 
 test-unit:
 	python3 -m pytest tests/unit/
