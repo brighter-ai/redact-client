@@ -84,7 +84,7 @@ class RedactRequests:
 
         with self._client as client:
             # TODO: Remove the timeout when Redact responds quicker after uploading large files
-            response = client.post(url=url, files=files, params=job_args.dict(exclude_none=True), timeout=15)
+            response = client.post(url=url, files=files, params=job_args.dict(exclude_none=True), timeout=60)
         if response.status_code != 200:
             raise RedactResponseError(response=response, msg=f'Error posting job: {response.content}')
 
@@ -96,7 +96,7 @@ class RedactRequests:
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
 
         with self._client as client:
-            response = client.get(url)
+            response = client.get(url, timeout=60)
 
         if response.status_code != 200:
             raise RedactResponseError(response=response, msg='Error downloading job result')
@@ -110,7 +110,7 @@ class RedactRequests:
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/status')
 
         with self._client as client:
-            response = client.get(url)
+            response = client.get(url, timeout=60)
 
         if response.status_code != 200:
             raise RedactResponseError(response=response, msg='Error getting job status')
@@ -123,7 +123,7 @@ class RedactRequests:
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/labels')
 
         with self._client as client:
-            response = client.get(url)
+            response = client.get(url, timeout=60)
 
         if response.status_code != 200:
             raise RedactResponseError(response=response, msg='Error getting labels')
@@ -136,7 +136,7 @@ class RedactRequests:
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
 
         with self._client as client:
-            response = client.delete(url)
+            response = client.delete(url, timeout=60)
 
         if response.status_code != 200:
             raise RedactResponseError(response=response, msg='Error deleting job')
@@ -149,7 +149,7 @@ class RedactRequests:
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}/error')
 
         with self._client as client:
-            response = client.get(url)
+            response = client.get(url, timeout=60)
 
         if response.status_code != 200:
             raise RedactResponseError(response=response, msg='Error getting job error')
