@@ -55,7 +55,7 @@ class RedactRequests:
         if subscription_id:
             self._headers['Subscription-Id'] = self.subscription_id
 
-        self._client = httpx.Client(headers=self._headers)
+        self._client = httpx.Client(headers=self._headers, timeout=60.0)
 
     @_reraise_custom_errors
     def post_job(self, file: FileIO, service: ServiceType, out_type: OutputType,
@@ -84,7 +84,7 @@ class RedactRequests:
 
         with self._client as client:
             # TODO: Remove the timeout when Redact responds quicker after uploading large files
-            response = client.post(url=url, files=files, params=job_args.dict(exclude_none=True), timeout=15)
+            response = client.post(url=url, files=files, params=job_args.dict(exclude_none=True))
         if response.status_code != 200:
             raise RedactResponseError(response=response, msg=f'Error posting job: {response.content}')
 
