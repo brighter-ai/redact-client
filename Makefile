@@ -1,4 +1,4 @@
-VERSION=v4.3.0
+VERSION=v4.4.0
 
 SHELL := /bin/bash
 
