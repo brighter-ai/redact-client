@@ -15,7 +15,7 @@ requires-python = ">=3.6"
 requires = [
     "httpcore~=0.12.3",
     "httpx~=0.17.1",
-    "pydantic~=1.8.1",
+    "pydantic~=1.8.2",
     "tqdm~=4.60.0",
     "typer~=0.3.2"
 ]
