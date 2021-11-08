@@ -64,6 +64,7 @@ class JobStatus(BaseModel):
     start_timestamp: Optional[float] = None
     end_timestamp: Optional[float] = None
     estimated_time_to_completion: Optional[float] = None
+    warnings: List[str] = Field(default_factory=list)
 
     def is_running(self):
         return self.state in [JobState.active, JobState.pending]
