@@ -1,8 +1,8 @@
-fastapi==0.63.0
+fastapi==0.68.1
 flit==3.2.0
 httpcore==0.12.3
 httpx==0.17.1
-pydantic==1.8.1
+pydantic==1.8.2
 pytest==6.2.3
 pytest-timeout==1.4.2
 tqdm==4.60.0
