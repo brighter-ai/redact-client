@@ -43,7 +43,6 @@ class JobArguments(BaseModel):
 
 class JobPostResponse(BaseModel):
     output_id: UUID
-    JobArguments
 
 
 class JobResult(BaseModel):
