@@ -37,8 +37,8 @@ class JobArguments(BaseModel):
     speed_optimized: Optional[bool] = None
     vehicle_recorded_data: Optional[bool] = None
     single_frame_optimized: Optional[bool] = None
-    lp_determination_threshold: Optional[float] = Field(ge=0, le=1)
-    face_determination_threshold: Optional[float] = Field(ge=0, le=1)
+    lp_determination_threshold: Optional[float] = Field(None, ge=0, le=1)
+    face_determination_threshold: Optional[float] = Field(None, ge=0, le=1)
 
 
 class JobPostResponse(BaseModel):
@@ -64,6 +64,7 @@ class JobStatus(BaseModel):
     start_timestamp: Optional[float] = None
     end_timestamp: Optional[float] = None
     estimated_time_to_completion: Optional[float] = None
+    warnings: List[str] = Field(default_factory=list)
 
     def is_running(self):
         return self.state in [JobState.active, JobState.pending]
