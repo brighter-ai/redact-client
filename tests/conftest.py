@@ -1,18 +1,22 @@
+import logging
 import pathlib
+import pytest
 import shutil
+
 from pathlib import Path
 from typing import IO
 
-import pytest
-
 from redact.settings import Settings
 
+
 settings = Settings()
+
+logger = logging.getLogger()
 
 
 def pytest_addoption(parser):
     parser.addoption(
-        '--redact_url', action='store', default=settings.redact_url_default, help='URL of a running Redact instance'
+        '--redact_url', action='store', default=None, help='URL of a running Redact instance'
     )
     parser.addoption(
         '--api_key', action='store', default=None, help='API key for Redact Online'
@@ -20,12 +24,16 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture(scope='session')
-def redact_url(request):
-    return request.config.getoption('--redact_url')
+def redact_url(request) -> str:
+    url = request.config.getoption('--redact_url')
+    if not url:
+        url = settings.redact_url_default
+        logging.warning(f'No --redact_url given. Falling back to default: {url}')
+    return url
 
 
 @pytest.fixture
-def api_key(request):
+def api_key(request) -> str:
     api_key = request.config.getoption('--api_key')
     if not api_key:
         raise ValueError("Test requires a valid --api_key")
