@@ -91,15 +91,20 @@ class RedactRequests:
         return JobPostResponse(**response.json())
 
     @_reraise_custom_errors
-    def get_output(self, service: ServiceType, out_type: OutputType, output_id: UUID) -> JobResult:
+    def get_output(self,
+                   service: ServiceType,
+                   out_type: OutputType,
+                   output_id: UUID,
+                   ignore_warnings: Optional[bool] = None) -> JobResult:
 
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
 
         with self._client as client:
-            response = client.get(url)
+            response = client.get(url, params={'ignore_warnings': ignore_warnings})
 
         if response.status_code != 200:
-            raise RedactResponseError(response=response, msg='Error downloading job result')
+            raise RedactResponseError(response=response, msg=f'Error downloading job result: '
+                                                             f'{response.content.decode()}')
 
         return JobResult(content=response.content,
                          media_type=response.headers['Content-Type'])
