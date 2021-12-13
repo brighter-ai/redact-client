@@ -99,8 +99,12 @@ class RedactRequests:
 
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
 
+        query_params = {}
+        if ignore_warnings is not None:
+            query_params['ignore_warnings'] = ignore_warnings
+
         with self._client as client:
-            response = client.get(url, params={'ignore_warnings': ignore_warnings})
+            response = client.get(url, params=query_params)
 
         if response.status_code != 200:
             raise RedactResponseError(response=response, msg=f'Error downloading job result: '
