@@ -71,6 +71,10 @@ def redact_file(file_path: str,
                     False,
                     help='Save labels for PII bounding boxes'
                 ),
+                ignore_warnings: bool = typer.Option(
+                    False,
+                    help='Download results even if they have warnings',
+                ),
                 skip_existing: bool = typer.Option(
                     True,
                     help='Specify whether to overwrite previously run files'
@@ -87,11 +91,19 @@ def redact_file(file_path: str,
                             lp_determination_threshold=lp_determination_threshold,
                             face_determination_threshold=face_determination_threshold)
 
-    rdct_file(file_path=file_path, out_type=out_type, service=service, job_args=job_args,
+    rdct_file(file_path=file_path,
+              out_type=out_type,
+              service=service,
+              job_args=job_args,
               custom_labels_file_path=custom_labels_file_path,
-              licence_plate_custom_stamp_path=licence_plate_custom_stamp_path, redact_url=redact_url,
-              api_key=api_key, out_path=out_path, skip_existing=skip_existing,
-              save_labels=save_labels, auto_delete_job=auto_delete_job)
+              licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
+              redact_url=redact_url,
+              api_key=api_key,
+              out_path=out_path,
+              ignore_warnings=ignore_warnings,
+              skip_existing=skip_existing,
+              save_labels=save_labels,
+              auto_delete_job=auto_delete_job)
 
 
 def redact_file_entry_point():
@@ -159,6 +171,10 @@ def redact_folder(in_dir: str,
                       False,
                       help='Save labels for PII bounding boxes'
                   ),
+                  ignore_warnings: bool = typer.Option(
+                      False,
+                      help='Download results even if they have warnings',
+                  ),
                   skip_existing: bool = typer.Option(
                       True,
                       help='Specify whether to overwrite previously run files'
@@ -175,10 +191,20 @@ def redact_folder(in_dir: str,
                             lp_determination_threshold=lp_determination_threshold,
                             face_determination_threshold=face_determination_threshold)
 
-    rdct_folder(in_dir=in_dir, out_dir=out_dir, input_type=input_type, out_type=out_type, service=service,
-                job_args=job_args, licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
-                redact_url=redact_url, api_key=api_key, n_parallel_jobs=n_parallel_jobs,
-                save_labels=save_labels, skip_existing=skip_existing, auto_delete_job=auto_delete_job)
+    rdct_folder(in_dir=in_dir,
+                out_dir=out_dir,
+                input_type=input_type,
+                out_type=out_type,
+                service=service,
+                job_args=job_args,
+                licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
+                redact_url=redact_url,
+                api_key=api_key,
+                n_parallel_jobs=n_parallel_jobs,
+                save_labels=save_labels,
+                ignore_warnings=ignore_warnings,
+                skip_existing=skip_existing,
+                auto_delete_job=auto_delete_job)
 
 
 def redact_folder_entry_point():
