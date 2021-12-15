@@ -1,4 +1,3 @@
-import os
 import pytest
 
 from pathlib import Path
@@ -8,6 +7,7 @@ from redact.tools.redact_folder import redact_folder, InputType
 
 
 class TestRedactFolder:
+
     @pytest.mark.parametrize(argnames='n_parallel_jobs', argvalues=[1, 5], ids=['1 job', '5 jobs'])
     def test_all_images_in_folder_are_anonymized(self, images_path: Path, tmp_path_factory, redact_url,
                                                  n_parallel_jobs: int):
@@ -44,51 +44,3 @@ class TestRedactFolder:
         """/some/file.abc -> /some/file.xyz"""
         file_path = Path(file_path)
         return str(file_path.parent.joinpath(f'{file_path.stem}{new_ext}'))
-
-    def test_redact_folder_videos_to_archives(self, redact_url):
-
-        path_resources = os.path.abspath(os.path.join(os.path.dirname(__file__), "../", "resources/videos"))
-
-        redact_folder(in_dir=str(path_resources),
-                      out_dir=str(path_resources),
-                      input_type=InputType.videos,
-                      out_type=OutputType.archives,
-                      service=ServiceType.blur,
-                      save_labels=True,
-                      redact_url=redact_url,
-                      n_parallel_jobs=1)
-
-        in_video_file = [p for p in Path(path_resources).rglob('*.mp4')]
-        out_archive_file = [p for p in Path(path_resources).rglob('*.tar')]
-        out_labels_file = [p for p in Path(path_resources).rglob('*.json')]
-
-        assert len(in_video_file) == len(out_archive_file) == len(out_labels_file) == 1
-
-        assert in_video_file[0].stem == out_archive_file[0].stem.replace("_redacted", "") == out_labels_file[0].stem.replace("_redacted", "")
-
-        os.remove(out_archive_file[0])
-        os.remove(out_labels_file[0])
-
-    def test_redact_folder_archives_to_videos(self, redact_url):
-
-        path_resources = os.path.abspath(os.path.join(os.path.dirname(__file__), "../", "resources/archives"))
-
-        redact_folder(in_dir=str(path_resources),
-                      out_dir=str(path_resources),
-                      input_type=InputType.archives,
-                      out_type=OutputType.videos,
-                      service=ServiceType.blur,
-                      save_labels=True,
-                      redact_url=redact_url,
-                      n_parallel_jobs=1)
-
-        in_archive_file = [p for p in Path(path_resources).rglob('*.tar')]
-        out_video_file = [p for p in Path(path_resources).rglob('*.mp4')]
-        out_labels_file = [p for p in Path(path_resources).rglob('*.json')]
-
-        assert len(in_archive_file) == len(out_video_file) == len(out_labels_file) == 1
-
-        assert in_archive_file[0].stem == out_video_file[0].stem.replace("_redacted", "") == out_labels_file[0].stem.replace("_redacted", "")
-
-        os.remove(out_video_file[0])
-        os.remove(out_labels_file[0])
