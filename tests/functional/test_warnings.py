@@ -79,5 +79,6 @@ class TestWarnings:
                       ignore_warnings=ignore_warnings)
 
         # THEN the output folder has a video iff warnings are ignored
+        output_files = len(list(tmp_out_path.glob('*')))
         expected_output_files = 1 if ignore_warnings else 0
-        assert len(list(tmp_out_path.glob('*'))) == expected_output_files
+        assert output_files == expected_output_files
