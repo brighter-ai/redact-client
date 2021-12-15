@@ -1,10 +1,11 @@
 import pytest
+import shutil
 
-from io import FileIO
 from pathlib import Path
 
 from redact import RedactJob, RedactInstance, ServiceType, OutputType, \
-    RedactResponseError
+    RedactResponseError, redact_folder, JobArguments
+from redact.tools.redact_folder import InputType
 
 
 @pytest.fixture(scope='session')
@@ -15,15 +16,14 @@ def redact_instance_vid(redact_url: str) -> RedactInstance:
 
 
 @pytest.fixture(scope='session')
-def video_with_warning(resource_path: Path) -> FileIO:
-    video_path = resource_path.joinpath('videos/not_starting_with_keyframe.mp4')
-    with open(str(video_path), 'rb') as f:
-        yield f
+def video_with_warning(resource_path: Path) -> Path:
+    return resource_path.joinpath('videos/not_starting_with_keyframe.mp4')
 
 
 @pytest.fixture(scope='session')
-def job_wo_keyframe(redact_instance_vid: RedactInstance, video_with_warning: FileIO) -> RedactJob:
-    job = redact_instance_vid.start_job(file=video_with_warning)
+def job_wo_keyframe(redact_instance_vid: RedactInstance, video_with_warning: Path) -> RedactJob:
+    with open(str(video_with_warning), 'rb') as f:
+        job = redact_instance_vid.start_job(file=f)
     job.wait_until_finished()
     return job
 
@@ -54,3 +54,30 @@ class TestWarnings:
         # WHEN the result is downloaded (with ignore_warnings=True)
         # THEN the download succeeds
         job_wo_keyframe.download_result(ignore_warnings=True)
+
+    @pytest.mark.parametrize(argnames='ignore_warnings', argvalues=[None, False, True])
+    def test_redact_folder_with_ignore_warnings(self,
+                                                redact_url: str,
+                                                video_with_warning: Path,
+                                                ignore_warnings: bool,
+                                                tmp_path_factory):
+
+        # GIVEN a folder with a video that produces warnings
+        tmp_in_path = tmp_path_factory.mktemp('tmp_in')
+        shutil.copy2(src=str(video_with_warning),
+                     dst=str(tmp_in_path))
+
+        # WHEN all videos in the folder are redacted
+        tmp_out_path = tmp_path_factory.mktemp('tmp_out')
+        redact_folder(in_dir=str(tmp_in_path),
+                      out_dir=str(tmp_out_path),
+                      input_type=InputType.videos,
+                      out_type=OutputType.videos,
+                      service=ServiceType.blur,
+                      job_args=JobArguments(face=False),
+                      redact_url=redact_url,
+                      ignore_warnings=ignore_warnings)
+
+        # THEN the output folder has a video iff warnings are ignored
+        expected_output_files = 1 if ignore_warnings else 0
+        assert len(list(tmp_out_path.glob('*'))) == expected_output_files
