@@ -62,8 +62,9 @@ def some_custom_lp_stamp(resource_path: Path) -> IO:
 def images_path(tmp_path_factory, some_image, n_images: int = 3) -> Path:
     """
     Return a temporary directory that has been prepared with some image files:
-    - img_0.jpg,
-    - img_1.jpg,
+    - img_0.jpg
+    - img_1.jpg
+    - img_2.jpg
     - ...
     """
     tmp_img_path = tmp_path_factory.mktemp('imgs_dir')
