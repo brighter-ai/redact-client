@@ -46,8 +46,8 @@ class TestWarnings:
         with pytest.raises(RedactResponseError) as e:
             job_wo_keyframe.download_result()
 
-            # THEN the download is BLOCKED
-            assert e.value.status_code == 423
+        # THEN the download is BLOCKED
+        assert e.value.status_code == 423
 
     def test_warnings_can_be_ignored_when_downloading(self, job_wo_keyframe: RedactJob):
         # GIVEN a finished job without keyframe
