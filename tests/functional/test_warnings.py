@@ -17,7 +17,7 @@ def redact_instance_vid(redact_url: str) -> RedactInstance:
 
 @pytest.fixture(scope='session')
 def video_with_warning_path(resource_path: Path) -> Path:
-    return resource_path.joinpath('videos/not_starting_with_keyframe.mp4')
+    return resource_path.joinpath('not_starting_with_keyframe.mp4')
 
 
 @pytest.fixture(scope='session')
