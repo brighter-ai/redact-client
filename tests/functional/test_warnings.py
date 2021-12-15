@@ -16,13 +16,13 @@ def redact_instance_vid(redact_url: str) -> RedactInstance:
 
 
 @pytest.fixture(scope='session')
-def video_with_warning(resource_path: Path) -> Path:
+def video_with_warning_path(resource_path: Path) -> Path:
     return resource_path.joinpath('videos/not_starting_with_keyframe.mp4')
 
 
 @pytest.fixture(scope='session')
-def job_wo_keyframe(redact_instance_vid: RedactInstance, video_with_warning: Path) -> RedactJob:
-    with open(str(video_with_warning), 'rb') as f:
+def job_wo_keyframe(redact_instance_vid: RedactInstance, video_with_warning_path) -> RedactJob:
+    with open(str(video_with_warning_path), 'rb') as f:
         job = redact_instance_vid.start_job(file=f)
     job.wait_until_finished()
     return job
@@ -58,13 +58,13 @@ class TestWarnings:
     @pytest.mark.parametrize(argnames='ignore_warnings', argvalues=[None, False, True])
     def test_redact_folder_with_ignore_warnings(self,
                                                 redact_url: str,
-                                                video_with_warning: Path,
+                                                video_with_warning_path: Path,
                                                 ignore_warnings: bool,
                                                 tmp_path_factory):
 
         # GIVEN a folder with a video that produces warnings
         tmp_in_path = tmp_path_factory.mktemp('tmp_in')
-        shutil.copy2(src=str(video_with_warning),
+        shutil.copy2(src=str(video_with_warning_path),
                      dst=str(tmp_in_path))
 
         # WHEN all videos in the folder are redacted
