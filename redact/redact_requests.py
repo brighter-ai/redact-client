@@ -95,12 +95,12 @@ class RedactRequests:
                    service: ServiceType,
                    out_type: OutputType,
                    output_id: UUID,
-                   ignore_warnings: Optional[bool] = None) -> JobResult:
+                   ignore_warnings: bool = False) -> JobResult:
 
         url = urllib.parse.urljoin(self.redact_url, f'{service}/{self.API_VERSION}/{out_type}/{output_id}')
 
         query_params = {}
-        if ignore_warnings is not None:
+        if ignore_warnings:
             query_params['ignore_warnings'] = ignore_warnings
 
         with self._client as client:

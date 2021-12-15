@@ -20,8 +20,8 @@ log.debug(f'Settings: {settings}')
 def redact_file(file_path: str, out_type: OutputType, service: ServiceType, job_args: Optional[JobArguments] = None,
                 licence_plate_custom_stamp_path: Optional[str] = None, custom_labels_file_path: Optional[str] = None,
                 redact_url: str = settings.redact_url_default, out_path: Optional[str] = None,
-                api_key: Optional[str] = None, skip_existing: bool = True, save_labels: bool = False,
-                auto_delete_job: bool = True):
+                api_key: Optional[str] = None, ignore_warnings: bool = False, skip_existing: bool = True,
+                save_labels: bool = False, auto_delete_job: bool = True):
     """
     If no out_path is given, <input_filename_redacted> will be used.
     """
@@ -69,7 +69,7 @@ def redact_file(file_path: str, out_type: OutputType, service: ServiceType, job_
                                               job_args=job_args,
                                               licence_plate_custom_stamp=licence_plate_custom_stamp,
                                               custom_labels=custom_labels)
-        result = job.wait_until_finished().download_result()
+        result = job.wait_until_finished().download_result(ignore_warnings=ignore_warnings)
     finally:
         if licence_plate_custom_stamp:
             licence_plate_custom_stamp.close()
