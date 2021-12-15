@@ -1,15 +1,14 @@
 import glob
 
 from pathlib import Path
-from typing import List
-
+from typing import List, Union
 
 ARCHIVE_EXTENSIONS = ['tar']
 IMG_EXTENSIONS = ['jpeg', 'jpg', 'bmp', 'png']
 VID_EXTENSIONS = ['mp4', 'avi', 'mov', 'mkv', 'mts', 'ts', 'webm']
 
 
-def normalize_path(path: str) -> Path:
+def normalize_path(path: Union[str, Path]) -> Path:
     return Path(path).expanduser().resolve()
 
 
