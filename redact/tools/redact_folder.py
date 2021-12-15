@@ -77,7 +77,7 @@ def _parallel_map(func, items: List, n_parallel_jobs=1):
             list(tqdm.tqdm(executor.map(func, items), total=len(items)))
 
 
-def _get_relative_file_paths(in_dir: Path, input_type: InputType) -> List[str]:
+def _get_relative_file_paths(in_dir: Path, input_type: InputType) -> List[Path]:
     """
     Return a list of all files in in_dir. But only relative to in_dir itself.
 
