@@ -1,5 +1,4 @@
 import logging
-import pathlib
 import pytest
 import shutil
 
@@ -40,23 +39,33 @@ def api_key(request) -> str:
     return api_key
 
 
+@pytest.fixture(scope='session')
+def resource_path() -> Path:
+    return Path(__file__).parent.joinpath('resources')
+
+
 @pytest.fixture
-def some_image() -> IO[bytes]:
-    img_path = pathlib.Path(__file__).parent.joinpath('resources/obama.jpg')
+def some_image(resource_path: Path) -> IO[bytes]:
+    img_path = resource_path.joinpath('obama.jpg')
     with open(img_path, 'rb') as f:
         yield f
 
 
 @pytest.fixture
-def some_custom_lp_stamp() -> IO:
-    img_path = pathlib.Path(__file__).parent.joinpath('resources/licence_plate_custom_stamp.png')
+def some_custom_lp_stamp(resource_path: Path) -> IO:
+    img_path = resource_path.joinpath('licence_plate_custom_stamp.png')
     with open(img_path, 'rb') as f:
         yield f
 
 
 @pytest.fixture
 def images_path(tmp_path_factory, some_image, n_images: int = 3) -> Path:
-    """Return a temporary directory that has been prepared with some image files (img_0.jpg, img_1.jpg, ...)."""
+    """
+    Return a temporary directory that has been prepared with some image files:
+    - img_0.jpg,
+    - img_1.jpg,
+    - ...
+    """
     tmp_img_path = tmp_path_factory.mktemp('imgs_dir')
     for i in range(n_images):
         output_path = tmp_img_path.joinpath(f'sub_dir/img_{i}.jpg')
