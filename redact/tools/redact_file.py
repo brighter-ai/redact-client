@@ -7,7 +7,7 @@ from redact.data_models import JobArguments, JobLabels
 from redact.redact_instance import RedactInstance
 from redact.redact_job import RedactJob, ServiceType, OutputType
 from redact.settings import Settings
-from redact.tools.utils import ARCHIVE_EXTENSIONS, VID_EXTENSIONS, normalize_path
+from redact.tools.utils import normalize_path
 
 
 logging.basicConfig(level=logging.INFO)
@@ -20,23 +20,14 @@ log.debug(f'Settings: {settings}')
 def redact_file(file_path: str, out_type: OutputType, service: ServiceType, job_args: Optional[JobArguments] = None,
                 licence_plate_custom_stamp_path: Optional[str] = None, custom_labels_file_path: Optional[str] = None,
                 redact_url: str = settings.redact_url_default, out_path: Optional[str] = None,
-                api_key: Optional[str] = None, skip_existing: bool = True, save_labels: bool = False,
-                auto_delete_job: bool = True):
+                api_key: Optional[str] = None, ignore_warnings: bool = False, skip_existing: bool = True,
+                save_labels: bool = False, auto_delete_job: bool = True):
     """
     If no out_path is given, <input_filename_redacted> will be used.
     """
 
     # input and output path
     file_path = normalize_path(file_path)
-
-    # videos to archives
-    if Path(file_path).suffix[1:].lower() in VID_EXTENSIONS and out_type == OutputType.archives:
-        out_path = Path(file_path.parent).joinpath(f'{file_path.stem}_redacted.{ARCHIVE_EXTENSIONS[0]}')
-
-    # archives to videos
-    elif Path(file_path).suffix[1:].lower() in ARCHIVE_EXTENSIONS and out_type == OutputType.videos:
-        out_path = Path(file_path.parent).joinpath(f'{file_path.stem}_redacted.{VID_EXTENSIONS[0]}')
-
     out_path = _get_out_path(out_path=out_path, file_path=file_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     log.debug(f'Anonymize {file_path}, writing result to {out_path} ...')
@@ -69,7 +60,7 @@ def redact_file(file_path: str, out_type: OutputType, service: ServiceType, job_
                                               job_args=job_args,
                                               licence_plate_custom_stamp=licence_plate_custom_stamp,
                                               custom_labels=custom_labels)
-        result = job.wait_until_finished().download_result()
+        result = job.wait_until_finished().download_result(ignore_warnings=ignore_warnings)
     finally:
         if licence_plate_custom_stamp:
             licence_plate_custom_stamp.close()

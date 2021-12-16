@@ -2,6 +2,8 @@ import io
 import pytest
 
 from PIL import Image
+from redact import RedactInstance
+from typing import IO
 
 from redact.data_models import JobState, RedactResponseError
 
@@ -15,13 +17,16 @@ class TestRedactJob:
         # THEN the job finishes after a while
         assert job.wait_until_finished().get_status().state == JobState.finished
 
-    def test_download_result(self, any_img_redact_inst, some_image):
+    @pytest.mark.parametrize(argnames='ignore_warnings',
+                             argvalues=[False, True],
+                             ids=['do not ignore warnings', 'ignore warnings'])
+    def test_download_result(self, any_img_redact_inst: RedactInstance, some_image: IO[bytes], ignore_warnings: bool):
 
         # GIVEN an image and the corresponding Redact job
         job = any_img_redact_inst.start_job(some_image)
 
         # WHEN the job is finished and the result downloaded
-        job_result = job.wait_until_finished().download_result()
+        job_result = job.wait_until_finished().download_result(ignore_warnings=ignore_warnings)
 
         # THEN the response has the right media type
         assert job_result.media_type.startswith('image')

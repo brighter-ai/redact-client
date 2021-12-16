@@ -31,8 +31,8 @@ class InputType(str, Enum):
 def redact_folder(in_dir: str, out_dir: str, input_type: InputType, out_type: OutputType, service: ServiceType,
                   job_args: Optional[JobArguments] = None, licence_plate_custom_stamp_path: Optional[str] = None,
                   redact_url: str = settings.redact_url_default, api_key: Optional[str] = None,
-                  n_parallel_jobs: int = 1, save_labels: bool = False, skip_existing: bool = True,
-                  auto_delete_job: bool = True):
+                  n_parallel_jobs: int = 1, save_labels: bool = False, ignore_warnings: bool = False,
+                  skip_existing: bool = True, auto_delete_job: bool = True):
 
     # Normalize paths, e.g.: '~/..' -> '/home'
     in_dir = normalize_path(in_dir)
@@ -58,6 +58,7 @@ def redact_folder(in_dir: str, out_dir: str, input_type: InputType, out_type: Ou
                                         redact_url=redact_url,
                                         api_key=api_key,
                                         save_labels=save_labels,
+                                        ignore_warnings=ignore_warnings,
                                         skip_existing=skip_existing,
                                         auto_delete_job=auto_delete_job)
 
@@ -76,7 +77,7 @@ def _parallel_map(func, items: List, n_parallel_jobs=1):
             list(tqdm.tqdm(executor.map(func, items), total=len(items)))
 
 
-def _get_relative_file_paths(in_dir: Path, input_type: InputType) -> List[str]:
+def _get_relative_file_paths(in_dir: Path, input_type: InputType) -> List[Path]:
     """
     Return a list of all files in in_dir. But only relative to in_dir itself.
 

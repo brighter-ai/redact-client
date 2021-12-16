@@ -37,10 +37,11 @@ class RedactJob:
                                         output_id=self.output_id)
         return labels
 
-    def download_result(self) -> JobResult:
+    def download_result(self, ignore_warnings: bool = False) -> JobResult:
         return self.redact.get_output(service=self.service,
                                       out_type=self.out_type,
-                                      output_id=self.output_id)
+                                      output_id=self.output_id,
+                                      ignore_warnings=ignore_warnings)
 
     def delete(self):
         return self.redact.delete_output(service=self.service,
