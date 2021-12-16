@@ -7,7 +7,7 @@ from redact.data_models import JobArguments, JobLabels
 from redact.redact_instance import RedactInstance
 from redact.redact_job import RedactJob, ServiceType, OutputType
 from redact.settings import Settings
-from redact.tools.utils import ARCHIVE_EXTENSIONS, VID_EXTENSIONS, normalize_path
+from redact.tools.utils import normalize_path
 
 
 logging.basicConfig(level=logging.INFO)
