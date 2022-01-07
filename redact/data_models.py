@@ -1,6 +1,6 @@
 from enum import Enum
 from httpx import Response
-from pydantic import BaseModel, Field, PositiveInt
+from pydantic import BaseModel, Field, PositiveInt, conint, confloat
 from typing import Optional, List, Tuple
 from uuid import UUID
 
@@ -64,6 +64,8 @@ class JobStatus(BaseModel):
     start_timestamp: Optional[float] = None
     end_timestamp: Optional[float] = None
     estimated_time_to_completion: Optional[float] = None
+    progress: confloat(ge=0.0, le=1.0)
+    total_frames: conint(ge=1)
     warnings: List[str] = Field(default_factory=list)
 
     def is_running(self):
