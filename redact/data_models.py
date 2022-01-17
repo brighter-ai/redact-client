@@ -64,8 +64,8 @@ class JobStatus(BaseModel):
     start_timestamp: Optional[float] = None
     end_timestamp: Optional[float] = None
     estimated_time_to_completion: Optional[float] = None
-    progress: confloat(ge=0.0, le=1.0)
-    total_frames: conint(ge=1)
+    progress: Optional[confloat(ge=0.0, le=1.0)]
+    total_frames: Optional[conint(ge=1)]
     warnings: List[str] = Field(default_factory=list)
 
     def is_running(self):
