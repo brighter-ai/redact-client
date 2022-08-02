@@ -9,17 +9,17 @@ from .redact_job import RedactJob  # noqa
 from .redact_requests import RedactRequests  # noqa
 
 from .data_models import (
-    JobArguments,
-    ServiceType,
-    OutputType,
-    Region,
-    JobStatus,
-    JobResult,
+    JobArguments,  # noqa
+    ServiceType,  # noqa
+    OutputType,  # noqa
+    Region,  # noqa
+    JobStatus,  # noqa
+    JobResult,  # noqa
     JobLabels,  # noqa
-    JobState,
-    JobPostResponse,
-    RedactResponseError,
-)  # noqa
+    JobState,  # noqa
+    JobPostResponse,  # noqa
+    RedactResponseError,  # noqa
+)
 
 from .tools.redact_file import redact_file  # noqa
 from .tools.redact_folder import redact_folder  # noqa
