@@ -9,7 +9,6 @@ build:
 
 install:
 	make build
-	poetry shell
 	pip install . --upgrade
 
 test-functional:
