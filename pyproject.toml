@@ -1,21 +1,28 @@
-[build-system]
-requires = ["flit_core >=2,<4"]
-build-backend = "flit_core.buildapi"
-
-[tool.flit.scripts]
-redact_file = "redact.__main__:redact_file_entry_point"
-redact_folder = "redact.__main__:redact_folder_entry_point"
-
-[tool.flit.metadata]
-module = "redact"
-author = "brighter AI"
-author-email = "dev@brighter.ai"
-home-page = "https://github.com/brighter-ai"
-requires-python = ">=3.6"
-requires = [
-    "httpcore~=0.12.3",
-    "httpx~=0.17.1",
-    "pydantic~=1.8.2",
-    "tqdm~=4.60.0",
-    "typer~=0.3.2"
+[tool.poetry]
+name = "redact-client"
+version = "4.9.0"
+description = "Command-line and Python client for Brighter AI's Redact"
+authors = ["brighter AI <dev@brighter.ai>"]
+license = "MIT License"
+packages = [
+    { include = "redact" },
 ]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+httpcore = "^0.15.0"
+httpx = "^0.23.0"
+pydantic = "^1.8.2"
+tqdm = "^4.60.0"
+typer = "^0.6.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+Pillow = "^9.2.0"
+uvicorn = "^0.18.2"
+fastapi = "^0.79.0"
+pytest-timeout = "^2.1.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
