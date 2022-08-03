@@ -1,6 +1,6 @@
 name: Python Linter
 
-on: [pull_request]
+on: [push]
 jobs:
   code_style:
     runs-on: ubuntu-latest
