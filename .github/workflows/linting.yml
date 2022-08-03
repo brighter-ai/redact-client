@@ -1,0 +1,20 @@
+name: Python Linter
+
+on: [pull_request]
+jobs:
+  code_style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup flake8 annotations
+        uses: rbialon/flake8-annotations@v1
+      - name: Run linting
+        uses: ricardochaves/python-lint@v1.4.0
+        with:
+          python-root-list: "redact tests"
+          use-pylint: false
+          use-pycodestyle: false
+          use-black: true
+          use-mypy: false
+          use-isort: false
+          extra-pylint-options: "--errors-only --rcfile .pylintrc"
