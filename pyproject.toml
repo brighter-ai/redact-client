@@ -11,7 +11,7 @@ redact_file = "redact.main:redact_file_entry_point"
 redact_folder = "redact.main:redact_folder_entry_point"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.7"
 httpx = "^0.22.0"
 pydantic = "^1.8.2"
 tqdm = "^4.60.0"
