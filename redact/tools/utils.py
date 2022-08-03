@@ -3,9 +3,9 @@ import glob
 from pathlib import Path
 from typing import List, Union
 
-ARCHIVE_EXTENSIONS = ['tar']
-IMG_EXTENSIONS = ['jpeg', 'jpg', 'bmp', 'png']
-VID_EXTENSIONS = ['mp4', 'avi', 'mov', 'mkv', 'mts', 'ts', 'webm']
+ARCHIVE_EXTENSIONS = ["tar"]
+IMG_EXTENSIONS = ["jpeg", "jpg", "bmp", "png"]
+VID_EXTENSIONS = ["mp4", "avi", "mov", "mkv", "mts", "ts", "webm"]
 
 
 def normalize_path(path: Union[str, Path]) -> Path:
@@ -28,10 +28,10 @@ def files_in_dir(dir: Path, recursive=True, sort=False) -> List[str]:
     path = Path(dir)
 
     if recursive:
-        search_path = str(path.joinpath('**'))
+        search_path = str(path.joinpath("**"))
         file_list = glob.glob(search_path, recursive=True)
     else:
-        search_path = str(path.joinpath('*'))
+        search_path = str(path.joinpath("*"))
         file_list = glob.glob(search_path, recursive=False)
 
     file_list = [f for f in file_list if Path(f).is_file()]

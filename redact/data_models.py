@@ -6,23 +6,23 @@ from uuid import UUID
 
 
 class ServiceType(str, Enum):
-    blur = 'blur'
-    dnat = 'dnat'
-    extract = 'extract'
+    blur = "blur"
+    dnat = "dnat"
+    extract = "extract"
 
 
 class OutputType(str, Enum):
-    images = 'images'
-    videos = 'videos'
-    archives = 'archives'
-    overlays = 'overlays'
+    images = "images"
+    videos = "videos"
+    archives = "archives"
+    overlays = "overlays"
 
 
 class Region(str, Enum):
 
-    european_union = 'european_union'
-    mainland_china = 'mainland_china'
-    united_states_of_america = 'united_states_of_america'
+    european_union = "european_union"
+    mainland_china = "mainland_china"
+    united_states_of_america = "united_states_of_america"
 
     def __str__(self):
         """Return 'european_union' instead of 'Region.european_union'. The latter is more helpful because the output
@@ -51,10 +51,10 @@ class JobResult(BaseModel):
 
 
 class JobState(str, Enum):
-    pending = 'pending'
-    active = 'active'
-    finished = 'completed'
-    failed = 'failed'
+    pending = "pending"
+    active = "active"
+    finished = "completed"
+    failed = "failed"
 
 
 class JobStatus(BaseModel):
@@ -79,8 +79,8 @@ class Label(BaseModel):
 
 
 class LabelType(str, Enum):
-    face: str = 'face'
-    license_plate: str = 'license_plate'
+    face: str = "face"
+    license_plate: str = "license_plate"
 
 
 class FrameLabels(BaseModel):
@@ -103,7 +103,6 @@ class JobLabels(BaseModel):
 
 
 class RedactConnectError(Exception):
-
     def __init__(self, msg: Optional[str] = None):
         super(RedactConnectError, self).__init__()
         self.msg = msg
@@ -113,7 +112,6 @@ class RedactConnectError(Exception):
 
 
 class RedactResponseError(Exception):
-
     def __init__(self, response: Response, msg: Optional[str] = None):
         super().__init__()
         self.response: Response = response
@@ -126,5 +124,5 @@ class RedactResponseError(Exception):
     def __str__(self) -> str:
         s = str(self.response)
         if self.msg:
-            s = s + ' ' + self.msg
+            s = s + " " + self.msg
         return s
