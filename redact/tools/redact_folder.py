@@ -12,32 +12,49 @@ from redact.data_models import RedactResponseError, JobArguments, RedactConnectE
 from redact.redact_job import ServiceType, OutputType
 from redact.settings import Settings
 from redact.tools.redact_file import redact_file
-from redact.tools.utils import files_in_dir, is_image, is_video, is_archive, normalize_path
+from redact.tools.utils import (
+    files_in_dir,
+    is_image,
+    is_video,
+    is_archive,
+    normalize_path,
+)
 
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger()
 
 settings = Settings()
-log.debug(f'Settings: {settings}')
+log.debug(f"Settings: {settings}")
 
 
 class InputType(str, Enum):
-    images = 'images'
-    videos = 'videos'
-    archives = 'archives'
+    images = "images"
+    videos = "videos"
+    archives = "archives"
 
 
-def redact_folder(in_dir: str, out_dir: str, input_type: InputType, out_type: OutputType, service: ServiceType,
-                  job_args: Optional[JobArguments] = None, licence_plate_custom_stamp_path: Optional[str] = None,
-                  redact_url: str = settings.redact_url_default, api_key: Optional[str] = None,
-                  n_parallel_jobs: int = 1, save_labels: bool = False, ignore_warnings: bool = False,
-                  skip_existing: bool = True, auto_delete_job: bool = True):
+def redact_folder(
+    in_dir: str,
+    out_dir: str,
+    input_type: InputType,
+    out_type: OutputType,
+    service: ServiceType,
+    job_args: Optional[JobArguments] = None,
+    licence_plate_custom_stamp_path: Optional[str] = None,
+    redact_url: str = settings.redact_url_default,
+    api_key: Optional[str] = None,
+    n_parallel_jobs: int = 1,
+    save_labels: bool = False,
+    ignore_warnings: bool = False,
+    skip_existing: bool = True,
+    auto_delete_job: bool = True,
+):
 
     # Normalize paths, e.g.: '~/..' -> '/home'
     in_dir = normalize_path(in_dir)
     out_dir = normalize_path(out_dir)
-    log.info(f'Anonymize files from {in_dir} ...')
+    log.info(f"Anonymize files from {in_dir} ...")
 
     # Create out_dir if not existing
     if not Path(out_dir).exists():
@@ -45,25 +62,29 @@ def redact_folder(in_dir: str, out_dir: str, input_type: InputType, out_type: Ou
 
     # List of relative input paths (only img/vid)
     relative_file_paths = _get_relative_file_paths(in_dir=in_dir, input_type=input_type)
-    log.info(f'Found {len(relative_file_paths)} {input_type.value} to process')
+    log.info(f"Found {len(relative_file_paths)} {input_type.value} to process")
 
     # Fix input arguments to make method mappable
-    worker_function = functools.partial(_try_redact_file_with_relative_path,
-                                        base_dir_in=in_dir,
-                                        base_dir_out=out_dir,
-                                        service=service,
-                                        out_type=out_type,
-                                        job_args=job_args,
-                                        licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
-                                        redact_url=redact_url,
-                                        api_key=api_key,
-                                        save_labels=save_labels,
-                                        ignore_warnings=ignore_warnings,
-                                        skip_existing=skip_existing,
-                                        auto_delete_job=auto_delete_job)
+    worker_function = functools.partial(
+        _try_redact_file_with_relative_path,
+        base_dir_in=in_dir,
+        base_dir_out=out_dir,
+        service=service,
+        out_type=out_type,
+        job_args=job_args,
+        licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
+        redact_url=redact_url,
+        api_key=api_key,
+        save_labels=save_labels,
+        ignore_warnings=ignore_warnings,
+        skip_existing=skip_existing,
+        auto_delete_job=auto_delete_job,
+    )
 
-    log.info(f'Starting {n_parallel_jobs} parallel jobs to anonymize files ...')
-    _parallel_map(func=worker_function, items=relative_file_paths, n_parallel_jobs=n_parallel_jobs)
+    log.info(f"Starting {n_parallel_jobs} parallel jobs to anonymize files ...")
+    _parallel_map(
+        func=worker_function, items=relative_file_paths, n_parallel_jobs=n_parallel_jobs
+    )
 
 
 def _parallel_map(func, items: List, n_parallel_jobs=1):
@@ -73,7 +94,9 @@ def _parallel_map(func, items: List, n_parallel_jobs=1):
         list(tqdm.tqdm(map(func, items), total=len(items)))
     else:
         # Anonymize files concurrently
-        with concurrent.futures.ThreadPoolExecutor(max_workers=n_parallel_jobs) as executor:
+        with concurrent.futures.ThreadPoolExecutor(
+            max_workers=n_parallel_jobs
+        ) as executor:
             list(tqdm.tqdm(executor.map(func, items), total=len(items)))
 
 
@@ -93,30 +116,38 @@ def _get_relative_file_paths(in_dir: Path, input_type: InputType) -> List[Path]:
     elif input_type == InputType.archives:
         file_paths = [fp for fp in file_paths if is_archive(fp)]
     else:
-        raise ValueError(f'Unsupported input type {input_type}.')
+        raise ValueError(f"Unsupported input type {input_type}.")
 
     relative_file_paths = [Path(fp).relative_to(in_dir) for fp in file_paths]
     return relative_file_paths
 
 
-def _try_redact_file_with_relative_path(relative_file_path: str, base_dir_in: str, base_dir_out: str, **kwargs):
+def _try_redact_file_with_relative_path(
+    relative_file_path: str, base_dir_in: str, base_dir_out: str, **kwargs
+):
     """This is an internal helper function to be run by a thread. We log the exceptions so they don't get lost inside
     the thread."""
 
     try:
-        _redact_file_with_relative_path(relative_file_path=relative_file_path,
-                                        base_dir_in=base_dir_in,
-                                        base_dir_out=base_dir_out,
-                                        **kwargs)
+        _redact_file_with_relative_path(
+            relative_file_path=relative_file_path,
+            base_dir_in=base_dir_in,
+            base_dir_out=base_dir_out,
+            **kwargs,
+        )
     except RedactConnectError as e:
-        log.error(f'Connection error while anonymizing {relative_file_path}: {str(e)}')
+        log.error(f"Connection error while anonymizing {relative_file_path}: {str(e)}")
     except RedactResponseError as e:
-        log.error(f'Unexpected response while anonymizing {relative_file_path}: {str(e)}')
+        log.error(
+            f"Unexpected response while anonymizing {relative_file_path}: {str(e)}"
+        )
     except Exception as e:
-        log.error(f'Error while anonymizing {relative_file_path}: {str(e)}')
+        log.error(f"Error while anonymizing {relative_file_path}: {str(e)}")
 
 
-def _redact_file_with_relative_path(relative_file_path: str, base_dir_in: str, base_dir_out: str, **kwargs):
+def _redact_file_with_relative_path(
+    relative_file_path: str, base_dir_in: str, base_dir_out: str, **kwargs
+):
     """This is an internal helper function."""
     in_path = Path(base_dir_in).joinpath(relative_file_path)
     out_path = Path(base_dir_out).joinpath(relative_file_path)
