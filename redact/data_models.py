@@ -67,6 +67,7 @@ class JobStatus(BaseModel):
     progress: Optional[confloat(ge=0.0, le=1.0)]
     total_frames: Optional[conint(ge=1)]
     warnings: List[str] = Field(default_factory=list)
+    error: Optional[str] = None
 
     def is_running(self):
         return self.state in [JobState.active, JobState.pending]
