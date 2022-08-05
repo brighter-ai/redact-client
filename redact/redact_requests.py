@@ -62,12 +62,13 @@ class RedactRequests:
         self.subscription_id = subscription_id
         self._headers = {"Accept": "*/*"}
 
-        if api_key:
+        if self.api_key:
             self._headers["api-key"] = self.api_key
-        if subscription_id:
+        if self.subscription_id:
             self._headers["Subscription-Id"] = self.subscription_id
 
-        self._client = httpx.Client(headers=self._headers, timeout=60.0)
+    def _create_client(self):
+        return httpx.Client(headers=self._headers, timeout=60.0)
 
     @_reraise_custom_errors
     def post_job(
@@ -82,13 +83,12 @@ class RedactRequests:
         """
         Post the job via a post request.
         """
-
         try:
             _ = file.name
-        except AttributeError:
+        except AttributeError as e:
             raise ValueError(
                 "Expecting 'file' argument to have a 'name' attribute, i.e., FileIO."
-            )
+            ) from e
 
         url = urllib.parse.urljoin(
             self.redact_url, f"{service}/{self.API_VERSION}/{out_type}"
@@ -96,7 +96,6 @@ class RedactRequests:
 
         if not job_args:
             job_args = JobArguments()
-
         files = {"file": file}
         if licence_plate_custom_stamp:
             files["licence_plate_custom_stamp"] = licence_plate_custom_stamp
@@ -107,11 +106,11 @@ class RedactRequests:
                 else custom_labels
             )
 
-        with self._client as client:
-            # TODO: Remove the timeout when Redact responds quicker after uploading large files
+        with self._create_client() as client:
             response = client.post(
                 url=url, files=files, params=job_args.dict(exclude_none=True)
             )
+
         if response.status_code != 200:
             raise RedactResponseError(
                 response=response, msg=f"Error posting job: {response.content}"
@@ -136,7 +135,7 @@ class RedactRequests:
         if ignore_warnings:
             query_params["ignore_warnings"] = ignore_warnings
 
-        with self._client as client:
+        with self._create_client() as client:
             response = client.get(url, params=query_params)
 
         if response.status_code != 200:
@@ -159,7 +158,7 @@ class RedactRequests:
             f"{service}/{self.API_VERSION}/{out_type}/{output_id}/status",
         )
 
-        with self._client as client:
+        with self._create_client() as client:
             response = client.get(url)
 
         if response.status_code != 200:
@@ -177,7 +176,7 @@ class RedactRequests:
             f"{service}/{self.API_VERSION}/{out_type}/{output_id}/labels",
         )
 
-        with self._client as client:
+        with self._create_client() as client:
             response = client.get(url)
 
         if response.status_code != 200:
@@ -194,7 +193,7 @@ class RedactRequests:
             self.redact_url, f"{service}/{self.API_VERSION}/{out_type}/{output_id}"
         )
 
-        with self._client as client:
+        with self._create_client() as client:
             response = client.delete(url)
 
         if response.status_code != 200:
@@ -212,7 +211,7 @@ class RedactRequests:
             f"{service}/{self.API_VERSION}/{out_type}/{output_id}/error",
         )
 
-        with self._client as client:
+        with self._create_client() as client:
             response = client.get(url)
 
         if response.status_code != 200:
