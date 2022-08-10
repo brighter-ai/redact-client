@@ -16,9 +16,12 @@ from redact.tools.redact_folder import InputType
 
 
 @pytest.fixture(scope="session")
-def redact_instance_vid(redact_url: str) -> RedactInstance:
+def redact_instance_vid(redact_url: str, optional_api_key) -> RedactInstance:
     return RedactInstance.create(
-        service=ServiceType.blur, out_type=OutputType.videos, redact_url=redact_url
+        service=ServiceType.blur,
+        out_type=OutputType.videos,
+        redact_url=redact_url,
+        api_key=optional_api_key,
     )
 
 
@@ -72,6 +75,7 @@ class TestWarnings:
         video_with_warning_path: Path,
         ignore_warnings: bool,
         tmp_path_factory,
+        optional_api_key,
     ):
 
         # GIVEN a folder with a video that produces warnings
@@ -88,6 +92,7 @@ class TestWarnings:
             service=ServiceType.blur,
             job_args=JobArguments(face=False),
             redact_url=redact_url,
+            api_key=optional_api_key,
             ignore_warnings=ignore_warnings,
         )
 

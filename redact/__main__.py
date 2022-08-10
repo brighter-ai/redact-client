@@ -1,4 +1,5 @@
 from typing import Optional
+import logging
 
 import typer
 
@@ -162,6 +163,12 @@ def redact_folder(
     auto_delete_job: bool = typer.Option(
         True, help="Specify whether to automatically delete the job from the backend"
     ),
+    auto_delete_input_file: bool = typer.Option(
+        False,
+        help="Specify whether to automatically delete the input file "
+        "from the input folder after processing of a file completed.",
+    ),
+    verbose_logging: bool = typer.Option(False, help="Enable very noisy logging."),
 ):
     job_args = JobArguments(
         region=region,
@@ -173,6 +180,13 @@ def redact_folder(
         lp_determination_threshold=lp_determination_threshold,
         face_determination_threshold=face_determination_threshold,
     )
+
+    if verbose_logging:
+        logging.basicConfig(
+            format="%(asctime)s %(levelname)s -- %(message)s", level=logging.DEBUG
+        )
+    else:
+        logging.basicConfig(level=settings.log_level)
 
     rdct_folder(
         in_dir=in_dir,
@@ -189,6 +203,7 @@ def redact_folder(
         ignore_warnings=ignore_warnings,
         skip_existing=skip_existing,
         auto_delete_job=auto_delete_job,
+        auto_delete_input_file=auto_delete_input_file,
     )
 
 

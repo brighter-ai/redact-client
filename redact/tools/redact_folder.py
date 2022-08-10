@@ -21,7 +21,6 @@ from redact.tools.utils import (
 )
 
 
-logging.basicConfig(level=logging.INFO)
 log = logging.getLogger()
 
 settings = Settings()
@@ -49,12 +48,18 @@ def redact_folder(
     ignore_warnings: bool = False,
     skip_existing: bool = True,
     auto_delete_job: bool = True,
+    auto_delete_input_file: bool = False,
 ):
 
     # Normalize paths, e.g.: '~/..' -> '/home'
     in_dir = normalize_path(in_dir)
     out_dir = normalize_path(out_dir)
     log.info(f"Anonymize files from {in_dir} ...")
+
+    if auto_delete_input_file:
+        log.warn(
+            "Auto-deletion ON, files will be deleted when they were processed successfully."
+        )
 
     # Create out_dir if not existing
     if not Path(out_dir).exists():
@@ -79,6 +84,7 @@ def redact_folder(
         ignore_warnings=ignore_warnings,
         skip_existing=skip_existing,
         auto_delete_job=auto_delete_job,
+        auto_delete_input_file=auto_delete_input_file,
     )
 
     log.info(f"Starting {n_parallel_jobs} parallel jobs to anonymize files ...")
@@ -142,6 +148,7 @@ def _try_redact_file_with_relative_path(
             f"Unexpected response while anonymizing {relative_file_path}: {str(e)}"
         )
     except Exception as e:
+        log.debug(f"Unexcepted exception: {e}", exc_info=e)
         log.error(f"Error while anonymizing {relative_file_path}: {str(e)}")
 
 
@@ -151,4 +158,9 @@ def _redact_file_with_relative_path(
     """This is an internal helper function."""
     in_path = Path(base_dir_in).joinpath(relative_file_path)
     out_path = Path(base_dir_out).joinpath(relative_file_path)
-    redact_file(file_path=in_path, out_path=out_path, **kwargs)
+    redact_file(
+        file_path=in_path,
+        out_path=out_path,
+        waiting_time_between_job_status_checks=10,
+        **kwargs,
+    )

@@ -109,6 +109,7 @@ MANIFEST
 
 # VS Code
 *.vscode
+*.code-workspace
 
 # Installer logs
 pip-log.txt
@@ -220,3 +221,6 @@ cython_debug/
 # ignore pipenv stuff until we support it
 Pipfile
 Pipfile.lock
+
+.DS_Store
+
