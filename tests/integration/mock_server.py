@@ -10,16 +10,10 @@ from typing import Optional
 from redact import JobArguments, JobPostResponse
 
 
-@contextmanager
-def mock_redact_server(
+def _mock_server_main(
     expected_path: Optional[str] = None,
     expected_job_args: Optional[JobArguments] = None,
 ):
-    """
-    Context manager that starts a mock Redact server (127.0.0.1:8787) which returns a 500 error when the request does
-    not look as expected.
-    """
-
     app = FastAPI()
 
     @app.post("/{path:path}")
@@ -30,8 +24,26 @@ def mock_redact_server(
             expected_job_args=expected_job_args,
         )
 
+    uvicorn.run(app=app, port=8787)
+
+
+@contextmanager
+def mock_redact_server(
+    expected_path: Optional[str] = None,
+    expected_job_args: Optional[JobArguments] = None,
+):
+    """
+    Context manager that starts a mock Redact server (127.0.0.1:8787) which returns a 500 error when the request does
+    not look as expected.
+    """
+
     server = Process(
-        target=uvicorn.run, args=(app,), kwargs={"port": 8787}, daemon=True
+        target=_mock_server_main,
+        args=(
+            expected_path,
+            expected_job_args,
+        ),
+        daemon=True,
     )
     server.start()
     time.sleep(2)  # wait for server to be started

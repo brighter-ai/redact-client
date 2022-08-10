@@ -11,7 +11,12 @@ class TestRedactFolder:
         argnames="n_parallel_jobs", argvalues=[1, 5], ids=["1 job", "5 jobs"]
     )
     def test_all_images_in_folder_are_anonymized(
-        self, images_path: Path, tmp_path_factory, redact_url, n_parallel_jobs: int
+        self,
+        images_path: Path,
+        tmp_path_factory,
+        redact_url,
+        optional_api_key,
+        n_parallel_jobs: int,
     ):
 
         # GIVEN an input dir (with images) and an output dir
@@ -26,6 +31,7 @@ class TestRedactFolder:
             service=ServiceType.blur,
             save_labels=True,
             redact_url=redact_url,
+            api_key=optional_api_key,
             n_parallel_jobs=n_parallel_jobs,
         )
 

@@ -11,11 +11,10 @@ module = "redact"
 author = "brighter AI"
 author-email = "dev@brighter.ai"
 home-page = "https://github.com/brighter-ai"
-requires-python = ">=3.6"
+requires-python = ">=3.7"
 requires = [
-    "httpcore~=0.12.3",
-    "httpx~=0.17.1",
-    "pydantic~=1.8.2",
-    "tqdm~=4.60.0",
-    "typer~=0.3.2"
+  "httpx~=0.23.0",
+  "pydantic~=1.9.1",
+  "tqdm~=4.64.0",
+  "typer~=0.6.1",
 ]

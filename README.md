@@ -2,24 +2,23 @@
 
 # Redact Python Client
 
-[![Unit + Integration Tests](https://github.com/brighter-ai/redact-client/actions/workflows/pytest.yml/badge.svg)](https://github.com/brighter-ai/redact-client/actions/workflows/pytest.yml)   [![Python Linter](https://github.com/brighter-ai/redact-client/actions/workflows/flake8.yml/badge.svg)](https://github.com/brighter-ai/redact-client/actions/workflows/flake8.yml)  [![Python Package Build](https://github.com/brighter-ai/redact-client/actions/workflows/build.yml/badge.svg)](https://github.com/brighter-ai/redact-client/actions/workflows/build.yml)
-
+[![Unit + Integration Tests](https://github.com/brighter-ai/redact-client/actions/workflows/pytest.yml/badge.svg)](https://github.com/brighter-ai/redact-client/actions/workflows/pytest.yml) [![Python Linter](https://github.com/brighter-ai/redact-client/actions/workflows/flake8.yml/badge.svg)](https://github.com/brighter-ai/redact-client/actions/workflows/flake8.yml) [![Python Package Build](https://github.com/brighter-ai/redact-client/actions/workflows/build.yml/badge.svg)](https://github.com/brighter-ai/redact-client/actions/workflows/build.yml)
 
 - [Overview](#overview)
 - [Installation](#installation)
 - [Quickstart](#quickstart)
-    + [Examples](#examples)
+  - [Examples](#examples)
 - [Library Usage](#library-usage)
-    + [Batch Processing](#batch-file-processing)
-    + [API Requests](#api-requests)
-    + [Redact Jobs](#redact-jobs)
-
+  - [Batch Processing](#batch-file-processing)
+  - [API Requests](#api-requests)
+  - [Redact Jobs](#redact-jobs)
 
 # Overview
 
 This repository provides access to [brighter AI's](https://brighter.ai/) [Redact API](https://docs.brighter.ai/docs/) for the anonymization of faces and license plates.
 
 Learn more:
+
 - About us: [Brighter AI](https://brighter.ai/)
 - Try [Redact](https://brighter.ai/product/) online
 - [API Documentation](https://docs.brighter.ai/docs/)
@@ -33,7 +32,6 @@ pip install git+https://github.com/brighter-ai/redact-client.git
 ```
 
 For a specific version, append `@[version]`.
-
 
 ## Quickstart
 
@@ -55,7 +53,6 @@ Usage: redact_folder [OPTIONS] IN_DIR OUT_DIR
 
 Add `--help` to see additional options.
 
-
 ### Examples
 
 Anonymize an individual image from the command line:
@@ -64,7 +61,8 @@ Anonymize an individual image from the command line:
 redact_file image.jpg images blur --redact-url=http://127.0.0.1:8787
 ```
 
-Per default, the result will be stored in `image_redacted.jpg`.
+Per default, the result will be stored in `image_redacted.jpg` if the OUT_DIR
+is the same as IN_DIR, and the original file name is used if OUT_DIR != IN_DIR.
 
 Larger amounts of data (images in this case) can be
 anonymized in batches:
@@ -72,7 +70,6 @@ anonymized in batches:
 ```shell
 redact_folder ./in_dir ./out_dir images images blur --redact-url=127.0.0.1:8787
 ```
-
 
 ## Library Usage
 

@@ -6,11 +6,11 @@ from typing import Optional, Union
 from redact.data_models import JobArguments, JobLabels
 from redact.redact_instance import RedactInstance
 from redact.redact_job import RedactJob, ServiceType, OutputType
+from redact.redact_requests import RedactRequests
 from redact.settings import Settings
 from redact.tools.utils import normalize_path
 
 
-logging.basicConfig(level=logging.INFO)
 log = logging.getLogger()
 
 settings = Settings()
@@ -31,6 +31,9 @@ def redact_file(
     skip_existing: bool = True,
     save_labels: bool = False,
     auto_delete_job: bool = True,
+    auto_delete_input_file: bool = False,
+    waiting_time_between_job_status_checks: Optional[float] = None,
+    redact_requests_param: Optional[RedactRequests] = None,
 ):
     """
     If no out_path is given, <input_filename_redacted> will be used.
@@ -64,9 +67,18 @@ def redact_file(
 
     # anonymize
     try:
-        redact = RedactInstance.create(
-            service=service, out_type=out_type, redact_url=redact_url, api_key=api_key
-        )
+        redact: RedactInstance
+        if redact_requests_param:
+            redact = RedactInstance(
+                redact_requests_param, service=service, out_type=out_type
+            )
+        else:
+            redact = RedactInstance.create(
+                service=service,
+                out_type=out_type,
+                redact_url=redact_url,
+                api_key=api_key,
+            )
         with open(file_path, "rb") as file:
             job: RedactJob = redact.start_job(
                 file=file,
@@ -74,22 +86,32 @@ def redact_file(
                 licence_plate_custom_stamp=licence_plate_custom_stamp,
                 custom_labels=custom_labels,
             )
-        result = job.wait_until_finished().download_result(
-            ignore_warnings=ignore_warnings
-        )
+
+            log.debug(
+                f"Started job for input {file_path} successfully. Output_id: {job.output_id}"
+            )
+
+        if waiting_time_between_job_status_checks is not None:
+            job.wait_until_finished(waiting_time_between_job_status_checks)
+        else:
+            job.wait_until_finished()
+
+        # stream result to file
+        job.download_result_to_file(file=out_path, ignore_warnings=ignore_warnings)
     finally:
         if licence_plate_custom_stamp:
             licence_plate_custom_stamp.close()
-
-    # write result
-    with open(out_path, "wb") as file:
-        file.write(result.content)
 
     # write labels
     if save_labels:
         labels = job.get_labels().json()
         with open(_get_labels_path(out_path), "w") as f:
             f.write(labels)
+
+    # delete input file
+    if auto_delete_input_file:
+        log.debug(f"Deleting {file_path}")
+        Path(file_path).unlink()
 
     # delete job
     if auto_delete_job:

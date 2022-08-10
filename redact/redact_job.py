@@ -1,5 +1,5 @@
 import time
-
+from pathlib import Path
 from uuid import UUID
 
 from redact.data_models import ServiceType, OutputType, JobStatus, JobResult, JobLabels
@@ -48,6 +48,15 @@ class RedactJob:
             service=self.service,
             out_type=self.out_type,
             output_id=self.output_id,
+            ignore_warnings=ignore_warnings,
+        )
+
+    def download_result_to_file(self, file: Path, ignore_warnings: bool = False):
+        self.redact.write_output_to_file(
+            service=self.service,
+            out_type=self.out_type,
+            output_id=self.output_id,
+            file=file,
             ignore_warnings=ignore_warnings,
         )
 
