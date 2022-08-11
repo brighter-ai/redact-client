@@ -10,6 +10,7 @@ from redact import (
 )
 
 from integration.mock_server import mock_redact_server
+from redact.data_models import FrameLabels, JobLabels, Label
 
 
 @pytest.mark.parametrize(
@@ -31,14 +32,34 @@ def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType):
     )
 
     with mock_redact_server(
-        expected_path=f"{service.value}/v3/{out_type.value}", expected_job_args=job_args
+        expected_path=f"{service.value}/v3/{out_type.value}",
+        expected_job_args=job_args,
+        expected_form_content={
+            "custom_labels": b'{"frames": [{"index": 1, "faces": [{"bounding_box": [10, 40, 20, 50], "identity": 0, "score": 0.9}], "license_plates": [{"bounding_box": [20, 50, 30, 60], "identity": 0, "score": 0.9}]}]}',
+        },
     ):
 
         # WHEN the job is posted
         # THEN the server receives the expected job arguments (otherwise a 500 is returned and an error thrown)
         redact_requests = RedactRequests()
         redact_requests.post_job(
-            file=some_image, service=service, out_type=out_type, job_args=job_args
+            file=some_image,
+            service=service,
+            out_type=out_type,
+            job_args=job_args,
+            custom_labels=JobLabels(
+                frames=[
+                    FrameLabels(
+                        index=1,
+                        faces=[
+                            Label(bounding_box=(10, 40, 20, 50), identity=0, score=0.9)
+                        ],
+                        license_plates=[
+                            Label(bounding_box=(20, 50, 30, 60), identity=0, score=0.9)
+                        ],
+                    )
+                ]
+            ),
         )
 
 
