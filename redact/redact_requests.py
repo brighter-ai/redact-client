@@ -103,15 +103,19 @@ class RedactRequests:
         if not job_args:
             job_args = JobArguments()
 
+        custom_labels_filelike: bytes
+        if isinstance(custom_labels, JobLabels):
+            custom_labels_filelike = custom_labels.json().encode("utf8")
+        elif isinstance(custom_labels, str):
+            custom_labels_filelike = custom_labels.encode("utf8")
+        else:
+            custom_labels_filelike = custom_labels
+
         files = {"file": file}
         if licence_plate_custom_stamp:
             files["licence_plate_custom_stamp"] = licence_plate_custom_stamp
         if custom_labels:
-            files["custom_labels"] = (
-                custom_labels.json()
-                if isinstance(custom_labels, JobLabels)
-                else custom_labels
-            )
+            files["custom_labels"] = custom_labels_filelike
 
         upload_debug_uuid = uuid.uuid4()
         with _post_lock:
