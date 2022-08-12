@@ -9,7 +9,7 @@ from redact import (
     RedactResponseError,
 )
 
-from integration.mock_server import mock_redact_server
+from tests.integration.mock_server import mock_redact_server
 from redact.data_models import FrameLabels, JobLabels, Label
 
 
