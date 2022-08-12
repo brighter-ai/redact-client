@@ -1,4 +1,4 @@
-from typing import Optional, IO, Union
+from typing import Optional, BinaryIO, IO, Union
 
 from redact.data_models import ServiceType, OutputType, JobArguments, JobLabels
 from redact.redact_job import RedactJob
@@ -21,6 +21,7 @@ class RedactInstance:
     ):
         """
         The default way for creating RedactInstance objects is through RedactInstance.create().
+        Here you can provide your own RedactRequests instance.
         """
         self.redact_requests = redact_requests
         self.service = service
@@ -45,9 +46,9 @@ class RedactInstance:
 
     def start_job(
         self,
-        file: IO,
+        file: BinaryIO,
         job_args: Optional[JobArguments] = None,
-        licence_plate_custom_stamp: Optional[IO] = None,
+        licence_plate_custom_stamp: Optional[BinaryIO] = None,
         custom_labels: Optional[Union[str, IO, JobLabels]] = None,
     ) -> RedactJob:
         post_response = self.redact_requests.post_job(
@@ -58,7 +59,6 @@ class RedactInstance:
             licence_plate_custom_stamp=licence_plate_custom_stamp,
             custom_labels=custom_labels,
         )
-
         return RedactJob(
             redact_requests=self.redact_requests,
             service=self.service,

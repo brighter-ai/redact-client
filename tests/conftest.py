@@ -34,6 +34,14 @@ def redact_url(request) -> str:
     return url
 
 
+@pytest.fixture(scope="session")
+def optional_api_key(request) -> str:
+    api_key = request.config.getoption("--api_key")
+    if not api_key:
+        return None
+    return api_key
+
+
 @pytest.fixture
 def api_key(request) -> str:
     api_key = request.config.getoption("--api_key")
