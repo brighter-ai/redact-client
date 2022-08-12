@@ -128,8 +128,8 @@ class TestRedactToolsWithSubscriptionKey:
 
         # WHEN the folder is anonymized through Redact Online with invalid api key
         redact_folder(
-            in_dir=str(images_path),
-            out_dir=str(output_path),
+            in_dir=images_path,
+            out_dir=output_path,
             redact_url=REDACT_ONLINE_URL,
             input_type=InputType.images,
             out_type=OutputType.images,
@@ -151,8 +151,8 @@ class TestRedactToolsWithSubscriptionKey:
 
         # WHEN the folder is anonymized through Redact Online with valid api key
         redact_folder(
-            in_dir=str(images_path),
-            out_dir=str(output_path),
+            in_dir=images_path,
+            out_dir=output_path,
             redact_url=REDACT_ONLINE_URL,
             input_type=InputType.images,
             out_type=OutputType.images,

@@ -85,8 +85,8 @@ class TestWarnings:
         # WHEN all videos in the folder are redacted
         tmp_out_path = tmp_path_factory.mktemp("tmp_out")
         redact_folder(
-            in_dir=str(tmp_in_path),
-            out_dir=str(tmp_out_path),
+            in_dir=tmp_in_path,
+            out_dir=tmp_out_path,
             input_type=InputType.videos,
             out_type=OutputType.videos,
             service=ServiceType.blur,

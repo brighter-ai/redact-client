@@ -8,7 +8,7 @@ import tempfile
 import os
 from io import FileIO
 from pathlib import Path
-from typing import Dict, Optional, IO, Union
+from typing import Any, Dict, Optional, IO, Union
 from uuid import UUID
 import uuid
 
@@ -58,19 +58,18 @@ class RedactRequests:
         api_key: Optional[str] = None,
         httpx_client: Optional[httpx.Client] = None,
     ):
-
         self.redact_url = normalize_url(redact_url)
         self.api_key = api_key
         self.subscription_id = subscription_id
         self._headers = {"Accept": "*/*"}
-        self.retry_total_time_limit: float = 600  # 10 minutes in seconds
+        self.retry_total_time_limit: float = 600
 
-        if api_key:
+        if self.api_key:
             self._headers["api-key"] = self.api_key
-        if subscription_id:
+        if self.subscription_id:
             self._headers["Subscription-Id"] = self.subscription_id
 
-        self._client = httpx.Client(headers=self._headers, timeout=60.0)
+        self._client = httpx_client or get_singleton_client()
 
     def post_job(
         self,
@@ -87,10 +86,10 @@ class RedactRequests:
 
         try:
             _ = file.name
-        except AttributeError:
+        except AttributeError as e:
             raise ValueError(
                 "Expecting 'file' argument to have a 'name' attribute, i.e., FileIO."
-            )
+            ) from e
 
         url = urllib.parse.urljoin(
             self.redact_url, f"{service}/{self.API_VERSION}/{out_type}"
@@ -99,20 +98,35 @@ class RedactRequests:
         if not job_args:
             job_args = JobArguments()
 
+        custom_labels_filelike: bytes
+        if isinstance(custom_labels, JobLabels):
+            custom_labels_filelike = custom_labels.json().encode("utf8")
+        elif isinstance(custom_labels, str):
+            custom_labels_filelike = custom_labels.encode("utf8")
+        else:
+            custom_labels_filelike = custom_labels
+
         files = {"file": file}
         if licence_plate_custom_stamp:
             files["licence_plate_custom_stamp"] = licence_plate_custom_stamp
         if custom_labels:
-            files["custom_labels"] = (
-                custom_labels.json()
-                if isinstance(custom_labels, JobLabels)
-                else custom_labels
-            )
+            files["custom_labels"] = custom_labels_filelike
 
-        with self._client as client:
+        upload_debug_uuid = uuid.uuid4()
+        with _post_lock:
+            log.debug(f"Posting to {url} debug id (not output_id): {upload_debug_uuid}")
             # TODO: Remove the timeout when Redact responds quicker after uploading large files
-            response = client.post(
-                url=url, files=files, params=job_args.dict(exclude_none=True)
+            response = self._retry_on_network_problem_with_backoff(
+                self._client.post,
+                debug_uuid=upload_debug_uuid,
+                url=url,
+                files=files,
+                params=job_args.dict(exclude_none=True),
+                headers=self._headers,
+                timeout=60.0,
+            )
+            log.debug(
+                f"Post response to debug id (not output_id) {upload_debug_uuid}: {response}"
             )
             if response.status_code != 200:
                 raise RedactResponseError(
@@ -136,8 +150,14 @@ class RedactRequests:
 
         query_params = self._get_output_download_query_params(ignore_warnings)
 
-        with self._client as client:
-            response = client.get(url, params=query_params)
+        debug_uuid = uuid.uuid4()
+        response = self._retry_on_network_problem_with_backoff(
+            self._client.get,
+            debug_uuid,
+            url,
+            params=query_params,
+            headers=self._headers,
+        )
 
         if response.status_code != 200:
             raise RedactResponseError(
@@ -184,7 +204,7 @@ class RedactRequests:
         output_id: UUID,
         file: Path,
         ignore_warnings: bool = False,
-    ) -> JobResult:
+    ) -> None:
         """
         Retrieves job result and streams it to file, greatly reducing memory load
         and resolving memory fragmentation problems.
@@ -227,8 +247,10 @@ class RedactRequests:
             f"{service}/{self.API_VERSION}/{out_type}/{output_id}/status",
         )
 
-        with self._client as client:
-            response = client.get(url)
+        debug_uuid = uuid.uuid4()
+        response = self._retry_on_network_problem_with_backoff(
+            self._client.get, debug_uuid, url, headers=self._headers
+        )
 
         if response.status_code != 200:
             raise RedactResponseError(response=response, msg="Error getting job status")
@@ -244,8 +266,10 @@ class RedactRequests:
             f"{service}/{self.API_VERSION}/{out_type}/{output_id}/labels",
         )
 
-        with self._client as client:
-            response = client.get(url)
+        debug_uuid = uuid.uuid4()
+        response = self._retry_on_network_problem_with_backoff(
+            self._client.get, debug_uuid, url, headers=self._headers
+        )
 
         if response.status_code != 200:
             raise RedactResponseError(response=response, msg="Error getting labels")
@@ -260,8 +284,10 @@ class RedactRequests:
             self.redact_url, f"{service}/{self.API_VERSION}/{out_type}/{output_id}"
         )
 
-        with self._client as client:
-            response = client.delete(url)
+        debug_uuid = uuid.uuid4()
+        response = self._retry_on_network_problem_with_backoff(
+            self._client.delete, debug_uuid, url, headers=self._headers
+        )
 
         if response.status_code != 200:
             raise RedactResponseError(response=response, msg="Error deleting job")
@@ -277,8 +303,10 @@ class RedactRequests:
             f"{service}/{self.API_VERSION}/{out_type}/{output_id}/error",
         )
 
-        with self._client as client:
-            response = client.get(url)
+        debug_uuid = uuid.uuid4()
+        response = self._retry_on_network_problem_with_backoff(
+            self._client.get, debug_uuid, url, headers=self._headers
+        )
 
         if response.status_code != 200:
             raise RedactResponseError(response=response, msg="Error getting job error")
@@ -314,7 +342,7 @@ class RedactRequests:
 
     def _retry_on_network_problem_with_backoff(
         self, func, debug_uuid: uuid.UUID, *positional_arguments, **keyword_arguments
-    ):
+    ) -> Any:
 
         retry_start = -1
         retry_delay = -1

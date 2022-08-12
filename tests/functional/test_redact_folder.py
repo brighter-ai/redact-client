@@ -1,9 +1,10 @@
+from pathlib import Path
+from typing import Union
+
 import pytest
 
-from pathlib import Path
-
 from redact.data_models import OutputType, ServiceType
-from redact.tools.redact_folder import redact_folder, InputType
+from redact.tools.redact_folder import InputType, redact_folder
 
 
 class TestRedactFolder:
@@ -24,8 +25,8 @@ class TestRedactFolder:
 
         # WHEN the whole folder is anonymized
         redact_folder(
-            in_dir=str(images_path),
-            out_dir=str(output_path),
+            in_dir=images_path,
+            out_dir=output_path,
             input_type=InputType.images,
             out_type=OutputType.images,
             service=ServiceType.blur,
@@ -54,7 +55,7 @@ class TestRedactFolder:
         assert len(files_in_out_dir) == 2 * len(files_in_in_dir)
 
     @staticmethod
-    def _replace_file_ext(file_path: str, new_ext: str = ".json") -> str:
+    def _replace_file_ext(file_path: Union[str, Path], new_ext: str = ".json") -> str:
         """/some/file.abc -> /some/file.xyz"""
         file_path = Path(file_path)
         return str(file_path.parent.joinpath(f"{file_path.stem}{new_ext}"))

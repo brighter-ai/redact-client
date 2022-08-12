@@ -189,8 +189,8 @@ def redact_folder(
         logging.basicConfig(level=settings.log_level)
 
     rdct_folder(
-        in_dir=in_dir,
-        out_dir=out_dir,
+        in_dir_path=in_dir,
+        out_dir_path=out_dir,
         input_type=input_type,
         out_type=out_type,
         service=service,
