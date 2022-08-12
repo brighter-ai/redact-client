@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "redact"
-version = "4.9.0"
+version = "5.1.0"
 description = "Command-line and Python client for Brighter AI's Redact"
 authors = ["brighter AI <dev@brighter.ai>"]
 readme = "README.md"
@@ -13,7 +13,7 @@ redact_folder = "redact.main:redact_folder_entry_point"
 [tool.poetry.dependencies]
 python = "^3.7"
 httpx = "^0.22.0"
-pydantic = "^1.8.2"
+pydantic = "^1.9.2"
 tqdm = "^4.60.0"
 typer = {extras = ["all"], version = "^0.6.1"}
 
