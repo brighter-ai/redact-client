@@ -62,13 +62,14 @@ class RedactRequests:
         self.api_key = api_key
         self.subscription_id = subscription_id
         self._headers = {"Accept": "*/*"}
-        self.retry_total_time_limit: float = 600
+        self.retry_total_time_limit: float = 600  # 10 minutes in seconds
 
         if self.api_key:
             self._headers["api-key"] = self.api_key
         if self.subscription_id:
             self._headers["Subscription-Id"] = self.subscription_id
 
+        # httpx.Client client is thread safe, see https://github.com/encode/httpx/discussions/1633
         self._client = httpx_client or get_singleton_client()
 
     def post_job(
