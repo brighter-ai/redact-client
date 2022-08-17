@@ -6,7 +6,7 @@ import tqdm
 
 from enum import Enum
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from redact.data_models import RedactResponseError, JobArguments, RedactConnectError
 from redact.redact_job import ServiceType, OutputType
@@ -34,8 +34,8 @@ class InputType(str, Enum):
 
 
 def redact_folder(
-    in_dir: str,
-    out_dir: str,
+    in_dir: Union[str, Path],
+    out_dir: Union[str, Path],
     input_type: InputType,
     out_type: OutputType,
     service: ServiceType,
@@ -52,9 +52,9 @@ def redact_folder(
 ):
 
     # Normalize paths, e.g.: '~/..' -> '/home'
-    in_dir = normalize_path(in_dir)
-    out_dir = normalize_path(out_dir)
-    log.info(f"Anonymize files from {in_dir} ...")
+    in_dir_path = normalize_path(in_dir)
+    out_dir_path = normalize_path(out_dir)
+    log.info(f"Anonymize files from {in_dir_path} ...")
 
     if auto_delete_input_file:
         log.warn(
@@ -62,18 +62,20 @@ def redact_folder(
         )
 
     # Create out_dir if not existing
-    if not Path(out_dir).exists():
-        os.makedirs(out_dir)
+    if not Path(out_dir_path).exists():
+        os.makedirs(out_dir_path)
 
     # List of relative input paths (only img/vid)
-    relative_file_paths = _get_relative_file_paths(in_dir=in_dir, input_type=input_type)
+    relative_file_paths = _get_relative_file_paths(
+        in_dir=in_dir_path, input_type=input_type
+    )
     log.info(f"Found {len(relative_file_paths)} {input_type.value} to process")
 
     # Fix input arguments to make method mappable
     worker_function = functools.partial(
         _try_redact_file_with_relative_path,
-        base_dir_in=in_dir,
-        base_dir_out=out_dir,
+        base_dir_in=in_dir_path,
+        base_dir_out=out_dir_path,
         service=service,
         out_type=out_type,
         job_args=job_args,

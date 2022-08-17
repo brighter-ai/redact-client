@@ -93,7 +93,7 @@ async def _mock_redact_request_handler(
             file = form[key]
             val = await file.read()
             if repr(val) != repr(expected_form_content[key]):
-                raise Exception(
+                raise ValueError(
                     f"Failed comparison: Expected: {expected_form_content[key]} != {val}"
                 )
 

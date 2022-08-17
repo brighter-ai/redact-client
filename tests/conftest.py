@@ -3,7 +3,7 @@ import pytest
 import shutil
 
 from pathlib import Path
-from typing import IO
+from typing import IO, Optional
 
 from redact.settings import Settings
 
@@ -35,11 +35,9 @@ def redact_url(request) -> str:
 
 
 @pytest.fixture(scope="session")
-def optional_api_key(request) -> str:
+def optional_api_key(request) -> Optional[str]:
     api_key = request.config.getoption("--api_key")
-    if not api_key:
-        return None
-    return api_key
+    return api_key or None
 
 
 @pytest.fixture

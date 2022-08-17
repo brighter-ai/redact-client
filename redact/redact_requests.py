@@ -8,7 +8,7 @@ import tempfile
 import os
 from io import FileIO
 from pathlib import Path
-from typing import Dict, Optional, IO, Union
+from typing import Any, Dict, Optional, IO, Union
 from uuid import UUID
 import uuid
 
@@ -58,23 +58,19 @@ class RedactRequests:
         api_key: Optional[str] = None,
         httpx_client: Optional[httpx.Client] = None,
     ):
-
         self.redact_url = normalize_url(redact_url)
         self.api_key = api_key
         self.subscription_id = subscription_id
         self._headers = {"Accept": "*/*"}
         self.retry_total_time_limit: float = 600  # 10 minutes in seconds
 
-        if api_key:
+        if self.api_key:
             self._headers["api-key"] = self.api_key
-        if subscription_id:
+        if self.subscription_id:
             self._headers["Subscription-Id"] = self.subscription_id
 
         # httpx.Client client is thread safe, see https://github.com/encode/httpx/discussions/1633
-        if httpx_client:
-            self._client = httpx_client
-        else:
-            self._client = get_singleton_client()
+        self._client = httpx_client or get_singleton_client()
 
     def post_job(
         self,
@@ -91,10 +87,10 @@ class RedactRequests:
 
         try:
             _ = file.name
-        except AttributeError:
+        except AttributeError as e:
             raise ValueError(
                 "Expecting 'file' argument to have a 'name' attribute, i.e., FileIO."
-            )
+            ) from e
 
         url = urllib.parse.urljoin(
             self.redact_url, f"{service}/{self.API_VERSION}/{out_type}"
@@ -209,7 +205,7 @@ class RedactRequests:
         output_id: UUID,
         file: Path,
         ignore_warnings: bool = False,
-    ) -> JobResult:
+    ) -> None:
         """
         Retrieves job result and streams it to file, greatly reducing memory load
         and resolving memory fragmentation problems.
@@ -347,7 +343,7 @@ class RedactRequests:
 
     def _retry_on_network_problem_with_backoff(
         self, func, debug_uuid: uuid.UUID, *positional_arguments, **keyword_arguments
-    ):
+    ) -> Any:
 
         retry_start = -1
         retry_delay = -1
