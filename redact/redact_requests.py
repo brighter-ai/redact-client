@@ -351,21 +351,17 @@ class RedactRequests:
         while True:
             try:
                 return func(*positional_arguments, **keyword_arguments)
-            except httpx.NetworkError as e:
+            except (
+                httpx.NetworkError,
+                httpx.TimeoutException,
+                httpx.ProtocolError,
+            ) as e:
                 retry_start, retry_delay = self._calculate_retry_backoff(
                     debug_uuid, retry_start, retry_delay, e
                 )
                 if retry_delay < 0:
                     raise RedactConnectError(
                         f"Error communicating with {self.redact_url}: {e}"
-                    ) from e
-            except httpx.TimeoutException as e:
-                retry_start, retry_delay = self._calculate_retry_backoff(
-                    debug_uuid, retry_start, retry_delay, e
-                )
-                if retry_delay < 0:
-                    raise RedactConnectError(
-                        f"Timeout communicating with {self.redact_url}: {e}"
                     ) from e
 
             time.sleep(retry_delay)
