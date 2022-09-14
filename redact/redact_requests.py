@@ -24,6 +24,7 @@ from redact.data_models import (
 )
 from redact.settings import Settings
 from redact.utils import normalize_url
+from redact.utils import label_response_to_job_labels
 
 settings = Settings()
 
@@ -275,7 +276,7 @@ class RedactRequests:
         if response.status_code != 200:
             raise RedactResponseError(response=response, msg="Error getting labels")
 
-        return JobLabels.parse_obj(response.json())
+        return label_response_to_job_labels(response.json())
 
     def delete_output(
         self, service: ServiceType, out_type: OutputType, output_id: UUID

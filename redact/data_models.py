@@ -74,29 +74,12 @@ class JobStatus(BaseModel):
 
 
 class Label(BaseModel):
-    bounding_box: Tuple[int, int, int, int]
-    identity: int = 0
-    score: Optional[float] = None
-
-
-class LabelType(str, Enum):
-    face: str = "face"
-    license_plate: str = "license_plate"
+    area: List[Tuple[int, int]]
 
 
 class FrameLabels(BaseModel):
     index: PositiveInt
-    faces: List[Label] = Field(default_factory=list)
-    license_plates: List[Label] = Field(default_factory=list)
-
-    def append(self, label: Label, label_type: LabelType):
-        label_type = LabelType(label_type)
-        if LabelType(label_type) == LabelType.face:
-            self.faces.append(label)
-        elif LabelType(label_type) == LabelType.license_plate:
-            self.license_plates.append(label)
-        else:
-            raise ValueError()
+    redaction_areas: List[Label] = Field(default_factory=list)
 
 
 class JobLabels(BaseModel):

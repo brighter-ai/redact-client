@@ -35,7 +35,7 @@ def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType):
         expected_path=f"{service.value}/v3/{out_type.value}",
         expected_job_args=job_args,
         expected_form_content={
-            "custom_labels": b'{"frames": [{"index": 1, "faces": [{"bounding_box": [10, 40, 20, 50], "identity": 0, "score": 0.9}], "license_plates": [{"bounding_box": [20, 50, 30, 60], "identity": 0, "score": 0.9}]}]}',
+            "custom_labels": b'{"frames": [{"index": 1, "redaction_areas": [{"area": [[10, 40], [20, 40], [20, 50], [10, 50]]}]}]}',
         },
     ):
 
@@ -51,11 +51,8 @@ def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType):
                 frames=[
                     FrameLabels(
                         index=1,
-                        faces=[
-                            Label(bounding_box=(10, 40, 20, 50), identity=0, score=0.9)
-                        ],
-                        license_plates=[
-                            Label(bounding_box=(20, 50, 30, 60), identity=0, score=0.9)
+                        redaction_areas=[
+                            Label(area=[(10, 40), (20, 40), (20, 50), (10, 50)])
                         ],
                     )
                 ]
