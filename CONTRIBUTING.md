@@ -155,6 +155,10 @@ chore(deployment): make a new Docker image
 ```
 
 # Python Code Style Reference
+## Tests
+All new features and bug fixes must be tested. 
+If you add a new feature, please add unit and functional tests.
+If you fix a bug, add tests that check if it was fixed. 
 
 A "Best of the Best Practices" [(BOBP) guide to developing in Python](https://gist.github.com/sloria/7001839).
 
