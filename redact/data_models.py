@@ -1,8 +1,9 @@
 from enum import Enum
-from httpx import Response
-from pydantic import BaseModel, Field, PositiveInt, conint, confloat
-from typing import Optional, List, Tuple
+from typing import List, Optional, Tuple
 from uuid import UUID
+
+from httpx import Response
+from pydantic import BaseModel, Field, PositiveInt, confloat, conint
 
 
 class ServiceType(str, Enum):

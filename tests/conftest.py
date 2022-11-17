@@ -1,12 +1,11 @@
 import logging
-import pytest
 import shutil
-
 from pathlib import Path
 from typing import IO, Optional
 
-from redact.settings import Settings
+import pytest
 
+from redact.settings import Settings
 
 settings = Settings()
 

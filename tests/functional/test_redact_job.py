@@ -1,10 +1,10 @@
 import io
-import pytest
-
-from PIL import Image
-from redact import RedactInstance
 from typing import IO
 
+import pytest
+from PIL import Image
+
+from redact import RedactInstance
 from redact.data_models import JobState, RedactResponseError
 
 

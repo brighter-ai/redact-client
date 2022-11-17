@@ -1,9 +1,9 @@
 import os
-import pytest
-
 from pathlib import Path
 
-from redact.tools.utils import normalize_path, files_in_dir, images_in_dir
+import pytest
+
+from redact.tools.utils import files_in_dir, images_in_dir, normalize_path
 
 
 @pytest.mark.parametrize(

@@ -1,4 +1,4 @@
-from pydantic import BaseSettings, AnyUrl, Field
+from pydantic import AnyUrl, BaseSettings, Field
 
 
 class Settings(BaseSettings):

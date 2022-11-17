@@ -1,16 +1,15 @@
 import pytest
 
 from redact import (
-    RedactRequests,
-    OutputType,
-    ServiceType,
     JobArguments,
-    Region,
+    OutputType,
+    RedactRequests,
     RedactResponseError,
+    Region,
+    ServiceType,
 )
-
-from tests.integration.mock_server import mock_redact_server
 from redact.data_models import FrameLabels, JobLabels, Label
+from tests.integration.mock_server import mock_redact_server
 
 
 @pytest.mark.parametrize(

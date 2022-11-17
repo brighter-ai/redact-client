@@ -1,6 +1,6 @@
-from typing import Optional, BinaryIO, IO, Union
+from typing import IO, BinaryIO, Optional, Union
 
-from redact.data_models import ServiceType, OutputType, JobArguments, JobLabels
+from redact.data_models import JobArguments, JobLabels, OutputType, ServiceType
 from redact.redact_job import RedactJob
 from redact.redact_requests import RedactRequests
 from redact.settings import Settings
