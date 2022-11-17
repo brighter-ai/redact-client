@@ -1,13 +1,13 @@
-from typing import Optional
 import logging
+from typing import Optional
 
 import typer
 
-from redact.data_models import JobArguments, Region, ServiceType, OutputType
+from redact.data_models import JobArguments, OutputType, Region, ServiceType
 from redact.settings import Settings
 from redact.tools.redact_file import redact_file as rdct_file
-from redact.tools.redact_folder import redact_folder as rdct_folder
 from redact.tools.redact_folder import InputType
+from redact.tools.redact_folder import redact_folder as rdct_folder
 
 settings = Settings()
 

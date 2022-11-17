@@ -1,16 +1,16 @@
-import pytest
 import shutil
-
 from pathlib import Path
 
+import pytest
+
 from redact import (
-    RedactJob,
-    RedactInstance,
-    ServiceType,
-    OutputType,
-    RedactResponseError,
-    redact_folder,
     JobArguments,
+    OutputType,
+    RedactInstance,
+    RedactJob,
+    RedactResponseError,
+    ServiceType,
+    redact_folder,
 )
 from redact.tools.redact_folder import InputType
 

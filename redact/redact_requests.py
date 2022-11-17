@@ -1,26 +1,26 @@
-import httpx
 import logging
-import threading
-import urllib.parse
-
-import time
-import tempfile
 import os
+import tempfile
+import threading
+import time
+import urllib.parse
+import uuid
 from io import FileIO
 from pathlib import Path
-from typing import Any, Dict, Optional, IO, Union
+from typing import IO, Any, Dict, Optional, Union
 from uuid import UUID
-import uuid
+
+import httpx
 
 from redact.data_models import (
-    ServiceType,
-    OutputType,
     JobArguments,
-    JobResult,
-    RedactResponseError,
-    JobPostResponse,
     JobLabels,
+    JobPostResponse,
+    JobResult,
+    OutputType,
     RedactConnectError,
+    RedactResponseError,
+    ServiceType,
 )
 from redact.settings import Settings
 from redact.utils import normalize_url
@@ -338,7 +338,7 @@ class RedactRequests:
 
         log.debug(
             f"Network exception '{exc_info}' caught on request {debug_uuid}, "
-            + f"retrying after {retry_delay:.2f}s."
+            f"retrying after {retry_delay:.2f}s."
         )
         return retry_start, retry_delay
 

@@ -1,11 +1,10 @@
 import pytest
 
-from redact.data_models import ServiceType, OutputType
+from redact.data_models import OutputType, ServiceType
 from redact.redact_instance import RedactInstance
 from redact.redact_job import RedactJob
 from redact.redact_requests import RedactRequests
 from redact.settings import Settings
-
 
 settings = Settings()
 

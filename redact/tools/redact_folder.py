@@ -2,24 +2,23 @@ import concurrent.futures
 import functools
 import logging
 import os
-import tqdm
-
 from enum import Enum
 from pathlib import Path
 from typing import List, Optional, Union
 
-from redact.data_models import RedactResponseError, JobArguments, RedactConnectError
-from redact.redact_job import ServiceType, OutputType
+import tqdm
+
+from redact.data_models import JobArguments, RedactConnectError, RedactResponseError
+from redact.redact_job import OutputType, ServiceType
 from redact.settings import Settings
 from redact.tools.redact_file import redact_file
 from redact.tools.utils import (
     files_in_dir,
+    is_archive,
     is_image,
     is_video,
-    is_archive,
     normalize_path,
 )
-
 
 log = logging.getLogger()
 
