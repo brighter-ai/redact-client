@@ -165,17 +165,16 @@ A "Best of the Best Practices" [(BOBP) guide to developing in Python](https://gi
 ## Formatting
 
 To format code we use [black](https://github.com/psf/black).
+> **_NOTE:_** Make sure you are using the same version of the `black` as in the `Format`GitHub actions.
+> Different versions of `black` could format the code differently. 
 
 Use one of the following commands to format your changes before committing them:
 
 * ```bash
-  black <python-file name>
+  black <python-file name or package path>
   ```
 * ```bash
-  python -m black <python-file name>
-  ```
-* ```bash
-  python -m black $(git status | grep "\.py$" | awk -F"modified:   " '{print $2}')
+  python -m black <python-file name or package path>
   ```
 
 ## PEP8 complaince
@@ -185,13 +184,23 @@ To validate code's PEP8 complaince we use [flake8](https://flake8.pycqa.org/en/l
 Use one of the following commands to check complaince with PEP8 for your changes before committing them:
 
 * ```bash
-  flake8 <python-file name>
+  flake8 <python-file name or package path>
   ```
 * ```bash
-  python -m flake8 <python-file name>
+  python -m flake8 <python-file name or package path>
+  ```
+
+## Imports sorting
+
+To sort imports we use [isort](https://pycqa.github.io/isort/).
+
+Use one of the following commands to check complaince with PEP8 for your changes before committing them:
+
+* ```bash
+  isort <python-file name or package path>
   ```
 * ```bash
-  python -m flake8 $(git status | grep "\.py$" | awk -F"modified:   " '{print $2}')
+  python -m isort <python-file name or package path>
   ```
 
 ## Type annotations
