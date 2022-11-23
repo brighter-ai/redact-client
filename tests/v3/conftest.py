@@ -49,19 +49,19 @@ def api_key(request) -> str:
 
 @pytest.fixture(scope="session")
 def resource_path() -> Path:
-    return Path(__file__).parent.joinpath("resources")
+    return Path(__file__).parent.parent / "resources"
 
 
 @pytest.fixture
 def some_image(resource_path: Path) -> IO[bytes]:
-    img_path = resource_path.joinpath("obama.jpg")
+    img_path = resource_path / "obama.jpg"
     with open(img_path, "rb") as f:
         yield f
 
 
 @pytest.fixture
 def some_custom_lp_stamp(resource_path: Path) -> IO:
-    img_path = resource_path.joinpath("licence_plate_custom_stamp.png")
+    img_path = resource_path / "licence_plate_custom_stamp.png"
     with open(img_path, "rb") as f:
         yield f
 
@@ -77,7 +77,7 @@ def images_path(tmp_path_factory, some_image, n_images: int = 3) -> Path:
     """
     tmp_img_path = tmp_path_factory.mktemp("imgs_dir")
     for i in range(n_images):
-        output_path = tmp_img_path.joinpath(f"sub_dir/img_{i}.jpg")
+        output_path = tmp_img_path / f"sub_dir/img_{i}.jpg"
         output_path.parent.mkdir(parents=True, exist_ok=True)
         some_image.seek(0)
         with open(str(output_path), "wb") as f:

@@ -2,10 +2,15 @@ import logging
 from pathlib import Path
 from typing import Optional, Union
 
-from redact.data_models import JobArguments, JobLabels
-from redact.redact_instance import RedactInstance
-from redact.redact_job import OutputType, RedactJob, ServiceType
-from redact.redact_requests import RedactRequests
+from redact import (
+    JobArguments,
+    JobLabels,
+    OutputType,
+    RedactInstance,
+    RedactJob,
+    RedactRequests,
+    ServiceType,
+)
 from redact.settings import Settings
 from redact.tools.utils import normalize_path
 
