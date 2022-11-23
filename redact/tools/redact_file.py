@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 from typing import Optional, Union
 
-from redact import (
+from redact.v3 import (
     JobArguments,
     JobLabels,
     OutputType,

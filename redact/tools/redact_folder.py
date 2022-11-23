@@ -8,7 +8,7 @@ from typing import List, Optional, Union
 
 import tqdm
 
-from redact import (
+from redact.v3 import (
     JobArguments,
     OutputType,
     RedactConnectError,
