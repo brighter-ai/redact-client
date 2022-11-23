@@ -1,8 +1,8 @@
 from typing import IO, BinaryIO, Optional, Union
 
-from redact.data_models import JobArguments, JobLabels, OutputType, ServiceType
-from redact.redact_job import RedactJob
-from redact.redact_requests import RedactRequests
+from redact.v3.data_models import JobArguments, JobLabels, OutputType, ServiceType
+from redact.v3.redact_job import RedactJob
+from redact.v3.redact_requests import RedactRequests
 from redact.settings import Settings
 
 settings = Settings()

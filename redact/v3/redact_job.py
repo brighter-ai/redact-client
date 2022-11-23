@@ -2,8 +2,8 @@ import time
 from pathlib import Path
 from uuid import UUID
 
-from redact.data_models import JobLabels, JobResult, JobStatus, OutputType, ServiceType
-from redact.redact_requests import RedactRequests
+from redact.v3.data_models import JobLabels, JobResult, JobStatus, OutputType, ServiceType
+from redact.v3.redact_requests import RedactRequests
 from redact.settings import Settings
 
 settings = Settings()

@@ -12,7 +12,7 @@ from uuid import UUID
 
 import httpx
 
-from redact.data_models import (
+from redact.v3.data_models import (
     JobArguments,
     JobLabels,
     JobPostResponse,
