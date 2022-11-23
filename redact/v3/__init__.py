@@ -1,7 +1,7 @@
-from .data_models import (
+from .data_models import (  # noqa
     JobArguments,
     JobLabels,
-    JobPostResponse,  # noqa
+    JobPostResponse,
     JobResult,
     JobState,
     JobStatus,

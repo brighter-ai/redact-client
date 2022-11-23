@@ -6,10 +6,10 @@ __version__ = "5.1.3"
 
 from .tools.redact_file import redact_file  # noqa
 from .tools.redact_folder import redact_folder  # noqa
-from .v3.data_models import (
+from .v3.data_models import (  # noqa
     JobArguments,
     JobLabels,
-    JobPostResponse,  # noqa
+    JobPostResponse,
     JobResult,
     JobState,
     JobStatus,
