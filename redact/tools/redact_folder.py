@@ -47,7 +47,7 @@ def redact_folder(
     skip_existing: bool = True,
     auto_delete_job: bool = True,
     auto_delete_input_file: bool = False,
-):
+) -> Tuple[Dict[str, Any], ...]:
 
     # Normalize paths, e.g.: '~/..' -> '/home'
     in_dir_path = normalize_path(in_dir)
@@ -55,7 +55,7 @@ def redact_folder(
     log.info(f"Anonymize files from {in_dir_path} ...")
 
     if auto_delete_input_file:
-        log.warn(
+        log.warning(
             "Auto-deletion ON, files will be deleted when they were processed successfully."
         )
 
