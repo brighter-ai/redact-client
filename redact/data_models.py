@@ -12,6 +12,12 @@ class ServiceType(str, Enum):
     extract = "extract"
 
 
+class InputType(str, Enum):
+    images = "images"
+    videos = "videos"
+    archives = "archives"
+
+
 class OutputType(str, Enum):
     images = "images"
     videos = "videos"

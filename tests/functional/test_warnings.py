@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 
 from redact import (
+    InputType,
     JobArguments,
     OutputType,
     RedactInstance,
@@ -12,7 +13,6 @@ from redact import (
     ServiceType,
     redact_folder,
 )
-from redact.tools.redact_folder import InputType
 
 
 @pytest.fixture(scope="session")

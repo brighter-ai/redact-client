@@ -3,13 +3,21 @@ from typing import Optional
 
 import typer
 
-from redact.data_models import JobArguments, OutputType, Region, ServiceType
+from redact.data_models import (
+    InputType,
+    JobArguments,
+    JobState,
+    OutputType,
+    Region,
+    ServiceType,
+)
 from redact.settings import Settings
 from redact.tools.redact_file import redact_file as rdct_file
-from redact.tools.redact_folder import InputType
 from redact.tools.redact_folder import redact_folder as rdct_folder
 
 settings = Settings()
+
+log = logging.getLogger()
 
 
 def redact_file(
@@ -56,7 +64,9 @@ def redact_file(
         help="Specify http address or ip of the redact instance",
     ),
     api_key: Optional[str] = typer.Option(
-        None, help="Pass api-key if client is being used with the cloud"
+        None,
+        help="Pass api-key if client is being used with the cloud",
+        hide_input=True,
     ),
     save_labels: bool = typer.Option(False, help="Save labels for PII bounding boxes"),
     ignore_warnings: bool = typer.Option(
@@ -69,7 +79,10 @@ def redact_file(
     auto_delete_job: bool = typer.Option(
         True, help="Specify whether to automatically delete the job from the backend"
     ),
+    verbose_logging: bool = typer.Option(False, help="Enable very noisy logging."),
 ):
+    setup_logging(verbose_logging)
+
     job_args = JobArguments(
         region=region,
         face=face,
@@ -81,7 +94,7 @@ def redact_file(
         face_determination_threshold=face_determination_threshold,
     )
 
-    rdct_file(
+    job_status = rdct_file(
         file_path=file_path,
         out_type=out_type,
         service=service,
@@ -96,6 +109,16 @@ def redact_file(
         save_labels=save_labels,
         auto_delete_job=auto_delete_job,
     )
+
+    if job_status is not None and job_status.state == JobState.failed:
+        log.info(f"Job failed for '{file_path}': {job_status.error}")
+
+
+def setup_logging(verbose_logging: bool) -> None:
+    format = "%(asctime)s | %(levelname)s | %(message)s"
+    level = logging.DEBUG if verbose_logging else settings.log_level
+
+    logging.basicConfig(format=format, level=level)
 
 
 def redact_file_entry_point():
@@ -147,7 +170,9 @@ def redact_folder(
         help="Specify http address or ip of the redact instance",
     ),
     api_key: Optional[str] = typer.Option(
-        None, help="Pass api-key if client is being used with the cloud"
+        None,
+        help="Pass api-key if client is being used with the cloud",
+        hide_input=True,
     ),
     n_parallel_jobs: int = typer.Option(
         1, help="Number of jobs to process in parellel"
@@ -170,6 +195,8 @@ def redact_folder(
     ),
     verbose_logging: bool = typer.Option(False, help="Enable very noisy logging."),
 ):
+    setup_logging(verbose_logging)
+
     job_args = JobArguments(
         region=region,
         face=face,
@@ -181,14 +208,7 @@ def redact_folder(
         face_determination_threshold=face_determination_threshold,
     )
 
-    if verbose_logging:
-        logging.basicConfig(
-            format="%(asctime)s %(levelname)s -- %(message)s", level=logging.DEBUG
-        )
-    else:
-        logging.basicConfig(level=settings.log_level)
-
-    rdct_folder(
+    results, exceptions = rdct_folder(
         in_dir=in_dir,
         out_dir=out_dir,
         input_type=input_type,
@@ -205,6 +225,15 @@ def redact_folder(
         auto_delete_job=auto_delete_job,
         auto_delete_input_file=auto_delete_input_file,
     )
+
+    for file_path, exception in exceptions.items():
+        log.info(
+            f"An exception occured while processing the following file '{file_path}': {exception}"
+        )
+
+    for file_path, job_status in results.items():
+        if job_status is not None and job_status.state == JobState.failed:
+            log.info(f"Job failed for '{file_path}': {job_status.error}")
 
 
 def redact_folder_entry_point():

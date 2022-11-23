@@ -5,6 +5,7 @@ Python client for "brighter Redact"
 __version__ = "5.1.3"
 
 from .data_models import (  # noqa
+    InputType,
     JobArguments,
     JobLabels,
     JobPostResponse,

@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 from typing import Optional, Union
 
-from redact.data_models import JobArguments, JobLabels
+from redact.data_models import JobArguments, JobLabels, JobState, JobStatus
 from redact.redact_instance import RedactInstance
 from redact.redact_job import OutputType, RedactJob, ServiceType
 from redact.redact_requests import RedactRequests
@@ -32,7 +32,7 @@ def redact_file(
     auto_delete_input_file: bool = False,
     waiting_time_between_job_status_checks: Optional[float] = None,
     redact_requests_param: Optional[RedactRequests] = None,
-):
+) -> Optional[JobStatus]:
     """
     If no out_path is given, <input_filename_redacted> will be used.
     """
@@ -63,6 +63,7 @@ def redact_file(
     if licence_plate_custom_stamp_path:
         licence_plate_custom_stamp = open(licence_plate_custom_stamp_path, "rb")
 
+    job_status = None
     # anonymize
     try:
         redact: RedactInstance
@@ -94,6 +95,10 @@ def redact_file(
         else:
             job.wait_until_finished()
 
+        job_status = job.get_status()
+        if job_status.state == JobState.failed:
+            return job_status
+
         # stream result to file
         job.download_result_to_file(file=out_path, ignore_warnings=ignore_warnings)
     finally:
@@ -114,6 +119,8 @@ def redact_file(
     # delete job
     if auto_delete_job:
         job.delete()
+
+    return job_status
 
 
 def _get_out_path(out_path: Union[str, Path], file_path: Path) -> Path:

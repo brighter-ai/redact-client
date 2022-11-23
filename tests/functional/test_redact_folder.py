@@ -3,8 +3,8 @@ from typing import Union
 
 import pytest
 
-from redact.data_models import OutputType, ServiceType
-from redact.tools.redact_folder import InputType, redact_folder
+from redact.data_models import InputType, OutputType, ServiceType
+from redact.tools.redact_folder import redact_folder
 
 
 class TestRedactFolder:
