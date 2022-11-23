@@ -223,4 +223,5 @@ Pipfile
 Pipfile.lock
 
 .DS_Store
-
+.history
+.vscode
