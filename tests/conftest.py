@@ -49,7 +49,7 @@ def api_key(request) -> str:
 
 @pytest.fixture(scope="session")
 def resource_path() -> Path:
-    return Path(__file__).parent.parent / "resources"
+    return Path(__file__).parent / "resources"
 
 
 @pytest.fixture
