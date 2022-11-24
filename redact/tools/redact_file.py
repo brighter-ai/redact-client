@@ -102,8 +102,7 @@ def redact_file(
 
         job_status = job.get_status()
         if job_status.state == JobState.failed:
-            # log.warning(f"Job failed for '{file_path}': {job_status.error}")
-            log.warning("YOYOY")
+            log.warning(f"Job failed for '{file_path}': {job_status.error}")
             return
 
         # stream result to file
