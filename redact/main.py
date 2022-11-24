@@ -7,6 +7,7 @@ from redact import InputType, JobArguments, JobState, OutputType, Region, Servic
 from redact.settings import Settings
 from redact.tools.redact_file import redact_file as rdct_file
 from redact.tools.redact_folder import redact_folder as rdct_folder
+from redact.tools.utils import notify_about_job_failure
 
 settings = Settings()
 
@@ -110,8 +111,7 @@ def redact_file(
         auto_delete_job=auto_delete_job,
     )
 
-    if job_status is not None and job_status.state == JobState.failed:
-        log.info(f"Job failed for '{file_path}': {job_status.error}")
+    notify_about_job_failure(log, file_path, job_status)
 
 
 def setup_logging(verbose_logging: bool) -> None:
@@ -238,13 +238,12 @@ def redact_folder(
     )
 
     for file_path, exception in exceptions.items():
-        log.info(
+        log.warning(
             f"An exception occurred while processing the following file '{file_path}': {exception}"
         )
 
     for file_path, job_status in results.items():
-        if job_status is not None and job_status.state == JobState.failed:
-            log.info(f"Job failed for '{file_path}': {job_status.error}")
+        notify_about_job_failure(log, file_path, job_status)
 
 
 def redact_folder_entry_point():

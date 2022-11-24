@@ -1,6 +1,9 @@
 import glob
+import logging
 from pathlib import Path
 from typing import List, Union
+
+from redact import JobState, JobStatus
 
 ARCHIVE_EXTENSIONS = ["tar"]
 IMG_EXTENSIONS = ["jpeg", "jpg", "bmp", "png"]
@@ -93,3 +96,10 @@ def videos_in_dir(dir: Path, recursive=True, sort=False):
     for file in file_list:
         if is_video(file):
             yield file
+
+
+def notify_about_job_failure(
+    logger: logging.Logger, file_path: Path | str, job_status: JobStatus
+):
+    if job_status is not None and job_status.state == JobState.failed:
+        logger.warning(f"Job failed for '{file_path}': {job_status.error}")
