@@ -1,11 +1,15 @@
 import pytest
 
-from redact.data_models import OutputType, RedactResponseError, ServiceType
-from redact.redact_instance import RedactInstance
-from redact.redact_requests import RedactRequests
 from redact.settings import Settings
 from redact.tools.redact_file import redact_file
 from redact.tools.redact_folder import InputType, redact_folder
+from redact.v3 import (
+    OutputType,
+    RedactInstance,
+    RedactRequests,
+    RedactResponseError,
+    ServiceType,
+)
 
 settings = Settings()
 REDACT_ONLINE_URL = settings.redact_online_url

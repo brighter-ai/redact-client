@@ -8,8 +8,6 @@ from typing import List, Optional, Union
 
 import tqdm
 
-from redact.data_models import JobArguments, RedactConnectError, RedactResponseError
-from redact.redact_job import OutputType, ServiceType
 from redact.settings import Settings
 from redact.tools.redact_file import redact_file
 from redact.tools.utils import (
@@ -18,6 +16,13 @@ from redact.tools.utils import (
     is_image,
     is_video,
     normalize_path,
+)
+from redact.v3 import (
+    JobArguments,
+    OutputType,
+    RedactConnectError,
+    RedactResponseError,
+    ServiceType,
 )
 
 log = logging.getLogger()

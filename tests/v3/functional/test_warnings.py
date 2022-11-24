@@ -3,16 +3,15 @@ from pathlib import Path
 
 import pytest
 
-from redact import (
+from redact.tools.redact_folder import InputType, redact_folder
+from redact.v3 import (
     JobArguments,
     OutputType,
     RedactInstance,
     RedactJob,
     RedactResponseError,
     ServiceType,
-    redact_folder,
 )
-from redact.tools.redact_folder import InputType
 
 
 @pytest.fixture(scope="session")

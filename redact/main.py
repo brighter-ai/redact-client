@@ -3,7 +3,7 @@ from typing import Optional
 
 import typer
 
-from redact.data_models import JobArguments, OutputType, Region, ServiceType
+from redact import JobArguments, OutputType, Region, ServiceType
 from redact.settings import Settings
 from redact.tools.redact_file import redact_file as rdct_file
 from redact.tools.redact_folder import InputType

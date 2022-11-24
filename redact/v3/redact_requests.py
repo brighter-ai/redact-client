@@ -12,7 +12,9 @@ from uuid import UUID
 
 import httpx
 
-from redact.data_models import (
+from redact.settings import Settings
+from redact.utils import normalize_url
+from redact.v3.data_models import (
     JobArguments,
     JobLabels,
     JobPostResponse,
@@ -22,8 +24,6 @@ from redact.data_models import (
     RedactResponseError,
     ServiceType,
 )
-from redact.settings import Settings
-from redact.utils import normalize_url
 
 settings = Settings()
 
