@@ -20,7 +20,10 @@ def redact_file(
     out_path: Optional[str] = typer.Option(None, help="[default: FILE_redacted.EXT]"),
     region: Region = typer.Option(
         Region.european_union,
-        help="Selects the region that license plate detection should look for and that license plate replacements will be generated for",
+        help=(
+            "Selects the region that license plate detection should look for and that license plate "
+            "replacements will be generated for"
+        ),
     ),
     face: bool = typer.Option(True, help="Select whether faces should be anonymized"),
     license_plate: bool = typer.Option(
@@ -43,11 +46,15 @@ def redact_file(
     ),
     lp_determination_threshold: float = typer.Option(
         0.45,
-        help="Set the threshold between 0 and 1 that the LP detection models use to decide if an object is a license plate, a lower value means more likely to classifly an object as a license plate",
+        help="Set the threshold between 0 and 1 that the LP detection models use to decide if "
+        "an object is a license plate, a lower value means more likely to classifly an object as a license plate",
     ),
     face_determination_threshold: float = typer.Option(
         0.25,
-        help="Set the threshold between 0 and 1 that the face detection model uses to decide if an object is a face, a lower value means more likely to classifly an object as a face",
+        help=(
+            "Set the threshold between 0 and 1 that the face detection model uses to decide if "
+            "an object is a face, a lower value means more likely to classifly an object as a face"
+        ),
     ),
     licence_plate_custom_stamp_path: Optional[str] = typer.Option(
         None, "--custom-lp", help="Image file to use for license plate replacements"
@@ -129,7 +136,10 @@ def redact_folder(
     service: ServiceType,
     region: Region = typer.Option(
         Region.european_union,
-        help="Selects the region that license plate detection should look for and that license plate replacements will be generated for",
+        help=(
+            "Selects the region that license plate detection should look for and that license "
+            "plate replacements will be generated for"
+        ),
     ),
     face: bool = typer.Option(True, help="Select whether faces should be anonymized"),
     license_plate: bool = typer.Option(
@@ -149,11 +159,19 @@ def redact_folder(
     ),
     lp_determination_threshold: float = typer.Option(
         0.45,
-        help="Set the threshold between 0 and 1 that the LP detection models use to decide if an object is a license plate, a lower value means more likely to classifly an object as a license plate",
+        help=(
+            "Set the threshold between 0 and 1 that the LP detection models use to decide "
+            "if an object is a license plate, a lower value means more likely to classifly "
+            "an object as a license plate"
+        ),
     ),
     face_determination_threshold: float = typer.Option(
         0.25,
-        help="Set the threshold between 0 and 1 that the face detection model uses to decide if an object is a face, a lower value means more likely to classifly an object as a face",
+        help=(
+            "Set the threshold between 0 and 1 that the face detection model uses to decide "
+            "if an object is a face, a lower value means more likely to classifly an object "
+            "as a face"
+        ),
     ),
     licence_plate_custom_stamp_path: Optional[str] = typer.Option(
         None, "--custom-lp", help="Image file to use for license plate replacements"
@@ -168,7 +186,7 @@ def redact_folder(
         hide_input=True,
     ),
     n_parallel_jobs: int = typer.Option(
-        1, help="Number of jobs to process in parellel"
+        1, help="Number of jobs to process in parallel"
     ),
     save_labels: bool = typer.Option(False, help="Save labels for PII bounding boxes"),
     ignore_warnings: bool = typer.Option(
@@ -221,7 +239,7 @@ def redact_folder(
 
     for file_path, exception in exceptions.items():
         log.info(
-            f"An exception occured while processing the following file '{file_path}': {exception}"
+            f"An exception occurred while processing the following file '{file_path}': {exception}"
         )
 
     for file_path, job_status in results.items():

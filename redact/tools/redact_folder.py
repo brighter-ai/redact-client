@@ -146,14 +146,12 @@ def _try_redact_file_with_relative_path(
             **kwargs,
         )
     except RedactConnectError as e:
-        log.error(f"Connection error while anonymizing {relative_file_path}: {str(e)}")
+        log.error(f"Connection error while anonymize {relative_file_path}: {str(e)}")
     except RedactResponseError as e:
-        log.error(
-            f"Unexpected response while anonymizing {relative_file_path}: {str(e)}"
-        )
+        log.error(f"Unexpected response while anonymize {relative_file_path}: {str(e)}")
     except Exception as e:
-        log.debug(f"Unexcepted exception: {e}", exc_info=e)
-        log.error(f"Error while anonymizing {relative_file_path}: {str(e)}")
+        log.debug(f"Unexpected exception: {e}", exc_info=e)
+        log.error(f"Error while anonymize {relative_file_path}: {str(e)}")
 
 
 def _redact_file_with_relative_path(
