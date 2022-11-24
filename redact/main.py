@@ -7,7 +7,6 @@ from redact import InputType, JobArguments, OutputType, Region, ServiceType
 from redact.settings import Settings
 from redact.tools.redact_file import redact_file as rdct_file
 from redact.tools.redact_folder import redact_folder as rdct_folder
-from redact.tools.utils import notify_about_job_failure
 
 settings = Settings()
 
@@ -95,7 +94,7 @@ def redact_file(
         face_determination_threshold=face_determination_threshold,
     )
 
-    job_status = rdct_file(
+    rdct_file(
         file_path=file_path,
         out_type=out_type,
         service=service,
@@ -110,8 +109,6 @@ def redact_file(
         save_labels=save_labels,
         auto_delete_job=auto_delete_job,
     )
-
-    notify_about_job_failure(log, file_path, job_status)
 
 
 def setup_logging(verbose_logging: bool) -> None:
@@ -219,7 +216,7 @@ def redact_folder(
         face_determination_threshold=face_determination_threshold,
     )
 
-    results, exceptions = rdct_folder(
+    rdct_folder(
         in_dir=in_dir,
         out_dir=out_dir,
         input_type=input_type,
@@ -236,14 +233,6 @@ def redact_folder(
         auto_delete_job=auto_delete_job,
         auto_delete_input_file=auto_delete_input_file,
     )
-
-    for file_path, exception in exceptions.items():
-        log.warning(
-            f"An exception occurred while processing the following file '{file_path}': {exception}"
-        )
-
-    for file_path, job_status in results.items():
-        notify_about_job_failure(log, file_path, job_status)
 
 
 def redact_folder_entry_point():

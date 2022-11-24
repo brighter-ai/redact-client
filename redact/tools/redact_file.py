@@ -8,7 +8,6 @@ from redact.v3 import (
     JobArguments,
     JobLabels,
     JobState,
-    JobStatus,
     OutputType,
     RedactInstance,
     RedactJob,
@@ -39,7 +38,7 @@ def redact_file(
     auto_delete_input_file: bool = False,
     waiting_time_between_job_status_checks: Optional[float] = None,
     redact_requests_param: Optional[RedactRequests] = None,
-) -> Optional[JobStatus]:
+) -> None:
     """
     If no out_path is given, <input_filename_redacted> will be used.
     """
@@ -70,7 +69,6 @@ def redact_file(
     if licence_plate_custom_stamp_path:
         licence_plate_custom_stamp = open(licence_plate_custom_stamp_path, "rb")
 
-    job_status = None
     # anonymize
     try:
         redact: RedactInstance
@@ -104,7 +102,9 @@ def redact_file(
 
         job_status = job.get_status()
         if job_status.state == JobState.failed:
-            return job_status
+            # log.warning(f"Job failed for '{file_path}': {job_status.error}")
+            log.warning("YOYOY")
+            return
 
         # stream result to file
         job.download_result_to_file(file=out_path, ignore_warnings=ignore_warnings)
@@ -126,8 +126,6 @@ def redact_file(
     # delete job
     if auto_delete_job:
         job.delete()
-
-    return job_status
 
 
 def _get_out_path(out_path: Union[str, Path], file_path: Path) -> Path:
