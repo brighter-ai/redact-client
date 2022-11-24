@@ -7,14 +7,6 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import tqdm
 
-from redact.data_models import (
-    InputType,
-    JobArguments,
-    JobStatus,
-    RedactConnectError,
-    RedactResponseError,
-)
-from redact.redact_job import OutputType, ServiceType
 from redact.settings import Settings
 from redact.tools.redact_file import redact_file
 from redact.tools.utils import (
@@ -23,6 +15,15 @@ from redact.tools.utils import (
     is_image,
     is_video,
     normalize_path,
+)
+from redact.v3 import (
+    InputType,
+    JobArguments,
+    JobStatus,
+    OutputType,
+    RedactConnectError,
+    RedactResponseError,
+    ServiceType,
 )
 
 log = logging.getLogger()

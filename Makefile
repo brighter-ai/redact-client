@@ -12,13 +12,13 @@ install:
 	pip install . --upgrade
 
 test-functional:
-	poetry run pytest tests/functional/ --api_key $(api_key) --redact_url $(redact_url)
+	poetry run pytest tests/${api_version}/functional/ --api_key $(api_key) --redact_url $(redact_url)
 
 test-unit:
-	poetry run pytest tests/unit/
+	poetry run pytest tests/${api_version}/unit/
 
 test-integration:
-	poetry run pytest tests/integration/
+	poetry run pytest tests/${api_version}/integration/
 
 test-cmd-install:
 	redact_file --help && redact_folder --help && echo "OK: Command-line endpoints installed"

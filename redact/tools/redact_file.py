@@ -2,12 +2,19 @@ import logging
 from pathlib import Path
 from typing import Optional, Union
 
-from redact.data_models import JobArguments, JobLabels, JobState, JobStatus
-from redact.redact_instance import RedactInstance
-from redact.redact_job import OutputType, RedactJob, ServiceType
-from redact.redact_requests import RedactRequests
 from redact.settings import Settings
 from redact.tools.utils import normalize_path
+from redact.v3 import (
+    JobArguments,
+    JobLabels,
+    JobState,
+    JobStatus,
+    OutputType,
+    RedactInstance,
+    RedactJob,
+    RedactRequests,
+    ServiceType,
+)
 
 log = logging.getLogger()
 
