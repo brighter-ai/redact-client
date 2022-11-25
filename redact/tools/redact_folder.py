@@ -20,6 +20,7 @@ from redact.tools.utils import (
 )
 from redact.v3 import InputType, JobArguments, OutputType, ServiceType
 
+
 log = logging.getLogger()
 
 settings = Settings()
