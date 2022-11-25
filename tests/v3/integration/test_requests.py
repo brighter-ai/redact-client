@@ -1,13 +1,7 @@
 import pytest
 
-from redact.v3 import (
-    JobArguments,
-    OutputType,
-    RedactRequests,
-    RedactResponseError,
-    Region,
-    ServiceType,
-)
+from redact.errors import RedactResponseError
+from redact.v3 import JobArguments, OutputType, RedactRequests, Region, ServiceType
 from redact.v3.data_models import FrameLabels, JobLabels, Label
 from tests.v3.integration.mock_server import mock_redact_server
 

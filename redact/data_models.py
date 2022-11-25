@@ -1,4 +1,6 @@
-from .data_models import (
+import warnings
+
+from .v3.data_models import (
     InputType,
     JobArguments,
     JobLabels,
@@ -10,22 +12,20 @@ from .data_models import (
     Region,
     ServiceType,
 )
-from .redact_instance import RedactInstance
-from .redact_job import RedactJob
-from .redact_requests import RedactRequests
 
 __all__ = [
+    InputType,
     JobArguments,
     JobLabels,
     JobPostResponse,
     JobResult,
     JobState,
     JobStatus,
-    InputType,
     OutputType,
     Region,
     ServiceType,
-    RedactInstance,
-    RedactJob,
-    RedactRequests,
 ]
+
+warnings.warn(
+    "Deprecated: Please import the data models from redact and not redact.data_models"
+)

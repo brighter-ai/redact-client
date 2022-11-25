@@ -8,6 +8,7 @@ from typing import List, Optional, Union
 import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
 
+from redact.errors import RedactConnectError, RedactResponseError
 from redact.settings import Settings
 from redact.tools.redact_file import redact_file
 from redact.tools.utils import (
@@ -17,14 +18,8 @@ from redact.tools.utils import (
     is_video,
     normalize_path,
 )
-from redact.v3 import (
-    InputType,
-    JobArguments,
-    OutputType,
-    RedactConnectError,
-    RedactResponseError,
-    ServiceType,
-)
+from redact.v3 import InputType, JobArguments, OutputType, ServiceType
+
 
 log = logging.getLogger()
 
