@@ -259,7 +259,11 @@ class RedactRequests:
         return response.json()
 
     def get_labels(
-        self, service: ServiceType, out_type: OutputType, output_id: UUID
+        self,
+        service: ServiceType,
+        out_type: OutputType,
+        output_id: UUID,
+        timeout: float = 60.0,
     ) -> JobLabels:
 
         url = urllib.parse.urljoin(
@@ -268,9 +272,8 @@ class RedactRequests:
         )
 
         debug_uuid = uuid.uuid4()
-        # Added timeout due to CT-660: Large labels files lead to trigger the 5s default
         response = self._retry_on_network_problem_with_backoff(
-            self._client.get, debug_uuid, url, headers=self._headers, timeout=60.0
+            self._client.get, debug_uuid, url, headers=self._headers, timeout=timeout
         )
 
         if response.status_code != 200:
