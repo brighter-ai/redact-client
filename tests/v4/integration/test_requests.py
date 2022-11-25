@@ -29,9 +29,6 @@ def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType):
     with mock_redact_server(
         expected_path=f"{service.value}/{API_VERSION}/{out_type.value}",
         expected_job_args=job_args,
-        expected_form_content={
-            "custom_labels": b'{"frames": [{"index": 1, "faces": [{"bounding_box": [10, 40, 20, 50], "identity": 0, "score": 0.9}], "license_plates": [{"bounding_box": [20, 50, 30, 60], "identity": 0, "score": 0.9}]}]}',
-        },
     ):
 
         # WHEN the job is posted
