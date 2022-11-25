@@ -3,14 +3,14 @@ from pathlib import Path
 from uuid import UUID
 
 from redact.settings import Settings
-from redact.v3.data_models import (
-    JobLabels,
+from redact.v4.data_models import (
+    RedactionLabels,
     JobResult,
     JobStatus,
     OutputType,
     ServiceType,
 )
-from redact.v3.redact_requests import RedactRequests
+from redact.v4.redact_requests import RedactRequests
 
 settings = Settings()
 
@@ -42,7 +42,7 @@ class RedactJob:
         )
         return JobStatus(**response_dict)
 
-    def get_labels(self, timeout: float = 60.0) -> JobLabels:
+    def get_labels(self, timeout: float = 60.0) -> RedactionLabels:
         return self.redact.get_labels(
             service=self.service,
             out_type=self.out_type,

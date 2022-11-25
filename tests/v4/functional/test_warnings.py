@@ -5,7 +5,7 @@ import pytest
 
 from redact.errors import RedactResponseError
 from redact.tools.redact_folder import redact_folder
-from redact.v3 import (
+from redact.v4 import (
     InputType,
     JobArguments,
     OutputType,

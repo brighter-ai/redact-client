@@ -7,7 +7,7 @@ import urllib.parse
 import uuid
 from io import FileIO
 from pathlib import Path
-from typing import IO, Any, Dict, Optional, Union
+from typing import IO, Any, Dict, Optional
 from uuid import UUID
 
 import httpx
@@ -15,9 +15,9 @@ import httpx
 from redact.errors import RedactConnectError, RedactResponseError
 from redact.settings import Settings
 from redact.utils import normalize_url
-from redact.v3.data_models import (
+from redact.v4.data_models import (
     JobArguments,
-    JobLabels,
+    RedactionLabels,
     JobPostResponse,
     JobResult,
     OutputType,
@@ -48,7 +48,7 @@ class RedactRequests:
     Helper class wrapping requests to the Redact API.
     """
 
-    API_VERSION = "v3"
+    API_VERSION = "v4"
 
     def __init__(
         self,
@@ -78,7 +78,6 @@ class RedactRequests:
         out_type: OutputType,
         job_args: Optional[JobArguments] = None,
         licence_plate_custom_stamp: Optional[IO] = None,
-        custom_labels: Optional[Union[str, IO, JobLabels]] = None,
     ) -> JobPostResponse:
         """
         Post the job via a post request.
@@ -98,19 +97,9 @@ class RedactRequests:
         if not job_args:
             job_args = JobArguments()
 
-        custom_labels_filelike: bytes
-        if isinstance(custom_labels, JobLabels):
-            custom_labels_filelike = custom_labels.json().encode("utf8")
-        elif isinstance(custom_labels, str):
-            custom_labels_filelike = custom_labels.encode("utf8")
-        else:
-            custom_labels_filelike = custom_labels
-
         files = {"file": file}
         if licence_plate_custom_stamp:
             files["licence_plate_custom_stamp"] = licence_plate_custom_stamp
-        if custom_labels:
-            files["custom_labels"] = custom_labels_filelike
 
         upload_debug_uuid = uuid.uuid4()
         with _post_lock:
@@ -263,7 +252,7 @@ class RedactRequests:
         out_type: OutputType,
         output_id: UUID,
         timeout: float = 60.0,
-    ) -> JobLabels:
+    ) -> RedactionLabels:
 
         url = urllib.parse.urljoin(
             self.redact_url,
@@ -278,7 +267,7 @@ class RedactRequests:
         if response.status_code != 200:
             raise RedactResponseError(response=response, msg="Error getting labels")
 
-        return JobLabels.parse_obj(response.json())
+        return RedactionLabels.parse_obj(response.json())
 
     def delete_output(
         self, service: ServiceType, out_type: OutputType, output_id: UUID

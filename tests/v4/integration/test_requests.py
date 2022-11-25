@@ -1,9 +1,11 @@
 import pytest
 
 from redact.errors import RedactResponseError
-from redact.v3 import JobArguments, OutputType, RedactRequests, Region, ServiceType
-from redact.v3.data_models import FrameLabels, JobLabels, Label
-from tests.v3.integration.mock_server import mock_redact_server
+from redact.v4 import JobArguments, OutputType, RedactRequests, Region, ServiceType
+from tests.v4.integration.mock_server import mock_redact_server
+
+
+API_VERSION = "v4"
 
 
 @pytest.mark.parametrize(
@@ -25,7 +27,7 @@ def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType):
     )
 
     with mock_redact_server(
-        expected_path=f"{service.value}/v3/{out_type.value}",
+        expected_path=f"{service.value}/{API_VERSION}/{out_type.value}",
         expected_job_args=job_args,
         expected_form_content={
             "custom_labels": b'{"frames": [{"index": 1, "faces": [{"bounding_box": [10, 40, 20, 50], "identity": 0, "score": 0.9}], "license_plates": [{"bounding_box": [20, 50, 30, 60], "identity": 0, "score": 0.9}]}]}',
@@ -40,19 +42,6 @@ def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType):
             service=service,
             out_type=out_type,
             job_args=job_args,
-            custom_labels=JobLabels(
-                frames=[
-                    FrameLabels(
-                        index=1,
-                        faces=[
-                            Label(bounding_box=(10, 40, 20, 50), identity=0, score=0.9)
-                        ],
-                        license_plates=[
-                            Label(bounding_box=(20, 50, 30, 60), identity=0, score=0.9)
-                        ],
-                    )
-                ]
-            ),
         )
 
 
@@ -65,7 +54,7 @@ def test_mock_server_gives_error_on_unexpected_argument(some_image):
 
     # AND GIVEN a (mocked) Redact server to send them to
     with mock_redact_server(
-        expected_path=f"{service.value}/v3/{out_type.value}",
+        expected_path=f"{service.value}/{API_VERSION}/{out_type.value}",
         expected_job_args=expected_job_args,
     ):
 
@@ -93,7 +82,8 @@ def test_mock_server_gives_error_on_unexpected_service(some_image):
 
     # AND GIVEN a (mocked) Redact server to send them to
     with mock_redact_server(
-        expected_path=f"{service.value}/v3/{out_type.value}", expected_job_args=job_args
+        expected_path=f"{service.value}/{API_VERSION}/{out_type.value}",
+        expected_job_args=job_args,
     ):
 
         # WHEN the job is posted to the wrong service endpoint

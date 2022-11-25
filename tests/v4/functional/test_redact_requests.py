@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from redact.v3 import OutputType, ServiceType
+from redact.v4 import OutputType, ServiceType
 
 
 class TestRedactRequests:

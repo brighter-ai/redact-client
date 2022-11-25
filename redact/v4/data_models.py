@@ -2,7 +2,7 @@ from enum import Enum
 from typing import List, Optional, Tuple
 from uuid import UUID
 
-from pydantic import BaseModel, Field, PositiveInt, confloat, conint
+from pydantic import BaseModel, Field, confloat, conint
 
 
 class ServiceType(str, Enum):
@@ -79,31 +79,14 @@ class JobStatus(BaseModel):
         return self.state in [JobState.active, JobState.pending]
 
 
-class Label(BaseModel):
-    bounding_box: Tuple[int, int, int, int]
-    identity: int = 0
-    score: Optional[float] = None
+class RedactionAreaLabel(BaseModel):
+    area: List[Tuple[int, int]]
 
 
-class LabelType(str, Enum):
-    face: str = "face"
-    license_plate: str = "license_plate"
+class RedactionFrameLabels(BaseModel):
+    index: int
+    redaction_areas: List[RedactionAreaLabel] = Field(default_factory=list)
 
 
-class FrameLabels(BaseModel):
-    index: PositiveInt
-    faces: List[Label] = Field(default_factory=list)
-    license_plates: List[Label] = Field(default_factory=list)
-
-    def append(self, label: Label, label_type: LabelType):
-        label_type = LabelType(label_type)
-        if LabelType(label_type) == LabelType.face:
-            self.faces.append(label)
-        elif LabelType(label_type) == LabelType.license_plate:
-            self.license_plates.append(label)
-        else:
-            raise ValueError()
-
-
-class JobLabels(BaseModel):
-    frames: List[FrameLabels]
+class RedactionLabels(BaseModel):
+    frames: List[RedactionFrameLabels]

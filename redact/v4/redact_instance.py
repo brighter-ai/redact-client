@@ -1,9 +1,9 @@
-from typing import IO, BinaryIO, Optional, Union
+from typing import BinaryIO, Optional
 
 from redact.settings import Settings
-from redact.v3.data_models import JobArguments, JobLabels, OutputType, ServiceType
-from redact.v3.redact_job import RedactJob
-from redact.v3.redact_requests import RedactRequests
+from redact.v4.data_models import JobArguments, OutputType, ServiceType
+from redact.v4.redact_job import RedactJob
+from redact.v4.redact_requests import RedactRequests
 
 settings = Settings()
 
@@ -49,7 +49,6 @@ class RedactInstance:
         file: BinaryIO,
         job_args: Optional[JobArguments] = None,
         licence_plate_custom_stamp: Optional[BinaryIO] = None,
-        custom_labels: Optional[Union[str, IO, JobLabels]] = None,
     ) -> RedactJob:
         post_response = self.redact_requests.post_job(
             file=file,
@@ -57,7 +56,6 @@ class RedactInstance:
             out_type=self.out_type,
             job_args=job_args,
             licence_plate_custom_stamp=licence_plate_custom_stamp,
-            custom_labels=custom_labels,
         )
         return RedactJob(
             redact_requests=self.redact_requests,

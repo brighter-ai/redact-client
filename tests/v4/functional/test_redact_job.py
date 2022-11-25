@@ -5,7 +5,7 @@ import pytest
 from PIL import Image
 
 from redact.errors import RedactResponseError
-from redact.v3 import JobState, RedactInstance
+from redact.v4 import JobState, RedactInstance
 
 
 @pytest.mark.timeout(30)
@@ -45,6 +45,7 @@ class TestRedactJob:
         original_img = Image.open(some_image)
         assert anonymized_img.size == original_img.size
 
+    @pytest.mark.skip(reason="Skip until v4 is online")
     def test_download_labels(self, job):
 
         # GIVEN an Redact job
@@ -53,8 +54,7 @@ class TestRedactJob:
         job_labels = job.wait_until_finished().get_labels()
 
         # THEN assert that the result contains the bbox for one face
-        assert len(job_labels.frames[0].faces) == 1
-        assert len(job_labels.frames[0].faces[0].bounding_box) == 4
+        assert len(job_labels.frames[0].redaction_areas) == 1
 
     def test_delete(self, job):
 

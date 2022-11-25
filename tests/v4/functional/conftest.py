@@ -1,7 +1,7 @@
 import pytest
 
 from redact.settings import Settings
-from redact.v3 import OutputType, RedactInstance, RedactJob, RedactRequests, ServiceType
+from redact.v4 import OutputType, RedactInstance, RedactJob, RedactRequests, ServiceType
 
 settings = Settings()
 
