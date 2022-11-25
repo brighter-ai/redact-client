@@ -1,5 +1,6 @@
 import pytest
 
+from redact.errors import RedactResponseError
 from redact.settings import Settings
 from redact.tools.redact_file import redact_file
 from redact.tools.redact_folder import redact_folder
@@ -8,7 +9,6 @@ from redact.v3 import (
     OutputType,
     RedactInstance,
     RedactRequests,
-    RedactResponseError,
     ServiceType,
 )
 

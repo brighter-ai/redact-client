@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pytest
 
+from redact.errors import RedactResponseError
 from redact.tools.redact_folder import redact_folder
 from redact.v3 import (
     InputType,
@@ -10,7 +11,6 @@ from redact.v3 import (
     OutputType,
     RedactInstance,
     RedactJob,
-    RedactResponseError,
     ServiceType,
 )
 

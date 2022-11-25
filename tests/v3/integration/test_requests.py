@@ -1,10 +1,10 @@
 import pytest
 
+from redact.errors import RedactResponseError
 from redact.v3 import (
     JobArguments,
     OutputType,
     RedactRequests,
-    RedactResponseError,
     Region,
     ServiceType,
 )

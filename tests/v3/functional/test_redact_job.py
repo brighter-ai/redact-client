@@ -4,7 +4,8 @@ from typing import IO
 import pytest
 from PIL import Image
 
-from redact.v3 import JobState, RedactInstance, RedactResponseError
+from redact.errors import RedactResponseError
+from redact.v3 import JobState, RedactInstance
 
 
 @pytest.mark.timeout(30)

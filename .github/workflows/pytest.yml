@@ -29,3 +29,7 @@ jobs:
       - name: Integration tests
         run: |
           make test-integration api_version=v3
+
+      - name: Functional tests
+        run: |
+          make test-functional api_version=v3 redact_url=https://api.brighter.ai/ api_key=${{ secrets.REDACT_API_KEY }}

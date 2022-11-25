@@ -12,6 +12,7 @@ from uuid import UUID
 
 import httpx
 
+from redact.errors import RedactConnectError, RedactResponseError
 from redact.settings import Settings
 from redact.utils import normalize_url
 from redact.v3.data_models import (
@@ -20,8 +21,6 @@ from redact.v3.data_models import (
     JobPostResponse,
     JobResult,
     OutputType,
-    RedactConnectError,
-    RedactResponseError,
     ServiceType,
 )
 
