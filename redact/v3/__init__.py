@@ -1,4 +1,5 @@
 from .data_models import (
+    InputType,
     JobArguments,
     JobLabels,
     JobPostResponse,
@@ -22,6 +23,7 @@ __all__ = [
     JobResult,
     JobState,
     JobStatus,
+    InputType,
     OutputType,
     RedactConnectError,
     RedactResponseError,

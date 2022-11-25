@@ -3,13 +3,14 @@ from typing import Optional
 
 import typer
 
-from redact import JobArguments, OutputType, Region, ServiceType
+from redact import InputType, JobArguments, OutputType, Region, ServiceType
 from redact.settings import Settings
 from redact.tools.redact_file import redact_file as rdct_file
-from redact.tools.redact_folder import InputType
 from redact.tools.redact_folder import redact_folder as rdct_folder
 
 settings = Settings()
+
+log = logging.getLogger()
 
 
 def redact_file(
@@ -19,7 +20,10 @@ def redact_file(
     out_path: Optional[str] = typer.Option(None, help="[default: FILE_redacted.EXT]"),
     region: Region = typer.Option(
         Region.european_union,
-        help="Selects the region that license plate detection should look for and that license plate replacements will be generated for",
+        help=(
+            "Selects the region that license plate detection should look for and that license plate "
+            "replacements will be generated for"
+        ),
     ),
     face: bool = typer.Option(True, help="Select whether faces should be anonymized"),
     license_plate: bool = typer.Option(
@@ -42,11 +46,15 @@ def redact_file(
     ),
     lp_determination_threshold: float = typer.Option(
         0.45,
-        help="Set the threshold between 0 and 1 that the LP detection models use to decide if an object is a license plate, a lower value means more likely to classifly an object as a license plate",
+        help="Set the threshold between 0 and 1 that the LP detection models use to decide if "
+        "an object is a license plate, a lower value means more likely to classifly an object as a license plate",
     ),
     face_determination_threshold: float = typer.Option(
         0.25,
-        help="Set the threshold between 0 and 1 that the face detection model uses to decide if an object is a face, a lower value means more likely to classifly an object as a face",
+        help=(
+            "Set the threshold between 0 and 1 that the face detection model uses to decide if "
+            "an object is a face, a lower value means more likely to classifly an object as a face"
+        ),
     ),
     licence_plate_custom_stamp_path: Optional[str] = typer.Option(
         None, "--custom-lp", help="Image file to use for license plate replacements"
@@ -56,7 +64,9 @@ def redact_file(
         help="Specify http address or ip of the redact instance",
     ),
     api_key: Optional[str] = typer.Option(
-        None, help="Pass api-key if client is being used with the cloud"
+        None,
+        help="Pass api-key if client is being used with the cloud",
+        hide_input=True,
     ),
     save_labels: bool = typer.Option(False, help="Save labels for PII bounding boxes"),
     ignore_warnings: bool = typer.Option(
@@ -69,7 +79,10 @@ def redact_file(
     auto_delete_job: bool = typer.Option(
         True, help="Specify whether to automatically delete the job from the backend"
     ),
+    verbose_logging: bool = typer.Option(False, help="Enable very noisy logging."),
 ):
+    setup_logging(verbose_logging)
+
     job_args = JobArguments(
         region=region,
         face=face,
@@ -98,6 +111,13 @@ def redact_file(
     )
 
 
+def setup_logging(verbose_logging: bool) -> None:
+    format = "%(asctime)s | %(levelname)s | %(message)s"
+    level = logging.DEBUG if verbose_logging else settings.log_level
+
+    logging.basicConfig(format=format, level=level)
+
+
 def redact_file_entry_point():
     """Entry point for redact_file script as defined in 'pyproject.toml'."""
     app = typer.Typer()
@@ -113,7 +133,10 @@ def redact_folder(
     service: ServiceType,
     region: Region = typer.Option(
         Region.european_union,
-        help="Selects the region that license plate detection should look for and that license plate replacements will be generated for",
+        help=(
+            "Selects the region that license plate detection should look for and that license "
+            "plate replacements will be generated for"
+        ),
     ),
     face: bool = typer.Option(True, help="Select whether faces should be anonymized"),
     license_plate: bool = typer.Option(
@@ -133,11 +156,19 @@ def redact_folder(
     ),
     lp_determination_threshold: float = typer.Option(
         0.45,
-        help="Set the threshold between 0 and 1 that the LP detection models use to decide if an object is a license plate, a lower value means more likely to classifly an object as a license plate",
+        help=(
+            "Set the threshold between 0 and 1 that the LP detection models use to decide "
+            "if an object is a license plate, a lower value means more likely to classifly "
+            "an object as a license plate"
+        ),
     ),
     face_determination_threshold: float = typer.Option(
         0.25,
-        help="Set the threshold between 0 and 1 that the face detection model uses to decide if an object is a face, a lower value means more likely to classifly an object as a face",
+        help=(
+            "Set the threshold between 0 and 1 that the face detection model uses to decide "
+            "if an object is a face, a lower value means more likely to classifly an object "
+            "as a face"
+        ),
     ),
     licence_plate_custom_stamp_path: Optional[str] = typer.Option(
         None, "--custom-lp", help="Image file to use for license plate replacements"
@@ -147,10 +178,12 @@ def redact_folder(
         help="Specify http address or ip of the redact instance",
     ),
     api_key: Optional[str] = typer.Option(
-        None, help="Pass api-key if client is being used with the cloud"
+        None,
+        help="Pass api-key if client is being used with the cloud",
+        hide_input=True,
     ),
     n_parallel_jobs: int = typer.Option(
-        1, help="Number of jobs to process in parellel"
+        1, help="Number of jobs to process in parallel"
     ),
     save_labels: bool = typer.Option(False, help="Save labels for PII bounding boxes"),
     ignore_warnings: bool = typer.Option(
@@ -170,6 +203,8 @@ def redact_folder(
     ),
     verbose_logging: bool = typer.Option(False, help="Enable very noisy logging."),
 ):
+    setup_logging(verbose_logging)
+
     job_args = JobArguments(
         region=region,
         face=face,
@@ -180,13 +215,6 @@ def redact_folder(
         lp_determination_threshold=lp_determination_threshold,
         face_determination_threshold=face_determination_threshold,
     )
-
-    if verbose_logging:
-        logging.basicConfig(
-            format="%(asctime)s %(levelname)s -- %(message)s", level=logging.DEBUG
-        )
-    else:
-        logging.basicConfig(level=settings.log_level)
 
     rdct_folder(
         in_dir=in_dir,

@@ -7,6 +7,7 @@ from redact.tools.utils import normalize_path
 from redact.v3 import (
     JobArguments,
     JobLabels,
+    JobState,
     OutputType,
     RedactInstance,
     RedactJob,
@@ -37,7 +38,7 @@ def redact_file(
     auto_delete_input_file: bool = False,
     waiting_time_between_job_status_checks: Optional[float] = None,
     redact_requests_param: Optional[RedactRequests] = None,
-):
+) -> None:
     """
     If no out_path is given, <input_filename_redacted> will be used.
     """
@@ -98,6 +99,11 @@ def redact_file(
             job.wait_until_finished(waiting_time_between_job_status_checks)
         else:
             job.wait_until_finished()
+
+        job_status = job.get_status()
+        if job_status.state == JobState.failed:
+            log.warning(f"Job failed for '{file_path}': {job_status.error}")
+            return
 
         # stream result to file
         job.download_result_to_file(file=out_path, ignore_warnings=ignore_warnings)

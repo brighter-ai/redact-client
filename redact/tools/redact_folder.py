@@ -1,12 +1,12 @@
-import concurrent.futures
 import functools
 import logging
 import os
-from enum import Enum
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import List, Optional, Union
 
 import tqdm
+from tqdm.contrib.logging import logging_redirect_tqdm
 
 from redact.settings import Settings
 from redact.tools.redact_file import redact_file
@@ -18,6 +18,7 @@ from redact.tools.utils import (
     normalize_path,
 )
 from redact.v3 import (
+    InputType,
     JobArguments,
     OutputType,
     RedactConnectError,
@@ -29,12 +30,6 @@ log = logging.getLogger()
 
 settings = Settings()
 log.debug(f"Settings: {settings}")
-
-
-class InputType(str, Enum):
-    images = "images"
-    videos = "videos"
-    archives = "archives"
 
 
 def redact_folder(
@@ -53,7 +48,7 @@ def redact_folder(
     skip_existing: bool = True,
     auto_delete_job: bool = True,
     auto_delete_input_file: bool = False,
-):
+) -> None:
 
     # Normalize paths, e.g.: '~/..' -> '/home'
     in_dir_path = normalize_path(in_dir)
@@ -61,7 +56,7 @@ def redact_folder(
     log.info(f"Anonymize files from {in_dir_path} ...")
 
     if auto_delete_input_file:
-        log.warn(
+        log.warning(
             "Auto-deletion ON, files will be deleted when they were processed successfully."
         )
 
@@ -99,17 +94,19 @@ def redact_folder(
     )
 
 
-def _parallel_map(func, items: List, n_parallel_jobs=1):
-    if n_parallel_jobs <= 1:
-        # Anonymize one item at a time. In principle, the ThreadPoolExecutor could do this with one worker only. But
-        # this ways we don't risk losing exceptions in the thread.
-        list(tqdm.tqdm(map(func, items), total=len(items)))
-    else:
-        # Anonymize files concurrently
-        with concurrent.futures.ThreadPoolExecutor(
-            max_workers=n_parallel_jobs
-        ) as executor:
-            list(tqdm.tqdm(executor.map(func, items), total=len(items)))
+def _parallel_map(func, items: List, n_parallel_jobs=1) -> None:
+    with logging_redirect_tqdm(), ThreadPoolExecutor(
+        max_workers=n_parallel_jobs
+    ) as executor:
+        futures = {executor.submit(func, item): item for item in items}
+        for future in tqdm.tqdm(as_completed(futures), total=len(futures)):
+            item = futures[future]
+            try:
+                future.result()
+            except Exception as e:
+                log.warning(
+                    f"An exception occurred while processing the following file '{item}': {e}"
+                )
 
 
 def _get_relative_file_paths(in_dir: Path, input_type: InputType) -> List[Path]:
@@ -136,7 +133,7 @@ def _get_relative_file_paths(in_dir: Path, input_type: InputType) -> List[Path]:
 
 def _try_redact_file_with_relative_path(
     relative_file_path: str, base_dir_in: str, base_dir_out: str, **kwargs
-):
+) -> None:
     """This is an internal helper function to be run by a thread. We log the exceptions so they don't get lost inside
     the thread."""
 
@@ -148,19 +145,17 @@ def _try_redact_file_with_relative_path(
             **kwargs,
         )
     except RedactConnectError as e:
-        log.error(f"Connection error while anonymizing {relative_file_path}: {str(e)}")
+        log.error(f"Connection error while anonymize {relative_file_path}: {str(e)}")
     except RedactResponseError as e:
-        log.error(
-            f"Unexpected response while anonymizing {relative_file_path}: {str(e)}"
-        )
+        log.error(f"Unexpected response while anonymize {relative_file_path}: {str(e)}")
     except Exception as e:
-        log.debug(f"Unexcepted exception: {e}", exc_info=e)
-        log.error(f"Error while anonymizing {relative_file_path}: {str(e)}")
+        log.debug(f"Unexpected exception: {e}", exc_info=e)
+        log.error(f"Error while anonymize {relative_file_path}: {str(e)}")
 
 
 def _redact_file_with_relative_path(
     relative_file_path: str, base_dir_in: str, base_dir_out: str, **kwargs
-):
+) -> None:
     """This is an internal helper function."""
     in_path = Path(base_dir_in).joinpath(relative_file_path)
     out_path = Path(base_dir_out).joinpath(relative_file_path)
