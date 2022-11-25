@@ -18,12 +18,7 @@ from redact.tools.utils import (
     is_video,
     normalize_path,
 )
-from redact.v3 import (
-    InputType,
-    JobArguments,
-    OutputType,
-    ServiceType,
-)
+from redact.v3 import InputType, JobArguments, OutputType, ServiceType
 
 log = logging.getLogger()
 

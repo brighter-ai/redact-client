@@ -4,13 +4,7 @@ from redact.errors import RedactResponseError
 from redact.settings import Settings
 from redact.tools.redact_file import redact_file
 from redact.tools.redact_folder import redact_folder
-from redact.v3 import (
-    InputType,
-    OutputType,
-    RedactInstance,
-    RedactRequests,
-    ServiceType,
-)
+from redact.v3 import InputType, OutputType, RedactInstance, RedactRequests, ServiceType
 
 settings = Settings()
 REDACT_ONLINE_URL = settings.redact_online_url
