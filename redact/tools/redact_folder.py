@@ -3,7 +3,7 @@ import logging
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Tuple, Union
 
 import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
@@ -11,6 +11,7 @@ from tqdm.contrib.logging import logging_redirect_tqdm
 from redact.errors import RedactConnectError, RedactResponseError
 from redact.settings import Settings
 from redact.tools.redact_file import redact_file
+from redact.tools.summary import summary
 from redact.tools.utils import (
     files_in_dir,
     is_archive,
@@ -18,8 +19,7 @@ from redact.tools.utils import (
     is_video,
     normalize_path,
 )
-from redact.v3 import InputType, JobArguments, OutputType, ServiceType
-
+from redact.v3 import InputType, JobArguments, JobStatus, OutputType, ServiceType
 
 log = logging.getLogger()
 
@@ -27,6 +27,7 @@ settings = Settings()
 log.debug(f"Settings: {settings}")
 
 
+@summary(log)
 def redact_folder(
     in_dir: Union[str, Path],
     out_dir: Union[str, Path],
@@ -43,7 +44,7 @@ def redact_folder(
     skip_existing: bool = True,
     auto_delete_job: bool = True,
     auto_delete_input_file: bool = False,
-) -> None:
+) -> Tuple[List[Optional[JobStatus]], Any]:
 
     # Normalize paths, e.g.: '~/..' -> '/home'
     in_dir_path = normalize_path(in_dir)
@@ -84,12 +85,18 @@ def redact_folder(
     )
 
     log.info(f"Starting {n_parallel_jobs} parallel jobs to anonymize files ...")
-    _parallel_map(
+
+    return _parallel_map(
         func=worker_function, items=relative_file_paths, n_parallel_jobs=n_parallel_jobs
     )
 
 
-def _parallel_map(func, items: List, n_parallel_jobs=1) -> None:
+def _parallel_map(
+    func, items: List, n_parallel_jobs=1
+) -> Tuple[List[Optional[JobStatus]], Any]:
+    job_statuses = []
+    exceptions = []
+
     with logging_redirect_tqdm(), ThreadPoolExecutor(
         max_workers=n_parallel_jobs
     ) as executor:
@@ -97,11 +104,14 @@ def _parallel_map(func, items: List, n_parallel_jobs=1) -> None:
         for future in tqdm.tqdm(as_completed(futures), total=len(futures)):
             item = futures[future]
             try:
-                future.result()
+                job_statuses.append(future.result())
             except Exception as e:
                 log.warning(
                     f"An exception occurred while processing the following file '{item}': {e}"
                 )
+                exceptions.append(e)
+
+    return job_statuses, exceptions
 
 
 def _get_relative_file_paths(in_dir: Path, input_type: InputType) -> List[Path]:
@@ -128,12 +138,12 @@ def _get_relative_file_paths(in_dir: Path, input_type: InputType) -> List[Path]:
 
 def _try_redact_file_with_relative_path(
     relative_file_path: str, base_dir_in: str, base_dir_out: str, **kwargs
-) -> None:
+) -> Optional[JobStatus]:
     """This is an internal helper function to be run by a thread. We log the exceptions so they don't get lost inside
     the thread."""
 
     try:
-        _redact_file_with_relative_path(
+        return _redact_file_with_relative_path(
             relative_file_path=relative_file_path,
             base_dir_in=base_dir_in,
             base_dir_out=base_dir_out,
@@ -150,11 +160,11 @@ def _try_redact_file_with_relative_path(
 
 def _redact_file_with_relative_path(
     relative_file_path: str, base_dir_in: str, base_dir_out: str, **kwargs
-) -> None:
+) -> Optional[JobStatus]:
     """This is an internal helper function."""
     in_path = Path(base_dir_in).joinpath(relative_file_path)
     out_path = Path(base_dir_out).joinpath(relative_file_path)
-    redact_file(
+    return redact_file(
         file_path=in_path,
         out_path=out_path,
         waiting_time_between_job_status_checks=10,
