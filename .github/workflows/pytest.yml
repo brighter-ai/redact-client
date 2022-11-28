@@ -9,6 +9,7 @@ jobs:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10"]
         poetry-version: ["1.0", "1.1.11"]
+        redact-api-version: ["v3", "v4"]
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
@@ -25,15 +26,16 @@ jobs:
           poetry install
       - name: Unit tests
         run: |
-          make test-unit api_version=v3
-          make test-unit api_version=v4
+          make test-unit api_version=${{ matrix.redact-api-version }}
+        with:
+          redact-api-version: ${{ matrix.redact-api-version }}
 
-      - name: Integration tests
-        run: |
-          make test-integration api_version=v3
-          make test-integration api_version=v4
+      # - name: Integration tests
+      #   run: |
+      #     make test-integration api_version=v3
+      #     make test-integration api_version=v4
 
-      - name: Functional tests
-        run: |
-          make test-functional api_version=v3 redact_url=https://api.brighter.ai/ api_key=${{ secrets.REDACT_API_KEY }}
-          make test-functional api_version=v4 redact_url=https://api.brighter.ai/ api_key=${{ secrets.REDACT_API_KEY }}
+      # - name: Functional tests
+      #   run: |
+      #     make test-functional api_version=v3 redact_url=https://api.brighter.ai/ api_key=${{ secrets.REDACT_API_KEY }}
+      #     make test-functional api_version=v4 redact_url=https://api.brighter.ai/ api_key=${{ secrets.REDACT_API_KEY }}

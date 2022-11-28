@@ -9,6 +9,7 @@ class ServiceType(str, Enum):
     blur = "blur"
     dnat = "dnat"
     extract = "extract"
+    redact_area = "redact_area"
 
 
 class InputType(str, Enum):
@@ -22,6 +23,7 @@ class OutputType(str, Enum):
     videos = "videos"
     archives = "archives"
     overlays = "overlays"
+    labels = "labels"
 
 
 class Region(str, Enum):
