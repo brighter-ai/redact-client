@@ -11,6 +11,8 @@ settings = Settings()
 
 logger = logging.getLogger()
 
+NUMBER_OF_IMAGES = 3
+
 
 def pytest_addoption(parser):
     parser.addoption(
@@ -67,7 +69,7 @@ def some_custom_lp_stamp(resource_path: Path) -> IO:
 
 
 @pytest.fixture
-def images_path(tmp_path_factory, some_image, n_images: int = 3) -> Path:
+def images_path(tmp_path_factory, some_image, n_images: int = NUMBER_OF_IMAGES) -> Path:
     """
     Return a temporary directory that has been prepared with some image files:
     - img_0.jpg

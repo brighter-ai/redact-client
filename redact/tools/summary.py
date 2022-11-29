@@ -66,8 +66,8 @@ def log_summary(
     logger.info(
         f"Summary: "
         f"{jobs_summary.successful} successful, "
-        f"{jobs_summary.warnings} warnings in "
-        f"{jobs_summary.failed} failed, "
+        f"{jobs_summary.warnings} warnings, "
+        f"{jobs_summary.failed} failed in "
         f"{time_summary.time_overall}s "
         f"({time_summary.hours}:{time_summary.minutes}:{time_summary.seconds}) "
     )
