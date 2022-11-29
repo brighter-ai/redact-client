@@ -4,7 +4,8 @@ from typing import Union
 import pytest
 
 from redact.tools.redact_folder import redact_folder
-from redact.v3 import InputType, JobState, OutputType, ServiceType
+from redact.v3 import InputType, OutputType, ServiceType
+from tests.conftest import NUMBER_OF_IMAGES
 
 
 class TestRedactFolder:
@@ -24,7 +25,7 @@ class TestRedactFolder:
         output_path = tmp_path_factory.mktemp("imgs_dir_out")
 
         # WHEN the whole folder is anonymized
-        results, _ = redact_folder(
+        jobs_summary = redact_folder(
             in_dir=images_path,
             out_dir=output_path,
             input_type=InputType.images,
@@ -54,9 +55,7 @@ class TestRedactFolder:
         # AND no other files have been created
         assert len(files_in_out_dir) == 2 * len(files_in_in_dir)
 
-        for job_status in results:
-            assert job_status
-            assert job_status.state == JobState.finished
+        assert jobs_summary.successful == NUMBER_OF_IMAGES
 
     @staticmethod
     def _replace_file_ext(file_path: Union[str, Path], new_ext: str = ".json") -> str:

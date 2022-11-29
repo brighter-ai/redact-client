@@ -11,7 +11,7 @@ from tqdm.contrib.logging import logging_redirect_tqdm
 from redact.errors import RedactConnectError, RedactResponseError
 from redact.settings import Settings
 from redact.tools.redact_file import redact_file
-from redact.tools.summary import summary
+from redact.tools.summary import JobsSummary, summary
 from redact.tools.utils import (
     files_in_dir,
     is_archive,
@@ -20,6 +20,7 @@ from redact.tools.utils import (
     normalize_path,
 )
 from redact.v3 import InputType, JobArguments, JobStatus, OutputType, ServiceType
+from redact.v3.utils import calculate_jobs_summary
 
 log = logging.getLogger()
 
@@ -44,7 +45,7 @@ def redact_folder(
     skip_existing: bool = True,
     auto_delete_job: bool = True,
     auto_delete_input_file: bool = False,
-) -> Tuple[List[Optional[JobStatus]], Any]:
+) -> JobsSummary:
 
     # Normalize paths, e.g.: '~/..' -> '/home'
     in_dir_path = normalize_path(in_dir)
@@ -86,9 +87,11 @@ def redact_folder(
 
     log.info(f"Starting {n_parallel_jobs} parallel jobs to anonymize files ...")
 
-    return _parallel_map(
+    job_statuses, exceptions = _parallel_map(
         func=worker_function, items=relative_file_paths, n_parallel_jobs=n_parallel_jobs
     )
+
+    return calculate_jobs_summary(job_statuses, exceptions)
 
 
 def _parallel_map(
