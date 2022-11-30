@@ -17,9 +17,9 @@ class TestSummary:
 
         expected_part_of_message = (
             f"Summary: "
-            f"{expected_jobs_summary.failed} failed, "
             f"{expected_jobs_summary.successful} successful, "
-            f"{expected_jobs_summary.warnings} warnings in "
+            f"{expected_jobs_summary.warnings} warnings, "
+            f"{expected_jobs_summary.failed} failed in "
         )
 
         mock_logger = Mock()
