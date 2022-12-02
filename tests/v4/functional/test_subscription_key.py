@@ -11,7 +11,7 @@ REDACT_ONLINE_URL = settings.redact_online_url
 
 
 @pytest.mark.timeout(60)
-@pytest.mark.skip("when v4 is online")
+@pytest.mark.skip("until v4 is online")
 class TestRequestsWithApiKey:
     def test_post_with_invalid_key_fails(self, some_image):
 
