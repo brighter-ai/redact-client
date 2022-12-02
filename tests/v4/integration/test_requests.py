@@ -4,7 +4,6 @@ from redact.errors import RedactResponseError
 from redact.v4 import JobArguments, OutputType, RedactRequests, Region, ServiceType
 from tests.v4.integration.mock_server import mock_redact_server
 
-
 API_VERSION = "v4"
 
 

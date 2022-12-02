@@ -9,6 +9,7 @@ from redact.v4 import JobState, RedactInstance
 
 
 @pytest.mark.timeout(30)
+@pytest.mark.skip("unitl v4 is online")
 class TestRedactJob:
     def test_wait_for_status_completed(self, job):
         # GIVEN an Redact job
@@ -44,17 +45,6 @@ class TestRedactJob:
         some_image.seek(0)
         original_img = Image.open(some_image)
         assert anonymized_img.size == original_img.size
-
-    @pytest.mark.skip(reason="Skip until v4 is online")
-    def test_download_labels(self, job):
-
-        # GIVEN an Redact job
-
-        # WHEN a job is started and the labels are downloaded
-        job_labels = job.wait_until_finished().get_labels()
-
-        # THEN assert that the result contains the bbox for one face
-        assert len(job_labels.frames[0].redaction_areas) == 1
 
     def test_delete(self, job):
 

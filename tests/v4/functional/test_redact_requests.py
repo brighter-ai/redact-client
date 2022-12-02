@@ -1,8 +1,11 @@
 from io import BytesIO
 
+import pytest
+
 from redact.v4 import OutputType, ServiceType
 
 
+@pytest.mark.skip("unitl v4 is online")
 class TestRedactRequests:
     def test_upload_from_disk(self, redact_requests, some_image):
         # GIVEN a Redact instance and a test image

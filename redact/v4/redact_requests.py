@@ -17,7 +17,6 @@ from redact.settings import Settings
 from redact.utils import normalize_url
 from redact.v4.data_models import (
     JobArguments,
-    RedactionLabels,
     JobPostResponse,
     JobResult,
     OutputType,
@@ -245,29 +244,6 @@ class RedactRequests:
             raise RedactResponseError(response=response, msg="Error getting job status")
 
         return response.json()
-
-    def get_labels(
-        self,
-        service: ServiceType,
-        out_type: OutputType,
-        output_id: UUID,
-        timeout: float = 60.0,
-    ) -> RedactionLabels:
-
-        url = urllib.parse.urljoin(
-            self.redact_url,
-            f"{service}/{self.API_VERSION}/{out_type}/{output_id}/labels",
-        )
-
-        debug_uuid = uuid.uuid4()
-        response = self._retry_on_network_problem_with_backoff(
-            self._client.get, debug_uuid, url, headers=self._headers, timeout=timeout
-        )
-
-        if response.status_code != 200:
-            raise RedactResponseError(response=response, msg="Error getting labels")
-
-        return RedactionLabels.parse_obj(response.json())
 
     def delete_output(
         self, service: ServiceType, out_type: OutputType, output_id: UUID

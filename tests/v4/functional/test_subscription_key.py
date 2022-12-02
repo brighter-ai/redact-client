@@ -11,6 +11,7 @@ REDACT_ONLINE_URL = settings.redact_online_url
 
 
 @pytest.mark.timeout(60)
+@pytest.mark.skip("until v4 is online")
 class TestRequestsWithApiKey:
     def test_post_with_invalid_key_fails(self, some_image):
 
@@ -55,13 +56,13 @@ class TestJobWithApiKey:
             job = redact.start_job(file=some_image)
             job.wait_until_finished()
             job.download_result()
-            job.get_labels()
             job.get_status()
             job.delete()
 
         # THEN the response is 401
         assert exception_info.value.response.status_code == 401
 
+    @pytest.mark.skip("until v4 is online")
     def test_job_with_valid_api_key(self, some_image, api_key):
 
         # GIVEN Redact Online with valid api key
@@ -77,7 +78,6 @@ class TestJobWithApiKey:
         job = redact.start_job(file=some_image)
         job.wait_until_finished()
         job.download_result()
-        # job.get_labels()  # TODO: Uncomment when label endpoint is deployed to Redact Online
         job.get_status()
         job.delete()
 
