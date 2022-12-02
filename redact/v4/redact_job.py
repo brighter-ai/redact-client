@@ -3,12 +3,7 @@ from pathlib import Path
 from uuid import UUID
 
 from redact.settings import Settings
-from redact.v4.data_models import (
-    JobResult,
-    JobStatus,
-    OutputType,
-    ServiceType,
-)
+from redact.v4.data_models import JobResult, JobStatus, OutputType, ServiceType
 from redact.v4.redact_requests import RedactRequests
 
 settings = Settings()

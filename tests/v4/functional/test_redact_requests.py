@@ -1,6 +1,6 @@
-import pytest
-
 from io import BytesIO
+
+import pytest
 
 from redact.v4 import OutputType, ServiceType
 
