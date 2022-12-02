@@ -1,7 +1,6 @@
 from .data_models import (
     InputType,
     JobArguments,
-    RedactionLabels,
     JobPostResponse,
     JobResult,
     JobState,
@@ -16,7 +15,6 @@ from .redact_requests import RedactRequests
 
 __all__ = [
     JobArguments,
-    RedactionLabels,
     JobPostResponse,
     JobResult,
     JobState,

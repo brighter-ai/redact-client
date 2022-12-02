@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Optional, Tuple
+from typing import List, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, Field, confloat, conint
@@ -28,18 +28,18 @@ class OutputType(str, Enum):
 
 class Region(str, Enum):
 
-    european_union = "european_union"
+    germany = "germany"
     mainland_china = "mainland_china"
     united_states_of_america = "united_states_of_america"
 
     def __str__(self):
-        """Return 'european_union' instead of 'Region.european_union'. The latter is more helpful because the output
+        """Return 'germany' instead of 'Region.germany'. The latter is more helpful because the output
         is most likely to be used as a query parameter in an HTTP request."""
         return self.value
 
 
 class JobArguments(BaseModel):
-    region: Region = Region.european_union
+    region: Region = Region.germany
     face: Optional[bool] = None
     license_plate: Optional[bool] = None
     speed_optimized: Optional[bool] = None
@@ -79,16 +79,3 @@ class JobStatus(BaseModel):
 
     def is_running(self):
         return self.state in [JobState.active, JobState.pending]
-
-
-class RedactionAreaLabel(BaseModel):
-    area: List[Tuple[int, int]]
-
-
-class RedactionFrameLabels(BaseModel):
-    index: int
-    redaction_areas: List[RedactionAreaLabel] = Field(default_factory=list)
-
-
-class RedactionLabels(BaseModel):
-    frames: List[RedactionFrameLabels]

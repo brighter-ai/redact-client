@@ -69,6 +69,7 @@ class TestWarnings:
         job_wo_keyframe.download_result(ignore_warnings=True)
 
     @pytest.mark.parametrize(argnames="ignore_warnings", argvalues=[None, False, True])
+    @pytest.mark.skip("until v4 is online")
     def test_redact_folder_with_ignore_warnings(
         self,
         redact_url: str,

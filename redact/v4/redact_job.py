@@ -4,7 +4,6 @@ from uuid import UUID
 
 from redact.settings import Settings
 from redact.v4.data_models import (
-    RedactionLabels,
     JobResult,
     JobStatus,
     OutputType,
@@ -41,14 +40,6 @@ class RedactJob:
             service=self.service, out_type=self.out_type, output_id=self.output_id
         )
         return JobStatus(**response_dict)
-
-    def get_labels(self, timeout: float = 60.0) -> RedactionLabels:
-        return self.redact.get_labels(
-            service=self.service,
-            out_type=self.out_type,
-            output_id=self.output_id,
-            timeout=timeout,
-        )
 
     def download_result(self, ignore_warnings: bool = False) -> JobResult:
         return self.redact.get_output(
