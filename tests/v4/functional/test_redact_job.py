@@ -9,6 +9,7 @@ from redact.v4 import JobState, RedactInstance
 
 
 @pytest.mark.timeout(30)
+@pytest.mark.skip("unitl v4 is online")
 class TestRedactJob:
     def test_wait_for_status_completed(self, job):
         # GIVEN an Redact job
