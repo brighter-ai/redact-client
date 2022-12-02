@@ -10,8 +10,6 @@ from redact.tools.redact_folder import redact_folder as rdct_folder
 
 settings = Settings()
 
-log = logging.getLogger()
-
 
 def redact_file(
     file_path: str,
