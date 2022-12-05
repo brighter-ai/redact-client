@@ -3,7 +3,7 @@ from typing import Union
 
 import pytest
 
-from redact.tools.redact_folder import redact_folder
+from redact.v3.tools.redact_folder import redact_folder
 from redact.v3 import InputType, OutputType, ServiceType
 from tests.conftest import NUMBER_OF_IMAGES
 
