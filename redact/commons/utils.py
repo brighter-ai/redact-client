@@ -7,8 +7,6 @@ from typing import List, Union
 from redact.settings import Settings
 
 
-settings = Settings()
-
 ARCHIVE_EXTENSIONS = ["tar"]
 IMG_EXTENSIONS = ["jpeg", "jpg", "bmp", "png"]
 VID_EXTENSIONS = ["mp4", "avi", "mov", "mkv", "mts", "ts", "webm"]
@@ -104,6 +102,6 @@ def videos_in_dir(dir: Path, recursive=True, sort=False):
 
 def setup_logging(verbose_logging: bool) -> None:
     format = "%(asctime)s | %(levelname)s | %(message)s"
-    level = logging.DEBUG if verbose_logging else settings.log_level
+    level = logging.DEBUG if verbose_logging else Settings().log_level
 
     logging.basicConfig(format=format, level=level)

@@ -4,7 +4,7 @@ import typer
 
 from redact import InputType, JobArguments, OutputType, Region, ServiceType
 from redact.settings import Settings
-from redact.tools.utils import setup_logging
+from redact.commons.utils import setup_logging
 from redact.v3.tools.redact_file import redact_file as rdct_file
 from redact.v3.tools.redact_folder import redact_folder as rdct_folder
 
@@ -22,45 +22,47 @@ def redact_file(
     output_path: Optional[str] = typer.Option(
         None, help="[default: FILE_redacted.EXT]"
     ),
-    region: Region = typer.Option(
-        Region.european_union,
+    region: Optional[Region] = typer.Option(
+        None,
         help=(
             "Selects the region that license plate detection should look for and that license plate "
             "replacements will be generated for"
         ),
     ),
-    face: bool = typer.Option(True, help="Select whether faces should be anonymized"),
-    license_plate: bool = typer.Option(
-        True, help="Select whether license plates should be anonymized"
+    face: Optional[bool] = typer.Option(
+        None, help="Select whether faces should be anonymized"
+    ),
+    license_plate: Optional[bool] = typer.Option(
+        None, help="Select whether license plates should be anonymized"
     ),
     custom_labels_file_path: Optional[str] = typer.Option(
         None, "--labels", help="A JSON file containing custom labels"
     ),
-    vehicle_recorded_data: bool = typer.Option(
-        False,
+    vehicle_recorded_data: Optional[bool] = typer.Option(
+        None,
         help="Used to run a job with a variety of optimizations geared toward vehicle recorded data",
     ),
-    speed_optimized: bool = typer.Option(
-        False,
+    speed_optimized: Optional[bool] = typer.Option(
+        None,
         help="Used to run a job faster with lower accuracy and replacement quality",
     ),
-    single_frame_optimized: bool = typer.Option(
-        False,
+    single_frame_optimized: Optional[bool] = typer.Option(
+        None,
         help="Used to run a video or archive only as a set of individual images without tracking or interpolation",
     ),
-    license_plate_determination_threshold: float = typer.Option(
-        0.45,
+    license_plate_determination_threshold: Optional[float] = typer.Option(
+        None,
         help="Set the threshold between 0 and 1 that the license plate detection models use to decide if "
         "an object is a license plate, a lower value means more likely to classifly an object as a license plate",
     ),
-    face_determination_threshold: float = typer.Option(
-        0.25,
+    face_determination_threshold: Optional[float] = typer.Option(
+        None,
         help=(
             "Set the threshold between 0 and 1 that the face detection model uses to decide if "
             "an object is a face, a lower value means more likely to classifly an object as a face"
         ),
     ),
-    license_plate_custom_stamp_path: Optional[str] = typer.Option(
+    licence_plate_custom_stamp_path: Optional[str] = typer.Option(
         None, "--custom-lp", help="Image file to use for license plate replacements"
     ),
     redact_url: str = typer.Option(
@@ -104,7 +106,7 @@ def redact_file(
         service=service,
         job_args=job_args,
         custom_labels_file_path=custom_labels_file_path,
-        licence_plate_custom_stamp_path=license_plate_custom_stamp_path,
+        licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
         redact_url=redact_url,
         api_key=api_key,
         out_path=output_path,
@@ -122,46 +124,48 @@ def redact_folder(
     input_type: InputType = typer.Option(...),
     output_type: OutputType = typer.Option(...),
     service: ServiceType = typer.Option(...),
-    region: Region = typer.Option(
-        Region.european_union,
+    region: Optional[Region] = typer.Option(
+        None,
         help=(
             "Selects the region that license plate detection should look for and that license "
             "plate replacements will be generated for"
         ),
     ),
-    face: bool = typer.Option(True, help="Select whether faces should be anonymized"),
-    license_plate: bool = typer.Option(
-        True, help="Select whether license plates should be anonymized"
+    face: Optional[bool] = typer.Option(
+        None, help="Select whether faces should be anonymized"
     ),
-    vehicle_recorded_data: bool = typer.Option(
-        False,
+    license_plate: Optional[bool] = typer.Option(
+        None, help="Select whether license plates should be anonymized"
+    ),
+    vehicle_recorded_data: Optional[bool] = typer.Option(
+        None,
         help="Used to run a job with a variety of optimizations geared toward vehicle recorded data",
     ),
-    speed_optimized: bool = typer.Option(
-        False,
+    speed_optimized: Optional[bool] = typer.Option(
+        None,
         help="Used to run a job faster with lower accuracy and replacement quality",
     ),
-    single_frame_optimized: bool = typer.Option(
-        False,
+    single_frame_optimized: Optional[bool] = typer.Option(
+        None,
         help="Used to run a video or archive only as a set of individual images without tracking or interpolation",
     ),
-    license_plate_determination_threshold: float = typer.Option(
-        0.45,
+    license_plate_determination_threshold: Optional[float] = typer.Option(
+        None,
         help=(
             "Set the threshold between 0 and 1 that the license plate detection models use to decide "
             "if an object is a license plate, a lower value means more likely to classifly "
             "an object as a license plate"
         ),
     ),
-    face_determination_threshold: float = typer.Option(
-        0.25,
+    face_determination_threshold: Optional[float] = typer.Option(
+        None,
         help=(
             "Set the threshold between 0 and 1 that the face detection model uses to decide "
             "if an object is a face, a lower value means more likely to classifly an object "
             "as a face"
         ),
     ),
-    license_plate_custom_stamp_path: Optional[str] = typer.Option(
+    licence_plate_custom_stamp_path: Optional[str] = typer.Option(
         None, "--custom-lp", help="Image file to use for license plate replacements"
     ),
     redact_url: str = typer.Option(
@@ -214,7 +218,7 @@ def redact_folder(
         out_type=output_type,
         service=service,
         job_args=job_args,
-        licence_plate_custom_stamp_path=license_plate_custom_stamp_path,
+        licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
         redact_url=redact_url,
         api_key=api_key,
         n_parallel_jobs=n_parallel_jobs,
