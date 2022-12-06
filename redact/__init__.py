@@ -5,8 +5,8 @@ Python client for "brighter Redact"
 __version__ = "5.1.3"
 
 from .errors import RedactConnectError, RedactResponseError
-from .tools.redact_file import redact_file
-from .tools.redact_folder import redact_folder
+from .v3.tools.redact_file import redact_file
+from .v3.tools.redact_folder import redact_folder
 from .v3.data_models import (
     InputType,
     JobArguments,

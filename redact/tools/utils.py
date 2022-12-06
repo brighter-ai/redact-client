@@ -1,6 +1,13 @@
 import glob
+import logging
+
 from pathlib import Path
 from typing import List, Union
+
+from redact.settings import Settings
+
+
+settings = Settings()
 
 ARCHIVE_EXTENSIONS = ["tar"]
 IMG_EXTENSIONS = ["jpeg", "jpg", "bmp", "png"]
@@ -93,3 +100,10 @@ def videos_in_dir(dir: Path, recursive=True, sort=False):
     for file in file_list:
         if is_video(file):
             yield file
+
+
+def setup_logging(verbose_logging: bool) -> None:
+    format = "%(asctime)s | %(levelname)s | %(message)s"
+    level = logging.DEBUG if verbose_logging else settings.log_level
+
+    logging.basicConfig(format=format, level=level)
