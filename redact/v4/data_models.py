@@ -39,7 +39,7 @@ class Region(str, Enum):
 
 
 class JobArguments(BaseModel):
-    region: Region = Region.germany
+    region: Optional[Region] = None
     face: Optional[bool] = None
     license_plate: Optional[bool] = None
     speed_optimized: Optional[bool] = None
