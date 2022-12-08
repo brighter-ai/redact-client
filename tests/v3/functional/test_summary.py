@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from redact.tools.summary import JobsSummary, log_summary, summary
+from redact.commons.summary import JobsSummary, log_summary, summary
 
 
 class TestSummary:

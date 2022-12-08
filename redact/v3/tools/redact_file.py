@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Optional, Union
 
 from redact.settings import Settings
-from redact.tools.utils import normalize_path
+from redact.commons.utils import normalize_path
 from redact.v3 import (
     JobArguments,
     JobLabels,

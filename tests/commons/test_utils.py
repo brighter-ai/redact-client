@@ -2,8 +2,23 @@ import os
 from pathlib import Path
 
 import pytest
+from redact.commons.utils import files_in_dir, images_in_dir, normalize_path
+from redact.utils import normalize_url
 
-from redact.tools.utils import files_in_dir, images_in_dir, normalize_path
+
+@pytest.mark.parametrize(
+    "input_url, output_url",
+    [
+        ("192.168.11.22", "http://192.168.11.22"),
+        ("192.168.11.22:42", "http://192.168.11.22:42"),
+        ("http://192.168.11.22", "http://192.168.11.22"),
+        ("https://192.168.11.22", "https://192.168.11.22"),
+        ("foo.org/bar", "http://foo.org/bar"),
+        ("foo.org/bar/", "http://foo.org/bar/"),
+    ],
+)
+def test_normalize_url(input_url: str, output_url: str):
+    assert normalize_url(input_url) == output_url
 
 
 @pytest.mark.parametrize(

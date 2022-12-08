@@ -10,9 +10,9 @@ from tqdm.contrib.logging import logging_redirect_tqdm
 
 from redact.errors import RedactConnectError, RedactResponseError
 from redact.settings import Settings
-from redact.tools.redact_file import redact_file
-from redact.tools.summary import JobsSummary, summary
-from redact.tools.utils import (
+from redact.v3.tools.redact_file import redact_file
+from redact.commons.summary import JobsSummary, summary
+from redact.commons.utils import (
     files_in_dir,
     is_archive,
     is_image,

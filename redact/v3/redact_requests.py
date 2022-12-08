@@ -12,6 +12,7 @@ from uuid import UUID
 
 import httpx
 
+from redact.api_versions import REDACT_API_VERSIONS
 from redact.errors import RedactConnectError, RedactResponseError
 from redact.settings import Settings
 from redact.utils import normalize_url
@@ -48,7 +49,7 @@ class RedactRequests:
     Helper class wrapping requests to the Redact API.
     """
 
-    API_VERSION = "v3"
+    API_VERSION = REDACT_API_VERSIONS.v3
 
     def __init__(
         self,

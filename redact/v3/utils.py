@@ -1,6 +1,6 @@
 from typing import Any, List, Optional
 
-from redact.tools.summary import JobsSummary
+from redact.commons.summary import JobsSummary
 from redact.v3 import JobState, JobStatus
 
 

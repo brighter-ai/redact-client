@@ -15,7 +15,7 @@ test-functional:
 	poetry run pytest tests/${api_version}/functional/ --api_key $(api_key) --redact_url $(redact_url)
 
 test-unit:
-	poetry run pytest tests/${api_version}/unit/
+	poetry run pytest tests/commons/
 
 test-integration:
 	poetry run pytest tests/${api_version}/integration/
