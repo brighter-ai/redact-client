@@ -4,9 +4,8 @@ from typing import Optional, Union
 
 from redact.settings import Settings
 from redact.commons.utils import is_image, normalize_path
-from redact.v3 import (
+from redact.v4 import (
     JobArguments,
-    JobLabels,
     JobState,
     JobStatus,
     OutputType,
@@ -28,13 +27,11 @@ def redact_file(
     service: ServiceType,
     job_args: Optional[JobArguments] = None,
     licence_plate_custom_stamp_path: Optional[str] = None,
-    custom_labels_file_path: Optional[str] = None,
     redact_url: str = settings.redact_url_default,
     out_path: Optional[str] = None,
     api_key: Optional[str] = None,
     ignore_warnings: bool = False,
     skip_existing: bool = True,
-    save_labels: bool = False,
     auto_delete_job: bool = True,
     auto_delete_input_file: bool = False,
     waiting_time_between_job_status_checks: Optional[float] = None,
@@ -62,11 +59,6 @@ def redact_file(
         job_args = JobArguments()
     log.debug(f"Job arguments: {job_args}")
 
-    # custom labels
-    custom_labels = None
-    if custom_labels_file_path:
-        custom_labels = JobLabels.parse_file(custom_labels_file_path)
-
     # custom LP stamps
     licence_plate_custom_stamp = None
     if licence_plate_custom_stamp_path:
@@ -93,7 +85,6 @@ def redact_file(
                 file=file,
                 job_args=job_args,
                 licence_plate_custom_stamp=licence_plate_custom_stamp,
-                custom_labels=custom_labels,
             )
 
             log.debug(
@@ -119,12 +110,6 @@ def redact_file(
         if licence_plate_custom_stamp:
             licence_plate_custom_stamp.close()
 
-    # write labels
-    if save_labels:
-        labels = job.get_labels().json()
-        with open(_get_labels_path(out_path), "w") as f:
-            f.write(labels)
-
     # delete input file
     if auto_delete_input_file:
         log.debug(f"Deleting {file_path}")
@@ -145,14 +130,12 @@ def _get_out_path(
     file_path = Path(file_path)
 
     file_extension = file_path.suffix
-    if output_type == OutputType.overlays and not is_image(file_path):
+    if output_type == OutputType.labels:
+        file_extension = ".json"
+    elif output_type == OutputType.overlays and not is_image(file_path):
         file_extension = ".apng"
 
     anonymized_path = Path(file_path.parent).joinpath(
         f"{file_path.stem}_redacted{file_extension}"
     )
     return normalize_path(anonymized_path)
-
-
-def _get_labels_path(out_path: Path) -> Path:
-    return out_path.parent.joinpath(out_path.stem + ".json")
