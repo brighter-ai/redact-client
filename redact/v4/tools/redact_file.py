@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Optional, Union
 
 from redact.settings import Settings
-from redact.commons.utils import normalize_path
+from redact.commons.utils import is_image, normalize_path
 from redact.v4 import (
     JobArguments,
     JobState,
@@ -43,7 +43,9 @@ def redact_file(
 
     # input and output path
     file_path = normalize_path(file_path)
-    out_path = _get_out_path(out_path=out_path, file_path=file_path)
+    out_path = _get_out_path(
+        out_path=out_path, file_path=file_path, output_type=out_type
+    )
     out_path.parent.mkdir(parents=True, exist_ok=True)
     log.debug(f"Anonymize {file_path}, writing result to {out_path} ...")
 
@@ -120,11 +122,20 @@ def redact_file(
     return job_status
 
 
-def _get_out_path(out_path: Union[str, Path], file_path: Path) -> Path:
+def _get_out_path(
+    out_path: Union[str, Path], file_path: Path, output_type: OutputType
+) -> Path:
     if out_path:
         return normalize_path(out_path)
     file_path = Path(file_path)
+
+    file_extension = file_path.suffix
+    if output_type == OutputType.labels:
+        file_extension = ".json"
+    elif output_type == OutputType.overlays and not is_image(file_path):
+        file_extension = ".apng"
+
     anonymized_path = Path(file_path.parent).joinpath(
-        f"{file_path.stem}_redacted{file_path.suffix}"
+        f"{file_path.stem}_redacted{file_extension}"
     )
     return normalize_path(anonymized_path)

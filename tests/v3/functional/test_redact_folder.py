@@ -1,8 +1,10 @@
 from pathlib import Path
 from typing import Union
 
+import os
 import pytest
 
+from redact.v3.tools.redact_file import redact_file
 from redact.v3.tools.redact_folder import redact_folder
 from redact.v3 import InputType, OutputType, ServiceType
 from tests.conftest import NUMBER_OF_IMAGES
@@ -62,3 +64,27 @@ class TestRedactFolder:
         """/some/file.abc -> /some/file.xyz"""
         file_path = Path(file_path)
         return str(file_path.parent.joinpath(f"{file_path.stem}{new_ext}"))
+
+    def test_video_correct_file_ending_for_overlays(
+        self,
+        video_path: Path,
+        redact_url,
+        optional_api_key,
+    ):
+        # GIVEN an input image, service, and output_type
+        # WHEN the the file is anonymized
+        redact_file(
+            file_path=video_path,
+            out_type=OutputType.overlays,
+            service=ServiceType.blur,
+            redact_url=redact_url,
+            api_key=optional_api_key,
+            ignore_warnings=True,
+        )
+
+        # THEN the output file has the correct file ending
+        file_folder = video_path.parent
+        assert len(os.listdir(file_folder)) == 2
+
+        result_file = file_folder / f"{video_path.stem}_redacted.apng"
+        assert result_file.exists()

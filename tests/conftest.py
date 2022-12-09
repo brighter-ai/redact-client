@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import IO, Optional
 
 import pytest
+import shutil
 
 from redact.settings import Settings
 
@@ -85,3 +86,21 @@ def images_path(tmp_path_factory, some_image, n_images: int = NUMBER_OF_IMAGES) 
         with open(str(output_path), "wb") as f:
             shutil.copyfileobj(fsrc=some_image, fdst=f)
     return tmp_img_path
+
+
+def _copy_file_to_tmp_path(tmp_path: Path, file_path: Path):
+    target_file_path = tmp_path / file_path.name
+    shutil.copy(file_path, target_file_path)
+    return target_file_path
+
+
+@pytest.fixture
+def image_path(tmp_path, resource_path):
+    img_path = resource_path / "obama.jpg"
+    return _copy_file_to_tmp_path(tmp_path=tmp_path, file_path=img_path)
+
+
+@pytest.fixture
+def video_path(tmp_path, resource_path):
+    video_path = resource_path / "not_starting_with_keyframe.mp4"
+    return _copy_file_to_tmp_path(tmp_path=tmp_path, file_path=video_path)
