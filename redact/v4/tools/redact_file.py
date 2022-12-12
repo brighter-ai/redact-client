@@ -23,12 +23,12 @@ log.debug(f"Settings: {settings}")
 
 def redact_file(
     file_path: str,
-    out_type: OutputType,
+    output_type: OutputType,
     service: ServiceType,
     job_args: Optional[JobArguments] = None,
     licence_plate_custom_stamp_path: Optional[str] = None,
     redact_url: str = settings.redact_url_default,
-    out_path: Optional[str] = None,
+    output_path: Optional[str] = None,
     api_key: Optional[str] = None,
     ignore_warnings: bool = False,
     skip_existing: bool = True,
@@ -43,15 +43,15 @@ def redact_file(
 
     # input and output path
     file_path = normalize_path(file_path)
-    out_path = _get_out_path(
-        out_path=out_path, file_path=file_path, output_type=out_type
+    output_path = _get_out_path(
+        output_path=output_path, file_path=file_path, output_type=output_type
     )
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    log.debug(f"Anonymize {file_path}, writing result to {out_path} ...")
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    log.debug(f"Anonymize {file_path}, writing result to {output_path} ...")
 
     # skip?
-    if skip_existing and Path(out_path).exists():
-        log.debug(f"Skipping because output already exists: {out_path}")
+    if skip_existing and Path(output_path).exists():
+        log.debug(f"Skipping because output already exists: {output_path}")
         return
 
     # (default) job arguments
@@ -71,12 +71,12 @@ def redact_file(
         redact: RedactInstance
         if redact_requests_param:
             redact = RedactInstance(
-                redact_requests_param, service=service, out_type=out_type
+                redact_requests_param, service=service, output_type=output_type
             )
         else:
             redact = RedactInstance.create(
                 service=service,
-                out_type=out_type,
+                output_type=output_type,
                 redact_url=redact_url,
                 api_key=api_key,
             )
@@ -105,7 +105,7 @@ def redact_file(
             return job_status
 
         # stream result to file
-        job.download_result_to_file(file=out_path, ignore_warnings=ignore_warnings)
+        job.download_result_to_file(file=output_path, ignore_warnings=ignore_warnings)
     finally:
         if licence_plate_custom_stamp:
             licence_plate_custom_stamp.close()
@@ -123,10 +123,10 @@ def redact_file(
 
 
 def _get_out_path(
-    out_path: Union[str, Path], file_path: Path, output_type: OutputType
+    output_path: Union[str, Path], file_path: Path, output_type: OutputType
 ) -> Path:
-    if out_path:
-        return normalize_path(out_path)
+    if output_path:
+        return normalize_path(output_path)
     file_path = Path(file_path)
 
     file_extension = file_path.suffix

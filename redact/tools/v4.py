@@ -98,13 +98,13 @@ def redact_file(
 
     rdct_file(
         file_path=file_path,
-        out_type=output_type,
+        output_type=output_type,
         service=service,
         job_args=job_args,
         licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
         redact_url=redact_url,
         api_key=api_key,
-        out_path=output_path,
+        output_path=output_path,
         ignore_warnings=ignore_warnings,
         skip_existing=skip_existing,
         auto_delete_job=auto_delete_job,
@@ -205,10 +205,10 @@ def redact_folder(
     )
 
     rdct_folder(
-        in_dir=input_dir,
-        out_dir=output_dir,
+        input_dir=input_dir,
+        output_dir=output_dir,
         input_type=input_type,
-        out_type=output_type,
+        output_type=output_type,
         service=service,
         job_args=job_args,
         licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,

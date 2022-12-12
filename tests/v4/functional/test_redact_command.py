@@ -48,13 +48,13 @@ class TestRedactCommand:
         redact_file_mock.assert_called_once()
         redact_file_mock.assert_called_with(
             file_path=str(images_path),
-            out_type=OutputType.images,
+            output_type=OutputType.images,
             service=ServiceType.blur,
             job_args=JobArguments(),
             licence_plate_custom_stamp_path=None,
             redact_url=Settings().redact_online_url,
             api_key=None,
-            out_path=str(output_path),
+            output_path=str(output_path),
             ignore_warnings=False,
             skip_existing=True,
             auto_delete_job=True,
@@ -88,10 +88,10 @@ class TestRedactCommand:
         assert result.exit_code == 0
         redact_folder_mock.assert_called_once()
         redact_folder_mock.assert_called_with(
-            in_dir=str(images_path),
-            out_dir=str(output_path),
+            input_dir=str(images_path),
+            output_dir=str(output_path),
             input_type=InputType.images,
-            out_type=OutputType.images,
+            output_type=OutputType.images,
             service=ServiceType.blur,
             job_args=JobArguments(),
             licence_plate_custom_stamp_path=None,
