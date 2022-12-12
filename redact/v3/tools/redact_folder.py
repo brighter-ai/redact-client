@@ -30,10 +30,10 @@ log.debug(f"Settings: {settings}")
 
 @summary(log)
 def redact_folder(
-    in_dir: Union[str, Path],
-    out_dir: Union[str, Path],
+    input_dir: Union[str, Path],
+    output_dir: Union[str, Path],
     input_type: InputType,
-    out_type: OutputType,
+    output_type: OutputType,
     service: ServiceType,
     job_args: Optional[JobArguments] = None,
     licence_plate_custom_stamp_path: Optional[str] = None,
@@ -48,8 +48,8 @@ def redact_folder(
 ) -> JobsSummary:
 
     # Normalize paths, e.g.: '~/..' -> '/home'
-    in_dir_path = normalize_path(in_dir)
-    out_dir_path = normalize_path(out_dir)
+    in_dir_path = normalize_path(input_dir)
+    out_dir_path = normalize_path(output_dir)
     log.info(f"Anonymize files from {in_dir_path} ...")
 
     if auto_delete_input_file:
@@ -73,7 +73,7 @@ def redact_folder(
         base_dir_in=in_dir_path,
         base_dir_out=out_dir_path,
         service=service,
-        out_type=out_type,
+        output_type=output_type,
         job_args=job_args,
         licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
         redact_url=redact_url,
@@ -169,7 +169,7 @@ def _redact_file_with_relative_path(
     out_path = Path(base_dir_out).joinpath(relative_file_path)
     return redact_file(
         file_path=in_path,
-        out_path=out_path,
+        output_path=out_path,
         waiting_time_between_job_status_checks=10,
         **kwargs,
     )

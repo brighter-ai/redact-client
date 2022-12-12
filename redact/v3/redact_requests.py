@@ -76,7 +76,7 @@ class RedactRequests:
         self,
         file: FileIO,
         service: ServiceType,
-        out_type: OutputType,
+        output_type: OutputType,
         job_args: Optional[JobArguments] = None,
         licence_plate_custom_stamp: Optional[IO] = None,
         custom_labels: Optional[Union[str, IO, JobLabels]] = None,
@@ -93,7 +93,7 @@ class RedactRequests:
             ) from e
 
         url = urllib.parse.urljoin(
-            self.redact_url, f"{service}/{self.API_VERSION}/{out_type}"
+            self.redact_url, f"{service}/{self.API_VERSION}/{output_type}"
         )
 
         if not job_args:
@@ -139,7 +139,7 @@ class RedactRequests:
     def get_output(
         self,
         service: ServiceType,
-        out_type: OutputType,
+        output_type: OutputType,
         output_id: UUID,
         ignore_warnings: bool = False,
     ) -> JobResult:
@@ -147,7 +147,7 @@ class RedactRequests:
         Retrieves job result as object in memory.
         """
 
-        url = self._get_output_download_url(service, out_type, output_id)
+        url = self._get_output_download_url(service, output_type, output_id)
 
         query_params = self._get_output_download_query_params(ignore_warnings)
 
@@ -201,7 +201,7 @@ class RedactRequests:
     def write_output_to_file(
         self,
         service: ServiceType,
-        out_type: OutputType,
+        output_type: OutputType,
         output_id: UUID,
         file: Path,
         ignore_warnings: bool = False,
@@ -211,7 +211,7 @@ class RedactRequests:
         and resolving memory fragmentation problems.
         """
 
-        url = self._get_output_download_url(service, out_type, output_id)
+        url = self._get_output_download_url(service, output_type, output_id)
 
         query_params = self._get_output_download_query_params(ignore_warnings)
 
@@ -233,19 +233,19 @@ class RedactRequests:
         }
 
     def _get_output_download_url(
-        self, service: ServiceType, out_type: OutputType, output_id: UUID
+        self, service: ServiceType, output_type: OutputType, output_id: UUID
     ):
         return urllib.parse.urljoin(
-            self.redact_url, f"{service}/{self.API_VERSION}/{out_type}/{output_id}"
+            self.redact_url, f"{service}/{self.API_VERSION}/{output_type}/{output_id}"
         )
 
     def get_status(
-        self, service: ServiceType, out_type: OutputType, output_id: UUID
+        self, service: ServiceType, output_type: OutputType, output_id: UUID
     ) -> Dict:
 
         url = urllib.parse.urljoin(
             self.redact_url,
-            f"{service}/{self.API_VERSION}/{out_type}/{output_id}/status",
+            f"{service}/{self.API_VERSION}/{output_type}/{output_id}/status",
         )
 
         debug_uuid = uuid.uuid4()
@@ -261,14 +261,14 @@ class RedactRequests:
     def get_labels(
         self,
         service: ServiceType,
-        out_type: OutputType,
+        output_type: OutputType,
         output_id: UUID,
         timeout: float = 60.0,
     ) -> JobLabels:
 
         url = urllib.parse.urljoin(
             self.redact_url,
-            f"{service}/{self.API_VERSION}/{out_type}/{output_id}/labels",
+            f"{service}/{self.API_VERSION}/{output_type}/{output_id}/labels",
         )
 
         debug_uuid = uuid.uuid4()
@@ -282,11 +282,11 @@ class RedactRequests:
         return JobLabels.parse_obj(response.json())
 
     def delete_output(
-        self, service: ServiceType, out_type: OutputType, output_id: UUID
+        self, service: ServiceType, output_type: OutputType, output_id: UUID
     ) -> Dict:
 
         url = urllib.parse.urljoin(
-            self.redact_url, f"{service}/{self.API_VERSION}/{out_type}/{output_id}"
+            self.redact_url, f"{service}/{self.API_VERSION}/{output_type}/{output_id}"
         )
 
         debug_uuid = uuid.uuid4()
@@ -300,12 +300,12 @@ class RedactRequests:
         return response.json()
 
     def get_error(
-        self, service: ServiceType, out_type: OutputType, output_id: UUID
+        self, service: ServiceType, output_type: OutputType, output_id: UUID
     ) -> Dict:
 
         url = urllib.parse.urljoin(
             self.redact_url,
-            f"{service}/{self.API_VERSION}/{out_type}/{output_id}/error",
+            f"{service}/{self.API_VERSION}/{output_type}/{output_id}/error",
         )
 
         debug_uuid = uuid.uuid4()
