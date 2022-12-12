@@ -19,7 +19,7 @@ from redact.v3 import (
 def redact_instance_vid(redact_url: str, optional_api_key) -> RedactInstance:
     return RedactInstance.create(
         service=ServiceType.blur,
-        out_type=OutputType.videos,
+        output_type=OutputType.videos,
         redact_url=redact_url,
         api_key=optional_api_key,
     )
@@ -85,10 +85,10 @@ class TestWarnings:
         # WHEN all videos in the folder are redacted
         tmp_out_path = tmp_path_factory.mktemp("tmp_out")
         redact_folder(
-            in_dir=tmp_in_path,
-            out_dir=tmp_out_path,
+            input_dir=tmp_in_path,
+            output_dir=tmp_out_path,
             input_type=InputType.videos,
-            out_type=OutputType.videos,
+            output_type=OutputType.videos,
             service=ServiceType.blur,
             job_args=JobArguments(face=False),
             redact_url=redact_url,
