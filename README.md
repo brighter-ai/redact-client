@@ -9,7 +9,7 @@
   - [Quickstart](#quickstart)
     - [Examples](#examples)
   - [Library Usage](#library-usage)
-  - [Batch Processing](#batch-file-processing)
+    - [Batch Processing](#batch-file-processing)
     - [API Requests](#api-requests)
     - [Redact Jobs](#redact-jobs)
 
@@ -39,11 +39,11 @@ The pip package automatically installs two command-line shortcuts (`redact_file`
 anonymize individual files or whole folders, respectively. For each of these commands the desired api version have to be specified.
 
 ```shell
-Usage: redact_file v4 --file-path [FILE_PATH] --output-type [OUT_TYPE] --service [SERVICE]
+Usage: redact_file v4 --file-path [FILE_PATH] --output-type [OUTPUT_TYPE] --service [SERVICE]
 ```
 
 ```shell
-Usage: redact_folder v4 --input-dir [IN_DIR] --output-dir [OUT_DIR] --input-type [INPUT_TYPE] --output-type [OUTPUT_TYPE] --service [SERVICE]
+Usage: redact_folder v4 --input-dir [INPUT_DIR] --output-dir [OUTPUT_DIR] --input-type [INPUT_TYPE] --output-type [OUTPUT_TYPE] --service [SERVICE]
 ```
 
 Add `--help` to see additional options.
@@ -68,7 +68,7 @@ Larger amounts of data (images in this case) can be
 anonymized in batches:
 
 ```shell
-redact_folder v4 --input-dir ./in_dir --output-dir ./out_dir --input-type images --output-type images --service blur --redact-url=127.0.0.1:8787
+redact_folder v4 --input-dir ./input_dir --output-dir ./output_dir --input-type images --output-type images --service blur --redact-url=127.0.0.1:8787
 ```
 
 ## Library Usage
@@ -99,10 +99,37 @@ with open('image.jpg', 'rb') as f:
     result = redact.start_job(file=f).wait_until_finished().download_result()
 ```
 
-The anonymization can be further configured by adding additional `JobArguments` to `start_job()`. See `example.py`.
+For using Redact Online you will need to provide a valid api_key:
+```python
+from redact import RedactInstance, ServiceType, OutputType
+
+redact = RedactInstance.create(service=ServiceType.blur, output_type=OutputType.images, redact_url='https://api.brighter.ai/', api_key="VALID_API_KEY")
+```
 
 In case you use a different api version than the default, you have to import the corresponding classes from the version module instead from `redact`:
 
 ```python
 from redact.v4 import RedactInstance, ServiceType, OutputType
+```
+
+#### Advanced
+
+The anonymization can be further configured by adding additional `JobArguments` to `start_job()`
+
+```python
+from redact import JobArguments, OutputType, RedactInstance, Region, ServiceType
+
+redact = RedactInstance.create(
+    service=ServiceType.blur,
+    output_type=OutputType.images,
+    redact_url="http://127.0.0.1:8787",
+)
+job_args = JobArguments(
+    region=Region.united_states_of_america, 
+    face=True, 
+    license_plate=False
+)
+with open("tests/resources/obama.jpg", "rb") as f:
+    job = redact.start_job(file=f, job_args=job_args)
+result = job.wait_until_finished().download_result()
 ```
