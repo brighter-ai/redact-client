@@ -2,8 +2,8 @@ import pytest
 
 from redact.errors import RedactResponseError
 from redact.settings import Settings
-from redact.v3.tools.redact_file import redact_file
-from redact.v3.tools.redact_folder import redact_folder
+from redact.v4.tools.redact_file import redact_file
+from redact.v4.tools.redact_folder import redact_folder
 from redact.v4 import InputType, OutputType, RedactInstance, RedactRequests, ServiceType
 
 settings = Settings()
@@ -114,7 +114,6 @@ class TestRedactToolsWithSubscriptionKey:
             api_key=api_key,
             out_type=OutputType.images,
             service=ServiceType.blur,
-            save_labels=False,
         )
 
     def test_redact_folder_with_invalid_api_key_fails(
@@ -134,7 +133,6 @@ class TestRedactToolsWithSubscriptionKey:
             service=ServiceType.blur,
             n_parallel_jobs=1,
             api_key="INVALID_API_KEY",
-            save_labels=False,
         )
 
         # THEN the logging contains error 401 (Not Authorized)
@@ -157,5 +155,4 @@ class TestRedactToolsWithSubscriptionKey:
             service=ServiceType.blur,
             n_parallel_jobs=1,
             api_key=api_key,
-            save_labels=False,
         )
