@@ -17,7 +17,7 @@ class RedactInstance:
         self,
         redact_requests: RedactRequests,
         service: ServiceType,
-        out_type: OutputType,
+        output_type: OutputType,
     ):
         """
         The default way for creating RedactInstance objects is through RedactInstance.create().
@@ -25,13 +25,13 @@ class RedactInstance:
         """
         self.redact_requests = redact_requests
         self.service = service
-        self.out_type = out_type
+        self.output_type = output_type
 
     @classmethod
     def create(
         cls,
         service: ServiceType,
-        out_type: OutputType,
+        output_type: OutputType,
         redact_url: str = settings.redact_url_default,
         subscription_id: Optional[str] = None,
         api_key: Optional[str] = None,
@@ -42,7 +42,9 @@ class RedactInstance:
         redact_requests = RedactRequests(
             redact_url=redact_url, subscription_id=subscription_id, api_key=api_key
         )
-        return cls(redact_requests=redact_requests, service=service, out_type=out_type)
+        return cls(
+            redact_requests=redact_requests, service=service, output_type=output_type
+        )
 
     def start_job(
         self,
@@ -53,13 +55,13 @@ class RedactInstance:
         post_response = self.redact_requests.post_job(
             file=file,
             service=self.service,
-            out_type=self.out_type,
+            output_type=self.output_type,
             job_args=job_args,
             licence_plate_custom_stamp=licence_plate_custom_stamp,
         )
         return RedactJob(
             redact_requests=self.redact_requests,
             service=self.service,
-            out_type=self.out_type,
+            output_type=self.output_type,
             output_id=post_response.output_id,
         )

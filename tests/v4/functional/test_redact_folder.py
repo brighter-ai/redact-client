@@ -28,10 +28,10 @@ class TestRedactFolder:
 
         # WHEN the whole folder is anonymized
         jobs_summary = redact_folder(
-            in_dir=images_path,
-            out_dir=output_path,
+            input_dir=images_path,
+            output_dir=output_path,
             input_type=InputType.images,
-            out_type=OutputType.images,
+            output_type=OutputType.images,
             service=ServiceType.blur,
             redact_url=redact_url,
             api_key=optional_api_key,

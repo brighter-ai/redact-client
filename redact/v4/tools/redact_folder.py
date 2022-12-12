@@ -30,10 +30,10 @@ log.debug(f"Settings: {settings}")
 
 @summary(log)
 def redact_folder(
-    in_dir: Union[str, Path],
-    out_dir: Union[str, Path],
+    input_dir: Union[str, Path],
+    output_dir: Union[str, Path],
     input_type: InputType,
-    out_type: OutputType,
+    output_type: OutputType,
     service: ServiceType,
     job_args: Optional[JobArguments] = None,
     licence_plate_custom_stamp_path: Optional[str] = None,
@@ -47,8 +47,8 @@ def redact_folder(
 ) -> JobsSummary:
 
     # Normalize paths, e.g.: '~/..' -> '/home'
-    in_dir_path = normalize_path(in_dir)
-    out_dir_path = normalize_path(out_dir)
+    in_dir_path = normalize_path(input_dir)
+    out_dir_path = normalize_path(output_dir)
     log.info(f"Anonymize files from {in_dir_path} ...")
 
     if auto_delete_input_file:
@@ -62,7 +62,7 @@ def redact_folder(
 
     # List of relative input paths (only img/vid)
     relative_file_paths = _get_relative_file_paths(
-        in_dir=in_dir_path, input_type=input_type
+        input_dir=in_dir_path, input_type=input_type
     )
     log.info(f"Found {len(relative_file_paths)} {input_type.value} to process")
 
@@ -72,7 +72,7 @@ def redact_folder(
         base_dir_in=in_dir_path,
         base_dir_out=out_dir_path,
         service=service,
-        out_type=out_type,
+        output_type=output_type,
         job_args=job_args,
         licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
         redact_url=redact_url,
@@ -115,14 +115,14 @@ def _parallel_map(
     return job_statuses, exceptions
 
 
-def _get_relative_file_paths(in_dir: Path, input_type: InputType) -> List[Path]:
+def _get_relative_file_paths(input_dir: Path, input_type: InputType) -> List[Path]:
     """
     Return a list of all files in in_dir. But only relative to in_dir itself.
 
     Example: in_dir/sub/file[1-3].foo -> [sub/file1.foo, sub/file2.foo, sub/file3.foo]
     """
 
-    file_paths: List[str] = files_in_dir(dir=in_dir)
+    file_paths: List[str] = files_in_dir(dir=input_dir)
 
     if input_type == InputType.images:
         file_paths = [fp for fp in file_paths if is_image(fp)]
@@ -133,7 +133,7 @@ def _get_relative_file_paths(in_dir: Path, input_type: InputType) -> List[Path]:
     else:
         raise ValueError(f"Unsupported input type {input_type}.")
 
-    relative_file_paths = [Path(fp).relative_to(in_dir) for fp in file_paths]
+    relative_file_paths = [Path(fp).relative_to(input_dir) for fp in file_paths]
     return relative_file_paths
 
 
@@ -167,7 +167,7 @@ def _redact_file_with_relative_path(
     out_path = Path(base_dir_out).joinpath(relative_file_path)
     return redact_file(
         file_path=in_path,
-        out_path=out_path,
+        output_path=out_path,
         waiting_time_between_job_status_checks=10,
         **kwargs,
     )
