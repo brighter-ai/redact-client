@@ -2,7 +2,7 @@
 Python client for "brighter Redact"
 """
 
-__version__ = "5.1.3"
+__version__ = "6.0.0"
 
 from .errors import RedactConnectError, RedactResponseError
 from .v3.tools.redact_file import redact_file
