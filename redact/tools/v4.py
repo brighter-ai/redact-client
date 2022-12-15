@@ -17,7 +17,7 @@ app = typer.Typer()
 @app.command()
 def redact_file(
     file_path: str = typer.Option(...),
-    out_type: OutputType = typer.Option(...),
+    output_type: OutputType = typer.Option(...),
     service: ServiceType = typer.Option(...),
     output_path: Optional[str] = typer.Option(
         None, help="[default: FILE_redacted.EXT]"
@@ -98,7 +98,7 @@ def redact_file(
 
     rdct_file(
         file_path=file_path,
-        out_type=out_type,
+        output_type=output_type,
         service=service,
         job_args=job_args,
         licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
@@ -116,7 +116,7 @@ def redact_folder(
     input_dir: str = typer.Option(...),
     output_dir: str = typer.Option(...),
     input_type: InputType = typer.Option(...),
-    out_type: OutputType = typer.Option(...),
+    output_type: OutputType = typer.Option(...),
     service: ServiceType = typer.Option(...),
     region: Optional[Region] = typer.Option(
         None,
@@ -208,7 +208,7 @@ def redact_folder(
         input_dir=input_dir,
         output_dir=output_dir,
         input_type=input_type,
-        out_type=out_type,
+        output_type=output_type,
         service=service,
         job_args=job_args,
         licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
