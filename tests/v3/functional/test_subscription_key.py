@@ -20,7 +20,7 @@ class TestRequestsWithApiKey:
         # WHEN a request with invalid api_key is sent
         with pytest.raises(RedactResponseError) as exception_info:
             redact.post_job(
-                file=some_image, service=ServiceType.blur, output_type=OutputType.images
+                file=some_image, service=ServiceType.blur, out_type=OutputType.images
             )
 
         # THEN the response is 401
@@ -34,7 +34,7 @@ class TestRequestsWithApiKey:
         # WHEN a request with valid api_key is sent
         # THEN no exception is thrown
         redact.post_job(
-            file=some_image, service=ServiceType.blur, output_type=OutputType.images
+            file=some_image, service=ServiceType.blur, out_type=OutputType.images
         )
 
 
@@ -45,7 +45,7 @@ class TestJobWithApiKey:
         # GIVEN Redact Online with invalid api key
         redact = RedactInstance.create(
             service=ServiceType.blur,
-            output_type=OutputType.images,
+            out_type=OutputType.images,
             redact_url=REDACT_ONLINE_URL,
             api_key="INVALID_API_KEY",
         )
@@ -67,7 +67,7 @@ class TestJobWithApiKey:
         # GIVEN Redact Online with valid api key
         redact = RedactInstance.create(
             service=ServiceType.blur,
-            output_type=OutputType.images,
+            out_type=OutputType.images,
             redact_url=REDACT_ONLINE_URL,
             api_key=api_key,
         )
@@ -94,7 +94,7 @@ class TestRedactToolsWithSubscriptionKey:
             redact_file(
                 file_path=str(img_path),
                 redact_url=REDACT_ONLINE_URL,
-                output_type=OutputType.images,
+                out_type=OutputType.images,
                 service=ServiceType.blur,
                 api_key="INVALID_API_KEY",
             )
@@ -112,7 +112,7 @@ class TestRedactToolsWithSubscriptionKey:
             file_path=str(img_path),
             redact_url=REDACT_ONLINE_URL,
             api_key=api_key,
-            output_type=OutputType.images,
+            out_type=OutputType.images,
             service=ServiceType.blur,
             save_labels=False,
         )
@@ -130,7 +130,7 @@ class TestRedactToolsWithSubscriptionKey:
             output_dir=output_path,
             redact_url=REDACT_ONLINE_URL,
             input_type=InputType.images,
-            output_type=OutputType.images,
+            out_type=OutputType.images,
             service=ServiceType.blur,
             n_parallel_jobs=1,
             api_key="INVALID_API_KEY",
@@ -153,7 +153,7 @@ class TestRedactToolsWithSubscriptionKey:
             output_dir=output_path,
             redact_url=REDACT_ONLINE_URL,
             input_type=InputType.images,
-            output_type=OutputType.images,
+            out_type=OutputType.images,
             service=ServiceType.blur,
             n_parallel_jobs=1,
             api_key=api_key,

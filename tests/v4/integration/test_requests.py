@@ -36,7 +36,7 @@ def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType):
         redact_requests.post_job(
             file=some_image,
             service=service,
-            output_type=out_type,
+            out_type=out_type,
             job_args=job_args,
         )
 
@@ -64,7 +64,7 @@ def test_mock_server_gives_error_on_unexpected_argument(some_image):
             redact_requests.post_job(
                 file=some_image,
                 service=service,
-                output_type=out_type,
+                out_type=out_type,
                 job_args=posted_job_args,
             )
 
@@ -91,6 +91,6 @@ def test_mock_server_gives_error_on_unexpected_service(some_image):
             redact_requests.post_job(
                 file=some_image,
                 service=posted_service,
-                output_type=out_type,
+                out_type=out_type,
                 job_args=job_args,
             )

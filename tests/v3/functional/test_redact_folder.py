@@ -31,7 +31,7 @@ class TestRedactFolder:
             input_dir=images_path,
             output_dir=output_path,
             input_type=InputType.images,
-            output_type=OutputType.images,
+            out_type=OutputType.images,
             service=ServiceType.blur,
             save_labels=True,
             redact_url=redact_url,
@@ -71,11 +71,11 @@ class TestRedactFolder:
         redact_url,
         optional_api_key,
     ):
-        # GIVEN an input image, service, and output_type
+        # GIVEN an input image, service, and out_type
         # WHEN the the file is anonymized
         redact_file(
             file_path=video_path,
-            output_type=OutputType.overlays,
+            out_type=OutputType.overlays,
             service=ServiceType.blur,
             redact_url=redact_url,
             api_key=optional_api_key,

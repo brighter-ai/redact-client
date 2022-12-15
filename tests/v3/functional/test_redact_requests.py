@@ -9,7 +9,7 @@ class TestRedactRequests:
         # WHEN the image comes from disk
         # THEN it can be posted without error
         redact_requests.post_job(
-            file=some_image, service=ServiceType.blur, output_type=OutputType.images
+            file=some_image, service=ServiceType.blur, out_type=OutputType.images
         )
 
     def test_upload_from_memory(self, redact_requests, some_image):
@@ -19,5 +19,5 @@ class TestRedactRequests:
         img.name = "in-mem.jpg"  # pretend to be a FileIO
         # THEN it can be posted without error by providing a name manually
         redact_requests.post_job(
-            file=img, service=ServiceType.blur, output_type=OutputType.images
+            file=img, service=ServiceType.blur, out_type=OutputType.images
         )

@@ -19,7 +19,7 @@ from redact.v4 import (
 def redact_instance_vid(redact_url: str, optional_api_key) -> RedactInstance:
     return RedactInstance.create(
         service=ServiceType.blur,
-        output_type=OutputType.videos,
+        out_type=OutputType.videos,
         redact_url=redact_url,
         api_key=optional_api_key,
     )
@@ -90,7 +90,7 @@ class TestWarnings:
             input_dir=tmp_in_path,
             output_dir=tmp_out_path,
             input_type=InputType.videos,
-            output_type=OutputType.videos,
+            out_type=OutputType.videos,
             service=ServiceType.blur,
             job_args=JobArguments(face=False),
             redact_url=redact_url,

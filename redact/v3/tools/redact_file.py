@@ -24,7 +24,7 @@ log.debug(f"Settings: {settings}")
 
 def redact_file(
     file_path: str,
-    output_type: OutputType,
+    out_type: OutputType,
     service: ServiceType,
     job_args: Optional[JobArguments] = None,
     licence_plate_custom_stamp_path: Optional[str] = None,
@@ -47,7 +47,7 @@ def redact_file(
     # input and output path
     file_path = normalize_path(file_path)
     output_path = _get_out_path(
-        output_path=output_path, file_path=file_path, output_type=output_type
+        output_path=output_path, file_path=file_path, out_type=out_type
     )
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -80,12 +80,12 @@ def redact_file(
         redact: RedactInstance
         if redact_requests_param:
             redact = RedactInstance(
-                redact_requests_param, service=service, output_type=output_type
+                redact_requests_param, service=service, out_type=out_type
             )
         else:
             redact = RedactInstance.create(
                 service=service,
-                output_type=output_type,
+                out_type=out_type,
                 redact_url=redact_url,
                 api_key=api_key,
             )
@@ -139,14 +139,14 @@ def redact_file(
 
 
 def _get_out_path(
-    output_path: Union[str, Path], file_path: Path, output_type: OutputType
+    output_path: Union[str, Path], file_path: Path, out_type: OutputType
 ) -> Path:
     if output_path:
         return normalize_path(output_path)
     file_path = Path(file_path)
 
     file_extension = file_path.suffix
-    if output_type == OutputType.overlays and not is_image(file_path):
+    if out_type == OutputType.overlays and not is_image(file_path):
         file_extension = ".apng"
 
     anonymized_path = Path(file_path.parent).joinpath(

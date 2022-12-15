@@ -48,7 +48,7 @@ class TestRedactCommand:
         redact_file_mock.assert_called_once()
         redact_file_mock.assert_called_with(
             file_path=str(images_path),
-            output_type=OutputType.images,
+            out_type=OutputType.images,
             service=ServiceType.blur,
             job_args=JobArguments(),
             licence_plate_custom_stamp_path=None,
@@ -91,7 +91,7 @@ class TestRedactCommand:
             input_dir=str(images_path),
             output_dir=str(output_path),
             input_type=InputType.images,
-            output_type=OutputType.images,
+            out_type=OutputType.images,
             service=ServiceType.blur,
             job_args=JobArguments(),
             licence_plate_custom_stamp_path=None,
