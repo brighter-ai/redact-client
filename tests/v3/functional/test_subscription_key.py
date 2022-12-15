@@ -94,7 +94,7 @@ class TestRedactToolsWithSubscriptionKey:
             redact_file(
                 file_path=str(img_path),
                 redact_url=REDACT_ONLINE_URL,
-                out_type=OutputType.images,
+                output_type=OutputType.images,
                 service=ServiceType.blur,
                 api_key="INVALID_API_KEY",
             )
@@ -112,7 +112,7 @@ class TestRedactToolsWithSubscriptionKey:
             file_path=str(img_path),
             redact_url=REDACT_ONLINE_URL,
             api_key=api_key,
-            out_type=OutputType.images,
+            output_type=OutputType.images,
             service=ServiceType.blur,
             save_labels=False,
         )
@@ -130,7 +130,7 @@ class TestRedactToolsWithSubscriptionKey:
             output_dir=output_path,
             redact_url=REDACT_ONLINE_URL,
             input_type=InputType.images,
-            out_type=OutputType.images,
+            output_type=OutputType.images,
             service=ServiceType.blur,
             n_parallel_jobs=1,
             api_key="INVALID_API_KEY",
@@ -153,7 +153,7 @@ class TestRedactToolsWithSubscriptionKey:
             output_dir=output_path,
             redact_url=REDACT_ONLINE_URL,
             input_type=InputType.images,
-            out_type=OutputType.images,
+            output_type=OutputType.images,
             service=ServiceType.blur,
             n_parallel_jobs=1,
             api_key=api_key,
