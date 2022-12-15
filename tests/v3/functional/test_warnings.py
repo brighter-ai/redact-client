@@ -88,7 +88,7 @@ class TestWarnings:
             input_dir=tmp_in_path,
             output_dir=tmp_out_path,
             input_type=InputType.videos,
-            out_type=OutputType.videos,
+            output_type=OutputType.videos,
             service=ServiceType.blur,
             job_args=JobArguments(face=False),
             redact_url=redact_url,

@@ -31,7 +31,7 @@ class TestRedactFolder:
             input_dir=images_path,
             output_dir=output_path,
             input_type=InputType.images,
-            out_type=OutputType.images,
+            output_type=OutputType.images,
             service=ServiceType.blur,
             redact_url=redact_url,
             api_key=optional_api_key,
@@ -60,7 +60,7 @@ class TestRedactFolder:
         return str(file_path.parent.joinpath(f"{file_path.stem}{new_ext}"))
 
     @pytest.mark.parametrize(
-        "out_type,service,file_extension",
+        "output_type,service,file_extension",
         [
             [OutputType.labels, ServiceType.redact_area, ".json"],
             [OutputType.overlays, ServiceType.dnat, ".jpg"],
@@ -72,15 +72,15 @@ class TestRedactFolder:
         image_path: Path,
         redact_url,
         optional_api_key,
-        out_type: OutputType,
+        output_type: OutputType,
         service: ServiceType,
         file_extension: str,
     ):
-        # GIVEN an input image, service, and out_type
+        # GIVEN an input image, service, and output_type
         # WHEN the the file is anonymized
         redact_file(
             file_path=image_path,
-            out_type=out_type,
+            output_type=output_type,
             service=service,
             redact_url=redact_url,
             api_key=optional_api_key,
@@ -94,7 +94,7 @@ class TestRedactFolder:
         assert result_file.exists()
 
     @pytest.mark.parametrize(
-        "out_type,service,file_extension",
+        "output_type,service,file_extension",
         [
             [OutputType.labels, ServiceType.redact_area, ".json"],
             [OutputType.overlays, ServiceType.blur, ".apng"],
@@ -106,15 +106,15 @@ class TestRedactFolder:
         video_path: Path,
         redact_url,
         optional_api_key,
-        out_type: OutputType,
+        output_type: OutputType,
         service: ServiceType,
         file_extension: str,
     ):
-        # GIVEN an input image, service, and out_type
+        # GIVEN an input image, service, and output_type
         # WHEN the the file is anonymized
         redact_file(
             file_path=video_path,
-            out_type=out_type,
+            output_type=output_type,
             service=service,
             redact_url=redact_url,
             api_key=optional_api_key,
