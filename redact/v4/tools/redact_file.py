@@ -71,12 +71,12 @@ def redact_file(
         redact: RedactInstance
         if redact_requests_param:
             redact = RedactInstance(
-                redact_requests_param, service=service, output_type=output_type
+                redact_requests_param, service=service, out_type=output_type
             )
         else:
             redact = RedactInstance.create(
                 service=service,
-                output_type=output_type,
+                out_type=output_type,
                 redact_url=redact_url,
                 api_key=api_key,
             )

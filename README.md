@@ -4,14 +4,16 @@
 
 [![Unit + Integration Tests](https://github.com/brighter-ai/redact-client/actions/workflows/pytest.yml/badge.svg)](https://github.com/brighter-ai/redact-client/actions/workflows/pytest.yml) [![Python Linter](https://github.com/brighter-ai/redact-client/actions/workflows/flake8.yml/badge.svg)](https://github.com/brighter-ai/redact-client/actions/workflows/flake8.yml) [![Python Package Build](https://github.com/brighter-ai/redact-client/actions/workflows/build.yml/badge.svg)](https://github.com/brighter-ai/redact-client/actions/workflows/build.yml)
 
+- [Redact Python Client](#redact-python-client)
 - [Overview](#overview)
   - [Installation](#installation)
   - [Quickstart](#quickstart)
     - [Examples](#examples)
   - [Library Usage](#library-usage)
-    - [Batch Processing](#batch-file-processing)
+    - [(Batch) File Processing](#batch-file-processing)
     - [API Requests](#api-requests)
     - [Redact Jobs](#redact-jobs)
+    - [Advanced](#advanced)
 
 # Overview
 
@@ -94,7 +96,7 @@ In addition, the classes `RedactInstance` and `RedactJob` provide convenient hig
 ```python
 from redact import RedactInstance, ServiceType, OutputType
 
-redact = RedactInstance.create(service=ServiceType.blur, output_type=OutputType.images, redact_url='http://127.0.0.1:8787')
+redact = RedactInstance.create(service=ServiceType.blur, out_type=OutputType.images, redact_url='http://127.0.0.1:8787')
 with open('image.jpg', 'rb') as f:
     result = redact.start_job(file=f).wait_until_finished().download_result()
 ```
@@ -103,7 +105,7 @@ For using Redact Online you will need to provide a valid api_key:
 ```python
 from redact import RedactInstance, ServiceType, OutputType
 
-redact = RedactInstance.create(service=ServiceType.blur, output_type=OutputType.images, redact_url='https://api.brighter.ai/', api_key="VALID_API_KEY")
+redact = RedactInstance.create(service=ServiceType.blur, out_type=OutputType.images, redact_url='https://api.brighter.ai/', api_key="VALID_API_KEY")
 ```
 
 In case you use a different api version than the default, you have to import the corresponding classes from the version module instead from `redact`:
@@ -112,7 +114,7 @@ In case you use a different api version than the default, you have to import the
 from redact.v4 import RedactInstance, ServiceType, OutputType
 ```
 
-#### Advanced
+### Advanced
 
 The anonymization can be further configured by adding additional `JobArguments` to `start_job()`
 
@@ -121,7 +123,7 @@ from redact import JobArguments, OutputType, RedactInstance, Region, ServiceType
 
 redact = RedactInstance.create(
     service=ServiceType.blur,
-    output_type=OutputType.images,
+    out_type=OutputType.images,
     redact_url="http://127.0.0.1:8787",
 )
 job_args = JobArguments(

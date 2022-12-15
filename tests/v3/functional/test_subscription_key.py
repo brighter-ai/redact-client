@@ -20,7 +20,7 @@ class TestRequestsWithApiKey:
         # WHEN a request with invalid api_key is sent
         with pytest.raises(RedactResponseError) as exception_info:
             redact.post_job(
-                file=some_image, service=ServiceType.blur, output_type=OutputType.images
+                file=some_image, service=ServiceType.blur, out_type=OutputType.images
             )
 
         # THEN the response is 401
@@ -34,7 +34,7 @@ class TestRequestsWithApiKey:
         # WHEN a request with valid api_key is sent
         # THEN no exception is thrown
         redact.post_job(
-            file=some_image, service=ServiceType.blur, output_type=OutputType.images
+            file=some_image, service=ServiceType.blur, out_type=OutputType.images
         )
 
 
@@ -45,7 +45,7 @@ class TestJobWithApiKey:
         # GIVEN Redact Online with invalid api key
         redact = RedactInstance.create(
             service=ServiceType.blur,
-            output_type=OutputType.images,
+            out_type=OutputType.images,
             redact_url=REDACT_ONLINE_URL,
             api_key="INVALID_API_KEY",
         )
@@ -67,7 +67,7 @@ class TestJobWithApiKey:
         # GIVEN Redact Online with valid api key
         redact = RedactInstance.create(
             service=ServiceType.blur,
-            output_type=OutputType.images,
+            out_type=OutputType.images,
             redact_url=REDACT_ONLINE_URL,
             api_key=api_key,
         )

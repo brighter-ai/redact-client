@@ -11,7 +11,7 @@ def main():
     # anonymize image
     redact = RedactInstance.create(
         service=ServiceType.blur,
-        output_type=OutputType.images,
+        out_type=OutputType.images,
         redact_url="http://127.0.0.1:8787",
     )
     job_args = JobArguments(region=Region.united_states_of_america)

@@ -19,7 +19,7 @@ from redact.v3 import (
 def redact_instance_vid(redact_url: str, optional_api_key) -> RedactInstance:
     return RedactInstance.create(
         service=ServiceType.blur,
-        output_type=OutputType.videos,
+        out_type=OutputType.videos,
         redact_url=redact_url,
         api_key=optional_api_key,
     )

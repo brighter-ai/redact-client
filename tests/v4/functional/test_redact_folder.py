@@ -80,7 +80,7 @@ class TestRedactFolder:
         # WHEN the the file is anonymized
         redact_file(
             file_path=image_path,
-            out_type=output_type,
+            output_type=output_type,
             service=service,
             redact_url=redact_url,
             api_key=optional_api_key,
@@ -114,7 +114,7 @@ class TestRedactFolder:
         # WHEN the the file is anonymized
         redact_file(
             file_path=video_path,
-            out_type=output_type,
+            output_type=output_type,
             service=service,
             redact_url=redact_url,
             api_key=optional_api_key,

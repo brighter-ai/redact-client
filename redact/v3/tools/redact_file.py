@@ -80,12 +80,12 @@ def redact_file(
         redact: RedactInstance
         if redact_requests_param:
             redact = RedactInstance(
-                redact_requests_param, service=service, output_type=output_type
+                redact_requests_param, service=service, out_type=output_type
             )
         else:
             redact = RedactInstance.create(
                 service=service,
-                output_type=output_type,
+                out_type=output_type,
                 redact_url=redact_url,
                 api_key=api_key,
             )
@@ -156,4 +156,4 @@ def _get_out_path(
 
 
 def _get_labels_path(output_path: Path) -> Path:
-    return output_path.parent.joinpath(output_path.stem + ".json")
+    return output_path.parent.joinpath(f"{output_path.stem}.json")

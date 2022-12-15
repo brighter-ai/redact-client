@@ -25,7 +25,7 @@ class RedactJob:
         self,
         redact_requests: RedactRequests,
         service: ServiceType,
-        output_type: OutputType,
+        out_type: OutputType,
         output_id: UUID,
     ):
         """
@@ -33,19 +33,19 @@ class RedactJob:
         """
         self.redact = redact_requests
         self.service = service
-        self.output_type = output_type
+        self.out_type = out_type
         self.output_id: UUID = output_id
 
     def get_status(self) -> JobStatus:
         response_dict = self.redact.get_status(
-            service=self.service, output_type=self.output_type, output_id=self.output_id
+            service=self.service, out_type=self.out_type, output_id=self.output_id
         )
         return JobStatus(**response_dict)
 
     def get_labels(self, timeout: float = 60.0) -> JobLabels:
         return self.redact.get_labels(
             service=self.service,
-            output_type=self.output_type,
+            out_type=self.out_type,
             output_id=self.output_id,
             timeout=timeout,
         )
@@ -53,7 +53,7 @@ class RedactJob:
     def download_result(self, ignore_warnings: bool = False) -> JobResult:
         return self.redact.get_output(
             service=self.service,
-            output_type=self.output_type,
+            out_type=self.out_type,
             output_id=self.output_id,
             ignore_warnings=ignore_warnings,
         )
@@ -61,7 +61,7 @@ class RedactJob:
     def download_result_to_file(self, file: Path, ignore_warnings: bool = False):
         self.redact.write_output_to_file(
             service=self.service,
-            output_type=self.output_type,
+            out_type=self.out_type,
             output_id=self.output_id,
             file=file,
             ignore_warnings=ignore_warnings,
@@ -69,13 +69,13 @@ class RedactJob:
 
     def delete(self):
         return self.redact.delete_output(
-            service=self.service, output_type=self.output_type, output_id=self.output_id
+            service=self.service, out_type=self.out_type, output_id=self.output_id
         )
 
     def get_error(self):
         # TODO: Write test for this endpoint
         return self.redact.get_error(
-            service=self.service, output_type=self.output_type, output_id=self.output_id
+            service=self.service, out_type=self.out_type, output_id=self.output_id
         )
 
     def wait_until_finished(self, sleep: float = 0.5) -> "RedactJob":
