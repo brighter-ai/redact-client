@@ -65,7 +65,7 @@ class TestRedactFolder:
         file_path = Path(file_path)
         return str(file_path.parent.joinpath(f"{file_path.stem}{new_ext}"))
 
-    def test_video_correct_file_ending_for_overlays(
+    def test_redact_file_video_correct_file_ending_for_overlays(
         self,
         video_path: Path,
         redact_url,
@@ -88,3 +88,29 @@ class TestRedactFolder:
 
         result_file = file_folder / f"{video_path.stem}_redacted.apng"
         assert result_file.exists()
+
+    def test_redact_folder_video_correct_file_ending_for_overlays(
+        self, video_path: Path, redact_url, optional_api_key, tmp_path_factory
+    ):
+        # GIVEN an input dir (with videos) and an output dir
+        videos_path = video_path.parent
+        output_path = tmp_path_factory.mktemp("vid_dir_out")
+
+        redact_folder(
+            input_dir=videos_path,
+            output_dir=output_path,
+            input_type=InputType.videos,
+            output_type=OutputType.overlays,
+            service=ServiceType.blur,
+            redact_url=redact_url,
+            api_key=optional_api_key,
+            n_parallel_jobs=1,
+            ignore_warnings=True,
+        )
+
+        # THEN all input images are anonymized in the output dir
+        files_in_out_dir = [
+            p.relative_to(output_path) for p in output_path.rglob("*.*")
+        ]
+        for file in files_in_out_dir:
+            assert file.suffix == ".apng"

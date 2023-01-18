@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Optional, Union
 
 from redact.settings import Settings
-from redact.commons.utils import is_image, normalize_path
+from redact.commons.utils import normalize_path
 from redact.v4 import (
     JobArguments,
     JobState,
@@ -14,6 +14,8 @@ from redact.v4 import (
     RedactRequests,
     ServiceType,
 )
+from redact.v4.tools.utils import get_file_extension
+
 
 log = logging.getLogger()
 
@@ -129,12 +131,9 @@ def _get_out_path(
         return normalize_path(output_path)
     file_path = Path(file_path)
 
-    file_extension = file_path.suffix
-    if output_type == OutputType.labels:
-        file_extension = ".json"
-    elif output_type == OutputType.overlays and not is_image(file_path):
-        file_extension = ".apng"
-
+    file_extension = get_file_extension(
+        input_file_path=file_path, output_type=output_type
+    )
     anonymized_path = Path(file_path.parent).joinpath(
         f"{file_path.stem}_redacted{file_extension}"
     )

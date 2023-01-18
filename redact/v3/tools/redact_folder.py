@@ -11,6 +11,7 @@ from tqdm.contrib.logging import logging_redirect_tqdm
 from redact.errors import RedactConnectError, RedactResponseError
 from redact.settings import Settings
 from redact.v3.tools.redact_file import redact_file
+from redact.v3.tools.utils import get_file_extension
 from redact.commons.summary import JobsSummary, summary
 from redact.commons.utils import (
     files_in_dir,
@@ -166,7 +167,13 @@ def _redact_file_with_relative_path(
 ) -> Optional[JobStatus]:
     """This is an internal helper function."""
     in_path = Path(base_dir_in).joinpath(relative_file_path)
+
+    file_extension = get_file_extension(
+        input_file_path=in_path, output_type=kwargs["output_type"]
+    )
+
     out_path = Path(base_dir_out).joinpath(relative_file_path)
+    out_path = Path(out_path.parent).joinpath(f"{out_path.stem}{file_extension}")
     return redact_file(
         file_path=in_path,
         output_path=out_path,
