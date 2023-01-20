@@ -1,7 +1,15 @@
 import pytest
 
 from redact.settings import Settings
-from redact.v4 import OutputType, RedactInstance, RedactJob, RedactRequests, ServiceType
+from redact.v4 import (
+    JobArguments,
+    OutputType,
+    RedactInstance,
+    RedactJob,
+    RedactRequests,
+    Region,
+    ServiceType,
+)
 
 settings = Settings()
 
@@ -27,4 +35,6 @@ def any_img_redact_inst(redact_url, optional_api_key, request) -> RedactInstance
 
 @pytest.fixture
 def job(any_img_redact_inst, some_image) -> RedactJob:
-    return any_img_redact_inst.start_job(file=some_image)
+    return any_img_redact_inst.start_job(
+        file=some_image, job_args=JobArguments(region=Region.germany)
+    )
