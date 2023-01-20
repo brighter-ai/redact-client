@@ -1,7 +1,5 @@
 from io import BytesIO
 
-import pytest
-
 from redact.v4 import JobArguments, OutputType, Region, ServiceType
 
 

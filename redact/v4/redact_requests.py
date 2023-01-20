@@ -126,7 +126,7 @@ class RedactRequests:
             return JobPostResponse(**response.json())
 
     def _retrieve_file_name(self, headers: Dict[str, str]):
-        return re.findall("filename=(\S+)", headers["content-disposition"])[0].replace(
+        return re.findall(r"filename=(\S+)", headers["content-disposition"])[0].replace(
             '"', ""
         )
 
