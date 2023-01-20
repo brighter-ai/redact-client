@@ -38,9 +38,9 @@ def test_files_in_dir(images_path: Path):
     relative_paths = [str(Path(p).relative_to(images_path)) for p in full_paths]
     # THEN all images and their subfolders are in the list
     assert relative_paths == [
-        "sub_dir/img_0.jpg",
-        "sub_dir/img_1.jpg",
-        "sub_dir/img_2.jpg",
+        "sub_dir/img_0.png",
+        "sub_dir/img_1.png",
+        "sub_dir/img_2.png",
     ]
 
 
@@ -51,7 +51,7 @@ def test_images_in_dir(images_path: Path):
     relative_paths = [str(Path(p).relative_to(images_path)) for p in full_paths]
     # THEN all images and their subfolders are in the list
     assert relative_paths == [
-        "sub_dir/img_0.jpg",
-        "sub_dir/img_1.jpg",
-        "sub_dir/img_2.jpg",
+        "sub_dir/img_0.png",
+        "sub_dir/img_1.png",
+        "sub_dir/img_2.png",
     ]

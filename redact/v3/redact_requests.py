@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 import tempfile
 import threading
 import time
@@ -136,6 +137,9 @@ class RedactRequests:
 
             return JobPostResponse(**response.json())
 
+    def _retrieve_file_name(self, headers: Dict[str, str]):
+        return re.findall("filename=(\S+)", headers["content-disposition"])[0]
+
     def get_output(
         self,
         service: ServiceType,
@@ -168,7 +172,9 @@ class RedactRequests:
             )
 
         return JobResult(
-            content=response.content, media_type=response.headers["Content-Type"]
+            content=response.content,
+            media_type=response.headers["Content-Type"],
+            file_name=self._retrieve_file_name(headers=response.headers),
         )
 
     def _stream_output_to_file(
@@ -194,7 +200,11 @@ class RedactRequests:
                 finished = True
             finally:
                 if finished:
-                    os.rename(temp_file.name, str(file))
+                    file_name = Path(self._retrieve_file_name(headers=response.headers))
+                    anonymized_path = Path(file.parent).joinpath(
+                        f"{file.stem}{file_name.suffix}"
+                    )
+                    os.rename(temp_file.name, str(anonymized_path))
                 else:
                     os.unlink(temp_file.name)
 

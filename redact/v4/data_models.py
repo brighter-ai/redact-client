@@ -56,6 +56,7 @@ class JobPostResponse(BaseModel):
 class JobResult(BaseModel):
     content: bytes
     media_type: str
+    file_name: str
 
 
 class JobState(str, Enum):

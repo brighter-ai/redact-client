@@ -15,7 +15,6 @@ from redact.v3 import (
     RedactRequests,
     ServiceType,
 )
-from redact.v3.tools.utils import get_file_extension
 
 
 log = logging.getLogger()
@@ -146,9 +145,8 @@ def _get_out_path(
     if output_path:
         return normalize_path(output_path)
     file_path = Path(file_path)
-    file_extension = get_file_extension(input_file_path=file_path, output_type=OutputType)
     anonymized_path = Path(file_path.parent).joinpath(
-        f"{file_path.stem}_redacted{file_extension}"
+        f"{file_path.stem}_redacted{file_path.suffix}"
     )
     return normalize_path(anonymized_path)
 
