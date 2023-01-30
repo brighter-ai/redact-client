@@ -1,4 +1,7 @@
+import re
 import urllib.parse
+
+from typing import Dict
 
 
 def normalize_url(url: str):
@@ -9,3 +12,9 @@ def normalize_url(url: str):
             raise ValueError()
         return new_url
     return url
+
+
+def retrieve_file_name(headers: Dict[str, str]) -> str:
+    return re.findall(r"filename=(\S+)", headers["content-disposition"])[0].replace(
+        '"', ""
+    )

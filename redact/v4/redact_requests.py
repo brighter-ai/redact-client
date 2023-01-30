@@ -1,6 +1,5 @@
 import logging
 import os
-import re
 import tempfile
 import threading
 import time
@@ -16,7 +15,7 @@ import httpx
 from redact.api_versions import REDACT_API_VERSIONS
 from redact.errors import RedactConnectError, RedactResponseError
 from redact.settings import Settings
-from redact.utils import normalize_url
+from redact.utils import normalize_url, retrieve_file_name
 from redact.v4.data_models import (
     JobArguments,
     JobPostResponse,
@@ -125,11 +124,6 @@ class RedactRequests:
 
             return JobPostResponse(**response.json())
 
-    def _retrieve_file_name(self, headers: Dict[str, str]):
-        return re.findall(r"filename=(\S+)", headers["content-disposition"])[0].replace(
-            '"', ""
-        )
-
     def get_output(
         self,
         service: ServiceType,
@@ -164,7 +158,7 @@ class RedactRequests:
         return JobResult(
             content=response.content,
             media_type=response.headers["Content-Type"],
-            file_name=self._retrieve_file_name(headers=response.headers),
+            file_name=retrieve_file_name(headers=response.headers),
         )
 
     def _stream_output_to_file(
@@ -190,7 +184,7 @@ class RedactRequests:
                 finished = True
             finally:
                 if finished:
-                    file_name = Path(self._retrieve_file_name(headers=response.headers))
+                    file_name = Path(retrieve_file_name(headers=response.headers))
                     anonymized_path = Path(file.parent).joinpath(
                         f"{file.stem}{file_name.suffix}"
                     )
