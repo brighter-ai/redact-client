@@ -15,7 +15,7 @@ import httpx
 from redact.api_versions import REDACT_API_VERSIONS
 from redact.errors import RedactConnectError, RedactResponseError
 from redact.settings import Settings
-from redact.utils import normalize_url
+from redact.utils import normalize_url, retrieve_file_name
 from redact.v3.data_models import (
     JobArguments,
     JobLabels,
@@ -168,7 +168,9 @@ class RedactRequests:
             )
 
         return JobResult(
-            content=response.content, media_type=response.headers["Content-Type"]
+            content=response.content,
+            media_type=response.headers["Content-Type"],
+            file_name=retrieve_file_name(headers=response.headers),
         )
 
     def _stream_output_to_file(
@@ -194,7 +196,11 @@ class RedactRequests:
                 finished = True
             finally:
                 if finished:
-                    os.rename(temp_file.name, str(file))
+                    file_name = Path(retrieve_file_name(headers=response.headers))
+                    anonymized_path = Path(file.parent).joinpath(
+                        f"{file.stem}{file_name.suffix}"
+                    )
+                    os.rename(temp_file.name, str(anonymized_path))
                 else:
                     os.unlink(temp_file.name)
 

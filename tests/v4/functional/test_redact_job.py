@@ -5,11 +5,10 @@ import pytest
 from PIL import Image
 
 from redact.errors import RedactResponseError
-from redact.v4 import JobState, RedactInstance
+from redact.v4 import JobArguments, JobState, RedactInstance, Region
 
 
 @pytest.mark.timeout(30)
-@pytest.mark.skip("unitl v4 is online")
 class TestRedactJob:
     def test_wait_for_status_completed(self, job):
         # GIVEN an Redact job
@@ -30,7 +29,9 @@ class TestRedactJob:
     ):
 
         # GIVEN an image and the corresponding Redact job
-        job = any_img_redact_inst.start_job(some_image)
+        job = any_img_redact_inst.start_job(
+            some_image, job_args=JobArguments(region=Region.germany)
+        )
 
         # WHEN the job is finished and the result downloaded
         job_result = job.wait_until_finished().download_result(

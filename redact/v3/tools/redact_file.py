@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Optional, Union
 
 from redact.settings import Settings
-from redact.commons.utils import is_image, normalize_path
+from redact.commons.utils import normalize_path
 from redact.v3 import (
     JobArguments,
     JobLabels,
@@ -15,6 +15,7 @@ from redact.v3 import (
     RedactRequests,
     ServiceType,
 )
+
 
 log = logging.getLogger()
 
@@ -144,13 +145,8 @@ def _get_out_path(
     if output_path:
         return normalize_path(output_path)
     file_path = Path(file_path)
-
-    file_extension = file_path.suffix
-    if output_type == OutputType.overlays and not is_image(file_path):
-        file_extension = ".apng"
-
     anonymized_path = Path(file_path.parent).joinpath(
-        f"{file_path.stem}_redacted{file_extension}"
+        f"{file_path.stem}_redacted{file_path.suffix}"
     )
     return normalize_path(anonymized_path)
 

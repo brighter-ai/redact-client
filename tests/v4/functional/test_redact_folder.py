@@ -6,7 +6,7 @@ import pytest
 
 from redact.v4.tools.redact_file import redact_file
 from redact.v4.tools.redact_folder import redact_folder
-from redact.v4 import InputType, OutputType, ServiceType
+from redact.v4 import InputType, JobArguments, OutputType, Region, ServiceType
 from tests.conftest import NUMBER_OF_IMAGES
 
 
@@ -33,6 +33,7 @@ class TestRedactFolder:
             input_type=InputType.images,
             output_type=OutputType.images,
             service=ServiceType.blur,
+            job_args=JobArguments(region=Region.germany),
             redact_url=redact_url,
             api_key=optional_api_key,
             n_parallel_jobs=n_parallel_jobs,
@@ -45,6 +46,7 @@ class TestRedactFolder:
         files_in_out_dir = [
             str(p.relative_to(output_path)) for p in output_path.rglob("*.*")
         ]
+        print(output_path)
         for file in files_in_in_dir:
             assert file in files_in_out_dir
 
@@ -63,10 +65,9 @@ class TestRedactFolder:
         "output_type,service,file_extension",
         [
             [OutputType.labels, ServiceType.redact_area, ".json"],
-            [OutputType.overlays, ServiceType.dnat, ".jpg"],
+            [OutputType.overlays, ServiceType.dnat, ".apng"],
         ],
     )
-    @pytest.mark.skip("until v4 is online")
     def test_image_correct_file_ending(
         self,
         image_path: Path,
@@ -84,6 +85,7 @@ class TestRedactFolder:
             service=service,
             redact_url=redact_url,
             api_key=optional_api_key,
+            job_args=JobArguments(region=Region.germany),
         )
 
         # THEN the output file has the correct file ending
@@ -100,7 +102,6 @@ class TestRedactFolder:
             [OutputType.overlays, ServiceType.blur, ".apng"],
         ],
     )
-    @pytest.mark.skip("until v4 is online")
     def test_video_correct_file_ending(
         self,
         video_path: Path,
@@ -119,6 +120,7 @@ class TestRedactFolder:
             redact_url=redact_url,
             api_key=optional_api_key,
             ignore_warnings=True,
+            job_args=JobArguments(region=Region.germany),
         )
 
         # THEN the output file has the correct file ending
@@ -127,3 +129,44 @@ class TestRedactFolder:
 
         result_file = file_folder / f"{video_path.stem}_redacted{file_extension}"
         assert result_file.exists()
+
+    @pytest.mark.parametrize(
+        "output_type,service,file_extension",
+        [
+            [OutputType.labels, ServiceType.redact_area, ".json"],
+            [OutputType.overlays, ServiceType.blur, ".apng"],
+        ],
+    )
+    def test_redact_folder_video_correct_file_ending_for_overlays(
+        self,
+        video_path: Path,
+        redact_url,
+        optional_api_key,
+        output_type: OutputType,
+        service: ServiceType,
+        file_extension: str,
+        tmp_path_factory,
+    ):
+        # GIVEN an input dir (with videos) and an output dir
+        videos_path = video_path.parent
+        output_path = tmp_path_factory.mktemp("vid_dir_out")
+
+        redact_folder(
+            input_dir=videos_path,
+            output_dir=output_path,
+            input_type=InputType.videos,
+            output_type=output_type,
+            service=service,
+            job_args=JobArguments(region=Region.germany),
+            redact_url=redact_url,
+            api_key=optional_api_key,
+            n_parallel_jobs=1,
+            ignore_warnings=True,
+        )
+
+        # THEN all input images are anonymized in the output dir
+        files_in_out_dir = [
+            p.relative_to(output_path) for p in output_path.rglob("*.*")
+        ]
+        for file in files_in_out_dir:
+            assert file.suffix == file_extension

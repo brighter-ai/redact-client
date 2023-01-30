@@ -4,14 +4,21 @@ from redact.errors import RedactResponseError
 from redact.settings import Settings
 from redact.v4.tools.redact_file import redact_file
 from redact.v4.tools.redact_folder import redact_folder
-from redact.v4 import InputType, OutputType, RedactInstance, RedactRequests, ServiceType
+from redact.v4 import (
+    InputType,
+    OutputType,
+    RedactInstance,
+    RedactRequests,
+    ServiceType,
+    JobArguments,
+    Region,
+)
 
 settings = Settings()
 REDACT_ONLINE_URL = settings.redact_online_url
 
 
 @pytest.mark.timeout(60)
-@pytest.mark.skip("until v4 is online")
 class TestRequestsWithApiKey:
     def test_post_with_invalid_key_fails(self, some_image):
 
@@ -21,7 +28,10 @@ class TestRequestsWithApiKey:
         # WHEN a request with invalid api_key is sent
         with pytest.raises(RedactResponseError) as exception_info:
             redact.post_job(
-                file=some_image, service=ServiceType.blur, out_type=OutputType.images
+                file=some_image,
+                service=ServiceType.blur,
+                out_type=OutputType.images,
+                job_args=JobArguments(region=Region.germany),
             )
 
         # THEN the response is 401
@@ -35,7 +45,10 @@ class TestRequestsWithApiKey:
         # WHEN a request with valid api_key is sent
         # THEN no exception is thrown
         redact.post_job(
-            file=some_image, service=ServiceType.blur, out_type=OutputType.images
+            file=some_image,
+            service=ServiceType.blur,
+            out_type=OutputType.images,
+            job_args=JobArguments(region=Region.germany),
         )
 
 
@@ -53,7 +66,9 @@ class TestJobWithApiKey:
 
         # WHEN a job is performed
         with pytest.raises(RedactResponseError) as exception_info:
-            job = redact.start_job(file=some_image)
+            job = redact.start_job(
+                file=some_image, job_args=JobArguments(region=Region.germany)
+            )
             job.wait_until_finished()
             job.download_result()
             job.get_status()
@@ -62,7 +77,6 @@ class TestJobWithApiKey:
         # THEN the response is 401
         assert exception_info.value.response.status_code == 401
 
-    @pytest.mark.skip("until v4 is online")
     def test_job_with_valid_api_key(self, some_image, api_key):
 
         # GIVEN Redact Online with valid api key
@@ -75,7 +89,9 @@ class TestJobWithApiKey:
 
         # WHEN a job is performed
         # THEN it succeeds without error
-        job = redact.start_job(file=some_image)
+        job = redact.start_job(
+            file=some_image, job_args=JobArguments(region=Region.germany)
+        )
         job.wait_until_finished()
         job.download_result()
         job.get_status()
@@ -87,7 +103,7 @@ class TestRedactToolsWithSubscriptionKey:
     def test_redact_file_with_invalid_api_key_fails(self, images_path):
 
         # GIVEN an image
-        img_path = images_path.joinpath("sub_dir/img_0.jpg")
+        img_path = images_path.joinpath("sub_dir/img_0.png")
 
         # WHEN the image is anonymized through Redact Online with invalid api key
         with pytest.raises(RedactResponseError) as exception_info:
@@ -96,6 +112,7 @@ class TestRedactToolsWithSubscriptionKey:
                 redact_url=REDACT_ONLINE_URL,
                 output_type=OutputType.images,
                 service=ServiceType.blur,
+                job_args=JobArguments(region=Region.germany),
                 api_key="INVALID_API_KEY",
             )
 
@@ -104,7 +121,7 @@ class TestRedactToolsWithSubscriptionKey:
 
     def test_redact_file_with_valid_api_key(self, images_path, api_key):
         # GIVEN an image
-        img_path = images_path.joinpath("sub_dir/img_0.jpg")
+        img_path = images_path.joinpath("sub_dir/img_0.png")
 
         # WHEN the image is anonymized through Redact Online with valid api key
         # THEN no error is thrown
@@ -114,6 +131,7 @@ class TestRedactToolsWithSubscriptionKey:
             api_key=api_key,
             output_type=OutputType.images,
             service=ServiceType.blur,
+            job_args=JobArguments(region=Region.germany),
         )
 
     def test_redact_folder_with_invalid_api_key_fails(
@@ -131,6 +149,7 @@ class TestRedactToolsWithSubscriptionKey:
             input_type=InputType.images,
             output_type=OutputType.images,
             service=ServiceType.blur,
+            job_args=JobArguments(region=Region.germany),
             n_parallel_jobs=1,
             api_key="INVALID_API_KEY",
         )
@@ -153,6 +172,7 @@ class TestRedactToolsWithSubscriptionKey:
             input_type=InputType.images,
             output_type=OutputType.images,
             service=ServiceType.blur,
+            job_args=JobArguments(region=Region.germany),
             n_parallel_jobs=1,
             api_key=api_key,
         )

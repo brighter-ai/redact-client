@@ -11,6 +11,7 @@ from redact.v4 import (
     OutputType,
     RedactInstance,
     RedactJob,
+    Region,
     ServiceType,
 )
 
@@ -35,12 +36,13 @@ def job_wo_keyframe(
     redact_instance_vid: RedactInstance, video_with_warning_path
 ) -> RedactJob:
     with open(str(video_with_warning_path), "rb") as f:
-        job = redact_instance_vid.start_job(file=f)
+        job = redact_instance_vid.start_job(
+            file=f, job_args=JobArguments(region=Region.germany)
+        )
     job.wait_until_finished()
     return job
 
 
-@pytest.mark.skip("unitl v4 is online")
 class TestWarnings:
     def test_video_with_missing_key_frame_contains_warning(
         self, job_wo_keyframe: RedactJob
@@ -70,7 +72,6 @@ class TestWarnings:
         job_wo_keyframe.download_result(ignore_warnings=True)
 
     @pytest.mark.parametrize(argnames="ignore_warnings", argvalues=[None, False, True])
-    @pytest.mark.skip("until v4 is online")
     def test_redact_folder_with_ignore_warnings(
         self,
         redact_url: str,
@@ -92,7 +93,7 @@ class TestWarnings:
             input_type=InputType.videos,
             output_type=OutputType.videos,
             service=ServiceType.blur,
-            job_args=JobArguments(face=False),
+            job_args=JobArguments(face=False, region=Region.germany),
             redact_url=redact_url,
             api_key=optional_api_key,
             ignore_warnings=ignore_warnings,
