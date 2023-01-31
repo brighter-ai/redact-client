@@ -48,12 +48,13 @@ Usage: redact_file v4 --file-path [FILE_PATH] --output-type [OUTPUT_TYPE] --serv
 Usage: redact_folder v4 --input-dir [INPUT_DIR] --output-dir [OUTPUT_DIR] --input-type [INPUT_TYPE] --output-type [OUTPUT_TYPE] --service [SERVICE]
 ```
 
-Add `--help` to see additional options.
+Add `--help` to see additional options. 
 ```shell
 Usage: 
     redact_file v4 --help
     redact_folder v4 --help
 ```
+For extended logs you can use for example `--verbose-logging`.
 
 ### Examples
 
@@ -64,7 +65,7 @@ redact_file v4 --file-path image.jpg --output-type images --service blur --redac
 ```
 
 Per default, the result will be stored in `image_redacted.jpg` if the OUTPUT_DIR
-is the same as INPUT_DIR, and the original file name is used if OUTPUT_DIR != INPUT_DIR.
+is the same as INPUT_DIR, and the original file name is used if OUTPUT_DIR != INPUT_DIR. There will be no new request processed if an corresponding result file already exists!
 
 Larger amounts of data (images in this case) can be
 anonymized in batches:
