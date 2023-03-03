@@ -4,7 +4,6 @@ from pathlib import Path
 import pytest
 
 from redact.errors import RedactResponseError
-from redact.v3.tools.redact_folder import redact_folder
 from redact.v3 import (
     InputType,
     JobArguments,
@@ -13,6 +12,7 @@ from redact.v3 import (
     RedactJob,
     ServiceType,
 )
+from redact.v3.tools.redact_folder import redact_folder
 
 
 @pytest.fixture(scope="session")
@@ -44,7 +44,6 @@ class TestWarnings:
     def test_video_with_missing_key_frame_contains_warning(
         self, job_wo_keyframe: RedactJob
     ):
-
         # GIVEN a finished job without keyframe
         # WHEN its status is downloaded
         status = job_wo_keyframe.get_status()
@@ -53,7 +52,6 @@ class TestWarnings:
         assert status.warnings
 
     def test_download_of_job_with_warnings_is_blocked(self, job_wo_keyframe: RedactJob):
-
         # GIVEN a finished job without keyframe
         # WHEN the result is downloaded
         with pytest.raises(RedactResponseError) as e:
@@ -77,7 +75,6 @@ class TestWarnings:
         tmp_path_factory,
         optional_api_key,
     ):
-
         # GIVEN a folder with a video that produces warnings
         tmp_in_path = tmp_path_factory.mktemp("tmp_in")
         shutil.copy2(src=str(video_with_warning_path), dst=str(tmp_in_path))

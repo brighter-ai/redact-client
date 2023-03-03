@@ -1,11 +1,9 @@
 import glob
 import logging
-
 from pathlib import Path
 from typing import List, Union
 
 from redact.settings import Settings
-
 
 ARCHIVE_EXTENSIONS = ["tar"]
 IMG_EXTENSIONS = ["jpeg", "jpg", "bmp", "png"]

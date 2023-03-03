@@ -2,17 +2,17 @@ import pytest
 
 from redact.errors import RedactResponseError
 from redact.settings import Settings
-from redact.v4.tools.redact_file import redact_file
-from redact.v4.tools.redact_folder import redact_folder
 from redact.v4 import (
     InputType,
+    JobArguments,
     OutputType,
     RedactInstance,
     RedactRequests,
-    ServiceType,
-    JobArguments,
     Region,
+    ServiceType,
 )
+from redact.v4.tools.redact_file import redact_file
+from redact.v4.tools.redact_folder import redact_folder
 
 settings = Settings()
 REDACT_ONLINE_URL = settings.redact_online_url
@@ -21,7 +21,6 @@ REDACT_ONLINE_URL = settings.redact_online_url
 @pytest.mark.timeout(60)
 class TestRequestsWithApiKey:
     def test_post_with_invalid_key_fails(self, some_image):
-
         # GIVEN Redact Online
         redact = RedactRequests(redact_url=REDACT_ONLINE_URL, api_key="INVALID_API_KEY")
 
@@ -38,7 +37,6 @@ class TestRequestsWithApiKey:
         assert exception_info.value.response.status_code == 401
 
     def test_post_valid_key(self, some_image, api_key):
-
         # GIVEN Redact Online
         redact = RedactRequests(redact_url=REDACT_ONLINE_URL, api_key=api_key)
 
@@ -55,7 +53,6 @@ class TestRequestsWithApiKey:
 @pytest.mark.timeout(60)
 class TestJobWithApiKey:
     def test_job_with_invalid_api_key_fails(self, some_image):
-
         # GIVEN Redact Online with invalid api key
         redact = RedactInstance.create(
             service=ServiceType.blur,
@@ -78,7 +75,6 @@ class TestJobWithApiKey:
         assert exception_info.value.response.status_code == 401
 
     def test_job_with_valid_api_key(self, some_image, api_key):
-
         # GIVEN Redact Online with valid api key
         redact = RedactInstance.create(
             service=ServiceType.blur,
@@ -101,7 +97,6 @@ class TestJobWithApiKey:
 @pytest.mark.timeout(90)
 class TestRedactToolsWithSubscriptionKey:
     def test_redact_file_with_invalid_api_key_fails(self, images_path):
-
         # GIVEN an image
         img_path = images_path.joinpath("sub_dir/img_0.png")
 
@@ -137,7 +132,6 @@ class TestRedactToolsWithSubscriptionKey:
     def test_redact_folder_with_invalid_api_key_fails(
         self, images_path, tmp_path_factory, caplog
     ):
-
         # GIVEN an input dir (with images) and an output dir
         output_path = tmp_path_factory.mktemp("imgs_dir_out")
 
@@ -160,7 +154,6 @@ class TestRedactToolsWithSubscriptionKey:
     def test_redact_folder_with_valid_api_key(
         self, images_path, api_key, tmp_path_factory
     ):
-
         # GIVEN an input dir (with images) and an output dir
         output_path = tmp_path_factory.mktemp("imgs_dir_out")
 

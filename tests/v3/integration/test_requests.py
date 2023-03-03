@@ -10,7 +10,6 @@ from tests.v3.integration.mock_server import mock_redact_server
     argnames="service", argvalues=[ServiceType.blur, ServiceType.dnat]
 )
 def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType):
-
     # GIVEN a (mocked) Redact server and a job to send there
     out_type = OutputType.archives
     job_args = JobArguments(
@@ -31,7 +30,6 @@ def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType):
             "custom_labels": b'{"frames": [{"index": 1, "faces": [{"bounding_box": [10, 40, 20, 50], "identity": 0, "score": 0.9}], "license_plates": [{"bounding_box": [20, 50, 30, 60], "identity": 0, "score": 0.9}]}]}',
         },
     ):
-
         # WHEN the job is posted
         # THEN the server receives the expected job arguments (otherwise a 500 is returned and an error thrown)
         redact_requests = RedactRequests()
@@ -57,7 +55,6 @@ def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType):
 
 
 def test_mock_server_gives_error_on_unexpected_argument(some_image):
-
     # GIVEN job parameters
     service = ServiceType.blur
     out_type = OutputType.images
@@ -68,7 +65,6 @@ def test_mock_server_gives_error_on_unexpected_argument(some_image):
         expected_path=f"{service.value}/v3/{out_type.value}",
         expected_job_args=expected_job_args,
     ):
-
         # WHEN a different job is posted
         posted_job_args = JobArguments(face=False)
         assert expected_job_args != posted_job_args
@@ -85,7 +81,6 @@ def test_mock_server_gives_error_on_unexpected_argument(some_image):
 
 
 def test_mock_server_gives_error_on_unexpected_service(some_image):
-
     # GIVEN job parameters
     service = ServiceType.blur
     out_type = OutputType.images
@@ -96,7 +91,6 @@ def test_mock_server_gives_error_on_unexpected_service(some_image):
         expected_path=f"{service.value}/v3/{out_type.value}",
         expected_job_args=job_args,
     ):
-
         # WHEN the job is posted to the wrong service endpoint
         posted_service = ServiceType.dnat
 

@@ -8,9 +8,6 @@ from typing import Any, List, Optional, Tuple, Union
 import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
 
-from redact.errors import RedactConnectError, RedactResponseError
-from redact.settings import Settings
-from redact.v3.tools.redact_file import redact_file
 from redact.commons.summary import JobsSummary, summary
 from redact.commons.utils import (
     files_in_dir,
@@ -19,7 +16,10 @@ from redact.commons.utils import (
     is_video,
     normalize_path,
 )
+from redact.errors import RedactConnectError, RedactResponseError
+from redact.settings import Settings
 from redact.v3 import InputType, JobArguments, JobStatus, OutputType, ServiceType
+from redact.v3.tools.redact_file import redact_file
 from redact.v3.utils import calculate_jobs_summary
 
 log = logging.getLogger()
@@ -46,7 +46,6 @@ def redact_folder(
     auto_delete_job: bool = True,
     auto_delete_input_file: bool = False,
 ) -> JobsSummary:
-
     # Normalize paths, e.g.: '~/..' -> '/home'
     in_dir_path = normalize_path(input_dir)
     out_dir_path = normalize_path(output_dir)

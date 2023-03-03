@@ -2,10 +2,11 @@ from pathlib import Path
 
 import pytest
 import typer
+from typer.testing import CliRunner
+
+from redact.settings import Settings
 from redact.tools.v3 import redact_file, redact_folder
 from redact.v3 import InputType, JobArguments, OutputType, ServiceType
-from redact.settings import Settings
-from typer.testing import CliRunner
 
 
 class TestRedactCommand:

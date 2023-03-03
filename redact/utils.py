@@ -1,6 +1,5 @@
 import re
 import urllib.parse
-
 from typing import Dict
 
 

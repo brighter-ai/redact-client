@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import IO, Optional
 
 import pytest
-import shutil
 
 from redact.settings import Settings
 

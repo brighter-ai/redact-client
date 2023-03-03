@@ -7,7 +7,6 @@ from redact import JobArguments, OutputType, RedactInstance, Region, ServiceType
 
 
 def main():
-
     # anonymize image
     redact = RedactInstance.create(
         service=ServiceType.blur,
