@@ -27,7 +27,6 @@ class OutputType(str, Enum):
 
 
 class Region(str, Enum):
-
     germany = "germany"
     mainland_china = "mainland_china"
     united_states_of_america = "united_states_of_america"
@@ -67,7 +66,6 @@ class JobState(str, Enum):
 
 
 class JobStatus(BaseModel):
-
     output_id: UUID
     state: JobState
     start_timestamp: Optional[float] = None

@@ -1,12 +1,12 @@
+import os
 from pathlib import Path
 from typing import Union
 
-import os
 import pytest
 
+from redact.v4 import InputType, JobArguments, OutputType, Region, ServiceType
 from redact.v4.tools.redact_file import redact_file
 from redact.v4.tools.redact_folder import redact_folder
-from redact.v4 import InputType, JobArguments, OutputType, Region, ServiceType
 from tests.conftest import NUMBER_OF_IMAGES
 
 
@@ -22,7 +22,6 @@ class TestRedactFolder:
         optional_api_key,
         n_parallel_jobs: int,
     ):
-
         # GIVEN an input dir (with images) and an output dir
         output_path = tmp_path_factory.mktemp("imgs_dir_out")
 

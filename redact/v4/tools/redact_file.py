@@ -2,8 +2,8 @@ import logging
 from pathlib import Path
 from typing import Optional, Union
 
-from redact.settings import Settings
 from redact.commons.utils import normalize_path
+from redact.settings import Settings
 from redact.v4 import (
     JobArguments,
     JobState,
@@ -14,7 +14,6 @@ from redact.v4 import (
     RedactRequests,
     ServiceType,
 )
-
 
 log = logging.getLogger()
 

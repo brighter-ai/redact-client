@@ -248,7 +248,6 @@ class RedactRequests:
     def get_status(
         self, service: ServiceType, out_type: OutputType, output_id: UUID
     ) -> Dict:
-
         url = urllib.parse.urljoin(
             self.redact_url,
             f"{service}/{self.API_VERSION}/{out_type}/{output_id}/status",
@@ -271,7 +270,6 @@ class RedactRequests:
         output_id: UUID,
         timeout: float = 60.0,
     ) -> JobLabels:
-
         url = urllib.parse.urljoin(
             self.redact_url,
             f"{service}/{self.API_VERSION}/{out_type}/{output_id}/labels",
@@ -290,7 +288,6 @@ class RedactRequests:
     def delete_output(
         self, service: ServiceType, out_type: OutputType, output_id: UUID
     ) -> Dict:
-
         url = urllib.parse.urljoin(
             self.redact_url, f"{service}/{self.API_VERSION}/{out_type}/{output_id}"
         )
@@ -308,7 +305,6 @@ class RedactRequests:
     def get_error(
         self, service: ServiceType, out_type: OutputType, output_id: UUID
     ) -> Dict:
-
         url = urllib.parse.urljoin(
             self.redact_url,
             f"{service}/{self.API_VERSION}/{out_type}/{output_id}/error",
@@ -331,7 +327,6 @@ class RedactRequests:
         retry_delay: float,
         exc_info: BaseException,
     ):
-
         if retry_start == -1:
             retry_start = time.time()
             retry_delay = 1  # start by waiting 2 seconds - going to double it below
@@ -354,7 +349,6 @@ class RedactRequests:
     def _retry_on_network_problem_with_backoff(
         self, func, debug_uuid: uuid.UUID, *positional_arguments, **keyword_arguments
     ) -> Any:
-
         retry_start = -1
         retry_delay = -1
 

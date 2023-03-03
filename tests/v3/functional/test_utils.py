@@ -2,6 +2,7 @@ from typing import Callable, List
 from uuid import uuid4
 
 import pytest
+
 from redact.commons.summary import JobsSummary
 from redact.v3 import JobState, JobStatus
 from redact.v3.utils import calculate_jobs_summary

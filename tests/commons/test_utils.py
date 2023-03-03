@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 import pytest
+
 from redact.commons.utils import files_in_dir, images_in_dir, normalize_path
 from redact.utils import normalize_url
 
