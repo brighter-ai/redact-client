@@ -45,7 +45,6 @@ def summary(logger: Logger) -> Callable[[RedactFolder], RedactFolderWrapper]:
 
 
 def calculate_time_summary(time_difference: float) -> TimeSummary:
-
     return TimeSummary(
         time_overall=time_difference,
         seconds=_get_time_string(time_difference % 60),

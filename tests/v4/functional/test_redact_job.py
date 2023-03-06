@@ -27,7 +27,6 @@ class TestRedactJob:
         some_image: IO[bytes],
         ignore_warnings: bool,
     ):
-
         # GIVEN an image and the corresponding Redact job
         job = any_img_redact_inst.start_job(
             some_image, job_args=JobArguments(region=Region.germany)
@@ -48,7 +47,6 @@ class TestRedactJob:
         assert anonymized_img.size == original_img.size
 
     def test_delete(self, job):
-
         # GIVEN an Redact job
 
         # WHEN the job is finished and then deleted

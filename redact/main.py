@@ -1,4 +1,5 @@
 import typer
+
 from redact.api_versions import REDACT_API_VERSIONS
 from redact.tools import v3, v4
 

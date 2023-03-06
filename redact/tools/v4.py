@@ -2,8 +2,8 @@ from typing import Optional
 
 import typer
 
-from redact.settings import Settings
 from redact.commons.utils import setup_logging
+from redact.settings import Settings
 from redact.v4 import InputType, JobArguments, OutputType, Region, ServiceType
 from redact.v4.tools.redact_file import redact_file as rdct_file
 from redact.v4.tools.redact_folder import redact_folder as rdct_folder

@@ -11,7 +11,6 @@ API_VERSION = "v4"
     argnames="service", argvalues=[ServiceType.blur, ServiceType.dnat]
 )
 def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType):
-
     # GIVEN a (mocked) Redact server and a job to send there
     out_type = OutputType.archives
     job_args = JobArguments(
@@ -29,7 +28,6 @@ def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType):
         expected_path=f"{service.value}/{API_VERSION}/{out_type.value}",
         expected_job_args=job_args,
     ):
-
         # WHEN the job is posted
         # THEN the server receives the expected job arguments (otherwise a 500 is returned and an error thrown)
         redact_requests = RedactRequests()
@@ -42,7 +40,6 @@ def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType):
 
 
 def test_mock_server_gives_error_on_unexpected_argument(some_image):
-
     # GIVEN job parameters
     service = ServiceType.blur
     out_type = OutputType.images
@@ -53,7 +50,6 @@ def test_mock_server_gives_error_on_unexpected_argument(some_image):
         expected_path=f"{service.value}/{API_VERSION}/{out_type.value}",
         expected_job_args=expected_job_args,
     ):
-
         # WHEN a different job is posted
         posted_job_args = JobArguments(face=False)
         assert expected_job_args != posted_job_args
@@ -70,7 +66,6 @@ def test_mock_server_gives_error_on_unexpected_argument(some_image):
 
 
 def test_mock_server_gives_error_on_unexpected_service(some_image):
-
     # GIVEN job parameters
     service = ServiceType.blur
     out_type = OutputType.images
@@ -81,7 +76,6 @@ def test_mock_server_gives_error_on_unexpected_service(some_image):
         expected_path=f"{service.value}/{API_VERSION}/{out_type.value}",
         expected_job_args=job_args,
     ):
-
         # WHEN the job is posted to the wrong service endpoint
         posted_service = ServiceType.dnat
 
