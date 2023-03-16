@@ -1,30 +1,30 @@
-from enum import Enum
 from typing import List, Optional, Tuple
 from uuid import UUID
 
 from pydantic import BaseModel, Field, PositiveInt, confloat, conint
+from strenum import StrEnum
 
 
-class ServiceType(str, Enum):
+class ServiceType(StrEnum):
     blur = "blur"
     dnat = "dnat"
     extract = "extract"
 
 
-class InputType(str, Enum):
+class InputType(StrEnum):
     images = "images"
     videos = "videos"
     archives = "archives"
 
 
-class OutputType(str, Enum):
+class OutputType(StrEnum):
     images = "images"
     videos = "videos"
     archives = "archives"
     overlays = "overlays"
 
 
-class Region(str, Enum):
+class Region(StrEnum):
     european_union = "european_union"
     mainland_china = "mainland_china"
     united_states_of_america = "united_states_of_america"
@@ -56,7 +56,7 @@ class JobResult(BaseModel):
     file_name: str
 
 
-class JobState(str, Enum):
+class JobState(StrEnum):
     pending = "pending"
     active = "active"
     finished = "completed"
@@ -84,7 +84,7 @@ class Label(BaseModel):
     score: Optional[float] = None
 
 
-class LabelType(str, Enum):
+class LabelType(StrEnum):
     face: str = "face"
     license_plate: str = "license_plate"
 

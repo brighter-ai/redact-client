@@ -43,10 +43,10 @@ def optional_api_key(request) -> Optional[str]:
 
 @pytest.fixture
 def api_key(request) -> str:
-    api_key = request.config.getoption("--api_key")
-    if not api_key:
+    if api_key := request.config.getoption("--api_key"):
+        return api_key
+    else:
         raise ValueError("Test requires a valid --api_key")
-    return api_key
 
 
 @pytest.fixture(scope="session")
