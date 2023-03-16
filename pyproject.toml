@@ -17,6 +17,7 @@ pydantic = "^1.9.2"
 tqdm = "^4.60.0"
 typer = {extras = ["all"], version = "^0.6.1"}
 python-multipart = "^0.0.5"
+StrEnum = "^0.4.9"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
