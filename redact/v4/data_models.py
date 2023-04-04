@@ -47,7 +47,7 @@ class JobArguments(BaseModel):
     single_frame_optimized: Optional[bool] = None
     lp_determination_threshold: Optional[float] = Field(None, ge=0, le=1)
     face_determination_threshold: Optional[float] = Field(None, ge=0, le=1)
-    status_webhook_url: Optional[AnyHttpUrl]= None
+    status_webhook_url: Optional[AnyHttpUrl] = None
 
 
 class JobPostResponse(BaseModel):
