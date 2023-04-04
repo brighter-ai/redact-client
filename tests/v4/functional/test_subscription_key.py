@@ -18,7 +18,7 @@ settings = Settings()
 REDACT_ONLINE_URL = settings.redact_online_url
 
 
-@pytest.mark.timeout(60)
+@pytest.mark.timeout(90)
 class TestRequestsWithApiKey:
     def test_post_with_invalid_key_fails(self, some_image):
         # GIVEN Redact Online
@@ -50,7 +50,7 @@ class TestRequestsWithApiKey:
         )
 
 
-@pytest.mark.timeout(60)
+@pytest.mark.timeout(90)
 class TestJobWithApiKey:
     def test_job_with_invalid_api_key_fails(self, some_image):
         # GIVEN Redact Online with invalid api key
@@ -94,7 +94,7 @@ class TestJobWithApiKey:
         job.delete()
 
 
-@pytest.mark.timeout(90)
+@pytest.mark.timeout(120)
 class TestRedactToolsWithSubscriptionKey:
     def test_redact_file_with_invalid_api_key_fails(self, images_path):
         # GIVEN an image
