@@ -1,7 +1,7 @@
 from typing import List, Optional
 from uuid import UUID
 
-from pydantic import BaseModel, Field, confloat, conint, AnyHttpUrl
+from pydantic import AnyHttpUrl, BaseModel, Field, confloat, conint
 from strenum import StrEnum
 
 
