@@ -62,6 +62,11 @@ def redact_file(
     licence_plate_custom_stamp_path: Optional[str] = typer.Option(
         None, "--custom-lp", help="Image file to use for license plate replacements"
     ),
+    status_webhook_url: Optional[str] = typer.Option(
+        None,
+        "--status-webhook-url",
+        help="A URL to call when the status of the Job changes",
+    ),
     redact_url: str = typer.Option(
         settings.redact_online_url,
         help="Specify http address or ip of the redact instance",
@@ -94,6 +99,7 @@ def redact_file(
         single_frame_optimized=single_frame_optimized,
         lp_determination_threshold=license_plate_determination_threshold,
         face_determination_threshold=face_determination_threshold,
+        status_webhook_url=status_webhook_url,
     )
 
     rdct_file(
@@ -162,6 +168,11 @@ def redact_folder(
     licence_plate_custom_stamp_path: Optional[str] = typer.Option(
         None, "--custom-lp", help="Image file to use for license plate replacements"
     ),
+    status_webhook_url: Optional[str] = typer.Option(
+        None,
+        "--status-webhook-url",
+        help="A URL to call when the status of the Job changes",
+    ),
     redact_url: str = typer.Option(
         settings.redact_online_url,
         help="Specify http address or ip of the redact instance",
@@ -202,6 +213,7 @@ def redact_folder(
         single_frame_optimized=single_frame_optimized,
         lp_determination_threshold=license_plate_determination_threshold,
         face_determination_threshold=face_determination_threshold,
+        status_webhook_url=status_webhook_url,
     )
 
     rdct_folder(

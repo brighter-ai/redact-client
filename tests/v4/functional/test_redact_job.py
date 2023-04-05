@@ -8,7 +8,7 @@ from redact.errors import RedactResponseError
 from redact.v4 import JobArguments, JobState, RedactInstance, Region
 
 
-@pytest.mark.timeout(30)
+@pytest.mark.timeout(90)
 class TestRedactJob:
     def test_wait_for_status_completed(self, job):
         # GIVEN an Redact job

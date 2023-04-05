@@ -22,6 +22,7 @@ def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType):
         single_frame_optimized=False,
         lp_determination_threshold=0.2,
         face_determination_threshold=0.2,
+        status_webhook_url="http://api.brighter.ai",
     )
 
     with mock_redact_server(

@@ -7,7 +7,7 @@ from typing import Optional
 import uvicorn
 from fastapi import FastAPI, Request, Response
 
-from redact import JobArguments, JobPostResponse
+from redact.v4 import JobArguments, JobPostResponse
 
 
 def _mock_server_main(
