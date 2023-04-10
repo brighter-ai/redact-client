@@ -17,6 +17,7 @@ class TestSummary:
                 state=job_state,
                 warnings=["test_warning"],
                 error="test_error",
+                file_name="my-file.png",
             )
 
         return _get_job_status

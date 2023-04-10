@@ -73,6 +73,7 @@ class JobStatus(BaseModel):
     total_frames: Optional[conint(ge=1)]
     warnings: List[str] = Field(default_factory=list)
     error: Optional[str] = None
+    file_name: str
 
     def is_running(self):
         return self.state in [JobState.active, JobState.pending]
