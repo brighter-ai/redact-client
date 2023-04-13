@@ -72,7 +72,7 @@ class TestRedactJob:
     def test_get_status(self, job):
         job_status = job.get_status()
         assert job_status
-        assert job_status.file_name is None
+        assert job_status.file_name == "obama.png"
         assert job_status.total_frames == 1
         assert job_status.start_timestamp is not None
         assert job_status.error is None
