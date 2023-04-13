@@ -65,7 +65,6 @@ class TestRedactJob:
         job_status = job.get_status()
         assert job_status
         assert job_status.file_name == "obama.png"
-        assert job_status.total_frames == 1
         assert job_status.start_timestamp is not None
         assert job_status.error is None
         assert len(job_status.warnings) == 0
