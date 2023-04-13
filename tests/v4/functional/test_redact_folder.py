@@ -64,7 +64,7 @@ class TestRedactFolder:
         "output_type,service,file_extension",
         [
             [OutputType.labels, ServiceType.redact_area, ".json"],
-            [OutputType.overlays, ServiceType.dnat, ".png"],
+            [OutputType.overlays, ServiceType.dnat, ".apng"],
         ],
     )
     def test_image_correct_file_ending(
