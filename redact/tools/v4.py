@@ -28,29 +28,36 @@ def redact_file(
             "Selects the region that license plate detection should look for and that license plate "
             "replacements will be generated for"
         ),
+        show_default=False,
     ),
     face: Optional[bool] = typer.Option(
-        None, help="Select whether faces should be anonymized"
+        None, help="Select whether faces should be anonymized", show_default=False
     ),
     license_plate: Optional[bool] = typer.Option(
-        None, help="Select whether license plates should be anonymized"
+        None,
+        help="Select whether license plates should be anonymized",
+        show_default=False,
     ),
     vehicle_recorded_data: Optional[bool] = typer.Option(
         None,
         help="Used to run a job with a variety of optimizations geared toward vehicle recorded data",
+        show_default=False,
     ),
     speed_optimized: Optional[bool] = typer.Option(
         None,
         help="Used to run a job faster with lower accuracy and replacement quality",
+        show_default=False,
     ),
     single_frame_optimized: Optional[bool] = typer.Option(
         None,
         help="Used to run a video or archive only as a set of individual images without tracking or interpolation",
+        show_default=False,
     ),
     license_plate_determination_threshold: Optional[float] = typer.Option(
         None,
         help="Set the threshold between 0 and 1 that the license plate detection models use to decide if "
         "an object is a license plate, a lower value means more likely to classifly an object as a license plate",
+        show_default=False,
     ),
     face_determination_threshold: Optional[float] = typer.Option(
         None,
@@ -58,14 +65,19 @@ def redact_file(
             "Set the threshold between 0 and 1 that the face detection model uses to decide if "
             "an object is a face, a lower value means more likely to classifly an object as a face"
         ),
+        show_default=False,
     ),
     licence_plate_custom_stamp_path: Optional[str] = typer.Option(
-        None, "--custom-lp", help="Image file to use for license plate replacements"
+        None,
+        "--custom-lp",
+        help="Image file to use for license plate replacements",
+        show_default=False,
     ),
     status_webhook_url: Optional[str] = typer.Option(
         None,
         "--status-webhook-url",
         help="A URL to call when the status of the Job changes",
+        show_default=False,
     ),
     redact_url: str = typer.Option(
         settings.redact_online_url,
@@ -77,8 +89,7 @@ def redact_file(
         hide_input=True,
     ),
     ignore_warnings: bool = typer.Option(
-        False,
-        help="Download results even if they have warnings",
+        False, help="Download results even if they have warnings", show_default=False
     ),
     skip_existing: bool = typer.Option(
         True, help="Specify whether to overwrite previously run files"
@@ -130,24 +141,30 @@ def redact_folder(
             "Selects the region that license plate detection should look for and that license "
             "plate replacements will be generated for"
         ),
+        show_default=False,
     ),
     face: Optional[bool] = typer.Option(
-        None, help="Select whether faces should be anonymized"
+        None, help="Select whether faces should be anonymized", show_default=False
     ),
     license_plate: Optional[bool] = typer.Option(
-        None, help="Select whether license plates should be anonymized"
+        None,
+        help="Select whether license plates should be anonymized",
+        show_default=False,
     ),
     vehicle_recorded_data: Optional[bool] = typer.Option(
         None,
         help="Used to run a job with a variety of optimizations geared toward vehicle recorded data",
+        show_default=False,
     ),
     speed_optimized: Optional[bool] = typer.Option(
         None,
         help="Used to run a job faster with lower accuracy and replacement quality",
+        show_default=False,
     ),
     single_frame_optimized: Optional[bool] = typer.Option(
         None,
         help="Used to run a video or archive only as a set of individual images without tracking or interpolation",
+        show_default=False,
     ),
     license_plate_determination_threshold: Optional[float] = typer.Option(
         None,
@@ -156,6 +173,7 @@ def redact_folder(
             "if an object is a license plate, a lower value means more likely to classifly "
             "an object as a license plate"
         ),
+        show_default=False,
     ),
     face_determination_threshold: Optional[float] = typer.Option(
         None,
@@ -164,14 +182,19 @@ def redact_folder(
             "if an object is a face, a lower value means more likely to classifly an object "
             "as a face"
         ),
+        show_default=False,
     ),
     licence_plate_custom_stamp_path: Optional[str] = typer.Option(
-        None, "--custom-lp", help="Image file to use for license plate replacements"
+        None,
+        "--custom-lp",
+        help="Image file to use for license plate replacements",
+        show_default=False,
     ),
     status_webhook_url: Optional[str] = typer.Option(
         None,
         "--status-webhook-url",
         help="A URL to call when the status of the Job changes",
+        show_default=False,
     ),
     redact_url: str = typer.Option(
         settings.redact_online_url,
@@ -186,8 +209,7 @@ def redact_folder(
         1, help="Number of jobs to process in parallel"
     ),
     ignore_warnings: bool = typer.Option(
-        False,
-        help="Download results even if they have warnings",
+        False, help="Download results even if they have warnings", show_default=False
     ),
     skip_existing: bool = typer.Option(
         True, help="Specify whether to overwrite previously run files"
