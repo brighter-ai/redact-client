@@ -31,6 +31,7 @@ class Region(StrEnum):
     mainland_china = "mainland_china"
     united_states_of_america = "united_states_of_america"
     japan = "japan"
+    south_korea = "south_korea"
 
     def __str__(self):
         """Return 'germany' instead of 'Region.germany'. The latter is more helpful because the output
