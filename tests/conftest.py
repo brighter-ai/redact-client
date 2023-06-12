@@ -56,7 +56,7 @@ def resource_path() -> Path:
 
 @pytest.fixture
 def some_image(resource_path: Path) -> IO[bytes]:
-    img_path = resource_path / "obama.png"
+    img_path = resource_path / "obama.jpeg"
     with open(img_path, "rb") as f:
         yield f
 
@@ -95,7 +95,7 @@ def _copy_file_to_tmp_path(tmp_path: Path, file_path: Path):
 
 @pytest.fixture
 def image_path(tmp_path, resource_path):
-    img_path = resource_path / "obama.png"
+    img_path = resource_path / "obama.jpeg"
     return _copy_file_to_tmp_path(tmp_path=tmp_path, file_path=img_path)
 
 
