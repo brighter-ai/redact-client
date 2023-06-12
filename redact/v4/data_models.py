@@ -75,9 +75,9 @@ class JobArguments(BaseModel):
             intersection_right = min(area_0[0] + area_0[2], area_1[0] + area_1[2])
             intersection_bottom = min(area_0[1] + area_0[3], area_1[1] + area_1[3])
 
-            intersection_area = max(intersection_right - intersection_left, 0) * np.maximum(
-                intersection_bottom - intersection_top, 0
-            )
+            intersection_area = max(
+                intersection_right - intersection_left, 0
+            ) * np.maximum(intersection_bottom - intersection_top, 0)
             union_area = (
                 area_0[2] * area_0[3] + area_1[2] * area_1[3] - intersection_area
             )

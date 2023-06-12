@@ -109,7 +109,7 @@ def redact_file(
             "__The parameter might not yet fully work with all parameters and output types.__"
         ),
         show_default=False,
-    )
+    ),
 ):
     setup_logging(verbose_logging)
 
@@ -123,7 +123,7 @@ def redact_file(
         lp_determination_threshold=license_plate_determination_threshold,
         face_determination_threshold=face_determination_threshold,
         status_webhook_url=status_webhook_url,
-        areas_of_interest=areas_of_interest
+        areas_of_interest=areas_of_interest,
     )
 
     rdct_file(
@@ -245,8 +245,8 @@ def redact_folder(
             "'...&areas_of_interest=[0,0,960,540]', '...&areas_of_interest=[[0,0,960,540],[0,540,960,540]]', "
             "'...&areas_of_interest=[0,0,960,540]&areas_of_interest=[0,540,960,540]'. "
             "__The parameter might not yet fully work with all parameters and output types.__"
-        )
-    )
+        ),
+    ),
 ):
     setup_logging(verbose_logging)
 
@@ -260,7 +260,7 @@ def redact_folder(
         lp_determination_threshold=license_plate_determination_threshold,
         face_determination_threshold=face_determination_threshold,
         status_webhook_url=status_webhook_url,
-        areas_of_interest=areas_of_interest
+        areas_of_interest=areas_of_interest,
     )
 
     rdct_folder(
