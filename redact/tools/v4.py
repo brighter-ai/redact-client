@@ -98,6 +98,18 @@ def redact_file(
         True, help="Specify whether to automatically delete the job from the backend"
     ),
     verbose_logging: bool = typer.Option(False, help="Enable very noisy logging."),
+    areas_of_interest: Optional[str] = typer.Option(
+        None,
+        help=(
+            "__Experimental__ Areas of interest's left corner coordinates x and y, their height and width. Must be "
+            "provided as a string in the following format [x,y,width,height]. Multiple areas could be added if needed. "
+            "For example, "
+            "'...&areas_of_interest=[0,0,960,540]', '...&areas_of_interest=[[0,0,960,540],[0,540,960,540]]', "
+            "'...&areas_of_interest=[0,0,960,540]&areas_of_interest=[0,540,960,540]'. "
+            "__The parameter might not yet fully work with all parameters and output types.__"
+        ),
+        show_default=False,
+    )
 ):
     setup_logging(verbose_logging)
 
@@ -111,6 +123,7 @@ def redact_file(
         lp_determination_threshold=license_plate_determination_threshold,
         face_determination_threshold=face_determination_threshold,
         status_webhook_url=status_webhook_url,
+        areas_of_interest=areas_of_interest
     )
 
     rdct_file(
@@ -223,6 +236,17 @@ def redact_folder(
         "from the input folder after processing of a file completed.",
     ),
     verbose_logging: bool = typer.Option(False, help="Enable very noisy logging."),
+    areas_of_interest: Optional[str] = typer.Option(
+        None,
+        help=(
+            "__Experimental__ Areas of interest's left corner coordinates x and y, their height and width. Must be "
+            "provided as a string in the following format [x,y,width,height]. Multiple areas could be added if needed. "
+            "For example, "
+            "'...&areas_of_interest=[0,0,960,540]', '...&areas_of_interest=[[0,0,960,540],[0,540,960,540]]', "
+            "'...&areas_of_interest=[0,0,960,540]&areas_of_interest=[0,540,960,540]'. "
+            "__The parameter might not yet fully work with all parameters and output types.__"
+        )
+    )
 ):
     setup_logging(verbose_logging)
 
@@ -236,6 +260,7 @@ def redact_folder(
         lp_determination_threshold=license_plate_determination_threshold,
         face_determination_threshold=face_determination_threshold,
         status_webhook_url=status_webhook_url,
+        areas_of_interest=areas_of_interest
     )
 
     rdct_folder(
