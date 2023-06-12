@@ -5,7 +5,7 @@ from typing import List, Optional
 from uuid import UUID
 
 import numpy as np
-from pydantic import AnyHttpUrl, BaseModel, Field, confloat, conint, root_validator, validator
+from pydantic import AnyHttpUrl, BaseModel, Field, confloat, conint, validator
 from strenum import StrEnum
 
 
@@ -43,48 +43,6 @@ class Region(StrEnum):
         return self.value
 
 
-class AreaOfInterest(BaseModel):
-    x: int
-    y: int
-    width: int
-    height: int
-
-    @root_validator
-    def _check_edges(cls, values):
-        x, y, height, width = (
-            values.get("x"),
-            values.get("y"),
-            values.get("width"),
-            values.get("height"),
-        )
-
-        if not (x >= 0 and y >= 0 and height > 0 and width > 0):
-            raise ValueError
-
-        return values
-
-    def overlaps_with(self, other: "AreaOfInterest") -> bool:
-        return self.iou(other) > 0
-
-    def iou(self, other: "AreaOfInterest") -> float:
-        intersection_left = max(self.x, other.x)
-        intersection_top = max(self.y, other.y)
-        intersection_right = min(self.x + self.width, other.x + other.width)
-        intersection_bottom = min(self.y + self.height, other.y + other.height)
-
-        intersection_area = max(intersection_right - intersection_left, 0) * np.maximum(
-            intersection_bottom - intersection_top, 0
-        )
-        union_area = (
-            self.width * self.height + other.width * other.height - intersection_area
-        )
-        if union_area <= 0:
-            return 0
-
-        iou = intersection_area / union_area
-        return iou
-
-
 class JobArguments(BaseModel):
     region: Optional[Region] = None
     face: Optional[bool] = None
@@ -95,22 +53,43 @@ class JobArguments(BaseModel):
     lp_determination_threshold: Optional[float] = Field(None, ge=0, le=1)
     face_determination_threshold: Optional[float] = Field(None, ge=0, le=1)
     status_webhook_url: Optional[AnyHttpUrl] = None
-    areas_of_interest: Optional[List[AreaOfInterest]] = None
+    areas_of_interest: Optional[str] = None
 
     @validator("areas_of_interest", pre=True)
-    def _areas_of_interest(cls, value: Optional[str]) -> Optional[List[AreaOfInterest]]:
+    def _areas_of_interest(cls, value: Optional[str]) -> Optional[str]:
         if value is None:
             return value
 
-        def validate_area(area: List[int]) -> AreaOfInterest:
+        def validate_area(area: List[int]) -> List[int]:
             if len(area) != 4:
                 raise ValueError
 
-            return AreaOfInterest(x=area[0], y=area[1], width=area[2], height=area[3])
+            if not (area[0] >= 0 and area[1] >= 0 and area[2] > 0 and area[3] > 0):
+                raise ValueError
 
-        def _validate_overlapping_areas(areas_of_interest: List[AreaOfInterest]) -> None:
+            return area
+
+        def iou(area_0: List[int], area_1: List[int]) -> float:
+            intersection_left = max(area_0[0], area_1[0])
+            intersection_top = max(area_0[1], area_1[1])
+            intersection_right = min(area_0[0] + area_0[2], area_1[0] + area_1[2])
+            intersection_bottom = min(area_0[1] + area_0[3], area_1[1] + area_1[3])
+
+            intersection_area = max(intersection_right - intersection_left, 0) * np.maximum(
+                intersection_bottom - intersection_top, 0
+            )
+            union_area = (
+                area_0[2] * area_0[3] + area_1[2] * area_1[3] - intersection_area
+            )
+            if union_area <= 0:
+                return 0
+
+            iou = intersection_area / union_area
+            return iou
+
+        def _validate_overlapping_areas(areas_of_interest: List[List[int]]) -> None:
             for area_0, area_1 in itertools.combinations(areas_of_interest, 2):
-                if area_0.overlaps_with(area_1):
+                if iou(area_0, area_1) > 0:
                     raise ValueError
 
         areas_of_interest = []
@@ -129,8 +108,9 @@ class JobArguments(BaseModel):
 
             _validate_overlapping_areas(areas_of_interest)
 
-            return areas_of_interest
-        except (JSONDecodeError, ValueError) as e:
+            return value
+
+        except (JSONDecodeError, ValueError):
             raise ValueError(
                 (
                     "Areas of interest must be a list of lists of 4 integers. "
