@@ -98,7 +98,7 @@ class TestJobWithApiKey:
 class TestRedactToolsWithSubscriptionKey:
     def test_redact_file_with_invalid_api_key_fails(self, images_path):
         # GIVEN an image
-        img_path = images_path.joinpath("sub_dir/img_0.png")
+        img_path = images_path.joinpath("sub_dir/img_0.jpeg")
 
         # WHEN the image is anonymized through Redact Online with invalid api key
         with pytest.raises(RedactResponseError) as exception_info:
@@ -116,7 +116,7 @@ class TestRedactToolsWithSubscriptionKey:
 
     def test_redact_file_with_valid_api_key(self, images_path, api_key):
         # GIVEN an image
-        img_path = images_path.joinpath("sub_dir/img_0.png")
+        img_path = images_path.joinpath("sub_dir/img_0.jpeg")
 
         # WHEN the image is anonymized through Redact Online with valid api key
         # THEN no error is thrown
