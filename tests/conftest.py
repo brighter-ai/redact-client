@@ -79,7 +79,7 @@ def images_path(tmp_path_factory, some_image, n_images: int = NUMBER_OF_IMAGES) 
     """
     tmp_img_path = tmp_path_factory.mktemp("imgs_dir")
     for i in range(n_images):
-        output_path = tmp_img_path / f"sub_dir/img_{i}.png"
+        output_path = tmp_img_path / f"sub_dir/img_{i}.jpeg"
         output_path.parent.mkdir(parents=True, exist_ok=True)
         some_image.seek(0)
         with open(str(output_path), "wb") as f:
