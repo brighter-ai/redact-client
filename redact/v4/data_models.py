@@ -98,7 +98,8 @@ class JobArguments(BaseModel):
                 if len(item) == 0:
                     raise ValueError
 
-                item = [int(boundary) for boundary in item.split(",")]
+                if isinstance(item, str):
+                    item = [int(boundary) for boundary in item.split(",")]
 
                 areas_of_interest.append(validate_area(item))
 
