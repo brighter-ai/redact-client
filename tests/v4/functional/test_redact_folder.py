@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Union
+from typing import Union, List
 
 import pytest
 
@@ -169,3 +169,41 @@ class TestRedactFolder:
         ]
         for file in files_in_out_dir:
             assert file.suffix == file_extension
+
+    @pytest.mark.parametrize(
+        "areas_of_interest",
+        [
+            [[0, 0, 960, 540]],
+            [[0, 0, 960, 540], [960, 0, 960, 540], [0, 540, 960, 540], [960, 540, 960, 540]],
+        ],
+    )
+    def test_redact_folder_with_areas_of_interest(
+        self,
+        images_path: Path,
+        redact_url,
+        optional_api_key,
+        tmp_path_factory,
+        areas_of_interest: List[List[int]]
+    ):
+        # GIVEN an input dir (with videos) and an output dir
+        output_path = tmp_path_factory.mktemp("img_dir_out")
+
+        redact_folder(
+            input_dir=images_path,
+            output_dir=output_path,
+            input_type=InputType.images,
+            output_type=OutputType.images,
+            service=ServiceType.blur,
+            job_args=JobArguments(region=Region.germany, areas_of_interest=areas_of_interest),
+            redact_url=redact_url,
+            api_key=optional_api_key,
+            n_parallel_jobs=1,
+            ignore_warnings=True
+        )
+
+        # THEN all input images are anonymized in the output dir
+        files_in_out_dir = [
+            p.relative_to(output_path) for p in output_path.rglob("*.*")
+        ]
+        for file in files_in_out_dir:
+            assert file.suffix == ".jpeg"
