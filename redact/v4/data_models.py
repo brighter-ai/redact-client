@@ -1,5 +1,4 @@
 import itertools
-import json
 from json import JSONDecodeError
 from typing import List, Optional
 from uuid import UUID
@@ -52,10 +51,10 @@ class JobArguments(BaseModel):
     lp_determination_threshold: Optional[float] = Field(None, ge=0, le=1)
     face_determination_threshold: Optional[float] = Field(None, ge=0, le=1)
     status_webhook_url: Optional[AnyHttpUrl] = None
-    areas_of_interest: Optional[str] = None
+    areas_of_interest: Optional[List[List[int]]] = None
 
     @validator("areas_of_interest", pre=True)
-    def _areas_of_interest(cls, value: Optional[str]) -> Optional[str]:
+    def _areas_of_interest(cls, value: Optional[str]) -> List[List[int]]:
         if value is None:
             return value
 
@@ -93,21 +92,17 @@ class JobArguments(BaseModel):
 
         areas_of_interest = []
         try:
-            areas = json.loads(value)
-            for item in areas:
-                if not isinstance(item, list) or len(item) == 0:
+            for item in value:
+                if len(item) == 0:
                     raise ValueError
 
-                if isinstance(item[0], list):
-                    for area in item:
-                        areas_of_interest.append(validate_area(area))
+                item = [int(boundary) for boundary in item.split(",")]
 
-                else:
-                    areas_of_interest.append(validate_area(item))
+                areas_of_interest.append(validate_area(item))
 
             _validate_overlapping_areas(areas_of_interest)
 
-            return value
+            return areas_of_interest
 
         except (JSONDecodeError, ValueError):
             raise ValueError(
