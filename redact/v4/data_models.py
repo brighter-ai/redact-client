@@ -54,9 +54,11 @@ class JobArguments(BaseModel):
     areas_of_interest: Optional[List[List[int]]] = None
 
     @validator("areas_of_interest", pre=True)
-    def _areas_of_interest(cls, value: Optional[str]) -> List[List[int]]:
-        if value is None:
-            return value
+    def _areas_of_interest(
+        cls, value: Optional[List[str]]
+    ) -> Optional[List[List[int]]]:
+        if value is None or value == []:
+            return None
 
         def validate_area(area: List[int]) -> List[int]:
             if len(area) != 4:
