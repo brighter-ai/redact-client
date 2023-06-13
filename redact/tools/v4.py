@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 import typer
 
@@ -12,6 +12,18 @@ settings = Settings()
 
 
 app = typer.Typer()
+
+
+EXPERIMENTAL = typer.style("Experimental", bold=True)
+EXPERIMENTAL_WARNING = typer.style(
+    "The parameter might not yet fully work with all parameters and output types.",
+    bold=True,
+)
+AREA_OF_INTEREST_FORMAT = typer.style("x,y,width,height", bold=True)
+AREA_OF_INTEREST = typer.style("'--areas_of_interest 0,0,960,540'", bold=True)
+AREAS_OF_INTEREST = typer.style(
+    "'--areas_of_interest 0,0,960,540 --areas_of_interest 0,540,960,540'", bold=True
+)
 
 
 @app.command()
@@ -98,6 +110,16 @@ def redact_file(
         True, help="Specify whether to automatically delete the job from the backend"
     ),
     verbose_logging: bool = typer.Option(False, help="Enable very noisy logging."),
+    areas_of_interest: Optional[List[str]] = typer.Option(
+        None,
+        help=(
+            f"{EXPERIMENTAL} Areas of interest's left corner coordinates x and y, their height and width. "
+            f"Must be provided as a string in the following format {AREA_OF_INTEREST_FORMAT}. Multiple areas could be "
+            f"added if needed. For example, {AREA_OF_INTEREST}, or {AREAS_OF_INTEREST} for the multiple areas. "
+            f"{EXPERIMENTAL_WARNING}"
+        ),
+        show_default=False,
+    ),
 ):
     setup_logging(verbose_logging)
 
@@ -111,6 +133,7 @@ def redact_file(
         lp_determination_threshold=license_plate_determination_threshold,
         face_determination_threshold=face_determination_threshold,
         status_webhook_url=status_webhook_url,
+        areas_of_interest=areas_of_interest,
     )
 
     rdct_file(
@@ -223,6 +246,15 @@ def redact_folder(
         "from the input folder after processing of a file completed.",
     ),
     verbose_logging: bool = typer.Option(False, help="Enable very noisy logging."),
+    areas_of_interest: Optional[List[str]] = typer.Option(
+        None,
+        help=(
+            f"{EXPERIMENTAL} Areas of interest's left corner coordinates x and y, their height and width. "
+            f"Must be provided as a string in the following format {AREA_OF_INTEREST_FORMAT}. Multiple areas could be "
+            f"added if needed. For example, {AREA_OF_INTEREST}, or {AREAS_OF_INTEREST} for the multiple areas. "
+            f"{EXPERIMENTAL_WARNING}"
+        ),
+    ),
 ):
     setup_logging(verbose_logging)
 
@@ -236,6 +268,7 @@ def redact_folder(
         lp_determination_threshold=license_plate_determination_threshold,
         face_determination_threshold=face_determination_threshold,
         status_webhook_url=status_webhook_url,
+        areas_of_interest=areas_of_interest,
     )
 
     rdct_folder(

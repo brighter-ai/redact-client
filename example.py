@@ -14,7 +14,7 @@ def main():
         redact_url="http://127.0.0.1:8787",
     )
     job_args = JobArguments(region=Region.united_states_of_america)
-    with open("tests/resources/obama.jpg", "rb") as f:
+    with open("tests/resources/obama.jpeg", "rb") as f:
         job = redact.start_job(file=f, job_args=job_args)
     result = job.wait_until_finished().download_result()
 
