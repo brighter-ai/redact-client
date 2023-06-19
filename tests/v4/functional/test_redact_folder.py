@@ -200,7 +200,7 @@ class TestRedactFolder:
             output_type=OutputType.images,
             service=ServiceType.blur,
             job_args=JobArguments(
-                region=Region.germany, areas_of_interest=areas_of_interest
+                region=Region.germany, area_of_interest=areas_of_interest
             ),
             redact_url=redact_url,
             api_key=optional_api_key,
