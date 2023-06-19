@@ -20,9 +20,9 @@ EXPERIMENTAL_WARNING = typer.style(
     bold=True,
 )
 AREA_OF_INTEREST_FORMAT = typer.style("x,y,width,height", bold=True)
-AREA_OF_INTEREST = typer.style("'--areas_of_interest 0,0,960,540'", bold=True)
+AREA_OF_INTEREST = typer.style("'--area_of_interest 0,0,960,540'", bold=True)
 AREAS_OF_INTEREST = typer.style(
-    "'--areas_of_interest 0,0,960,540 --areas_of_interest 0,540,960,540'", bold=True
+    "'--area_of_interest 0,0,960,540 --area_of_interest 0,540,960,540'", bold=True
 )
 
 
@@ -110,18 +110,29 @@ def redact_file(
         True, help="Specify whether to automatically delete the job from the backend"
     ),
     verbose_logging: bool = typer.Option(False, help="Enable very noisy logging."),
-    areas_of_interest: Optional[List[str]] = typer.Option(
+    area_of_interest: Optional[List[str]] = typer.Option(
         None,
         help=(
-            f"{EXPERIMENTAL} Areas of interest's left corner coordinates x and y, their height and width. "
-            f"Must be provided as a string in the following format {AREA_OF_INTEREST_FORMAT}. Multiple areas could be "
-            f"added if needed. For example, {AREA_OF_INTEREST}, or {AREAS_OF_INTEREST} for the multiple areas. "
+            f"{EXPERIMENTAL} Area of interest's left corner coordinates x and y, their height and width. "
+            f"Must be provided as a string in the following format {AREA_OF_INTEREST_FORMAT}. Multiple areas can be "
+            f"added if needed. Example uses: {AREA_OF_INTEREST}, or {AREAS_OF_INTEREST} for specifying multiple areas. "
             f"{EXPERIMENTAL_WARNING}"
         ),
         show_default=False,
     ),
+    areas_of_interest: Optional[List[str]] = typer.Option(
+        None,
+        help=(f"{EXPERIMENTAL} Alias of area_of_interest."),
+        show_default=False,
+    ),
 ):
     setup_logging(verbose_logging)
+
+    if areas_of_interest is not None:
+        if area_of_interest is not None:
+            area_of_interest.extend(areas_of_interest)
+        else:
+            area_of_interest = areas_of_interest
 
     job_args = JobArguments(
         region=region,
@@ -133,7 +144,7 @@ def redact_file(
         lp_determination_threshold=license_plate_determination_threshold,
         face_determination_threshold=face_determination_threshold,
         status_webhook_url=status_webhook_url,
-        areas_of_interest=areas_of_interest,
+        areas_of_interest=area_of_interest,
     )
 
     rdct_file(
