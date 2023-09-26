@@ -2,7 +2,7 @@
 Python client for "brighter Redact"
 """
 
-__version__ = "6.4.0"
+__version__ = "6.4.1"
 
 from .errors import RedactConnectError, RedactResponseError
 from .v3.data_models import (
