@@ -38,7 +38,9 @@ class TestRedactJob:
         )
 
         # THEN the response has the right media type
-        assert job_result.media_type.startswith("image")
+        assert job_result.media_type.startswith(
+            "image"
+        ), f"Was: {job_result.media_type}"
 
         # AND it has the same size as the input image
         anonymized_img = Image.open(io.BytesIO(job_result.content))
@@ -64,7 +66,7 @@ class TestRedactJob:
     def test_get_status(self, job):
         job_status = job.get_status()
         assert job_status
-        assert job_status.file_name == "obama.jpeg"
+        assert job_status.file_name == "obama.jpeg", f"Was: {job_status.file_name}"
         assert job_status.start_timestamp is not None
         assert job_status.error is None
         assert len(job_status.warnings) == 0

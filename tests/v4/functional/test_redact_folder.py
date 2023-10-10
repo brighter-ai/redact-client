@@ -4,7 +4,7 @@ from typing import List, Union
 
 import pytest
 
-from redact.v4 import InputType, JobArguments, OutputType, Region, ServiceType
+from redact.v4 import InputType, JobArguments, OutputType, Region, ServiceType, JobState
 from redact.v4.tools.redact_file import redact_file
 from redact.v4.tools.redact_folder import redact_folder
 from tests.conftest import NUMBER_OF_IMAGES
@@ -64,7 +64,7 @@ class TestRedactFolder:
         "output_type,service,file_extension",
         [
             [OutputType.labels, ServiceType.redact_area, ".json"],
-            [OutputType.overlays, ServiceType.dnat, ".apng"],
+            [OutputType.overlays, ServiceType.dnat, ".png"],
         ],
     )
     def test_image_correct_file_ending(
@@ -78,7 +78,7 @@ class TestRedactFolder:
     ):
         # GIVEN an input image, service, and output_type
         # WHEN the the file is anonymized
-        redact_file(
+        job_status = redact_file(
             file_path=image_path,
             output_type=output_type,
             service=service,
@@ -87,12 +87,17 @@ class TestRedactFolder:
             job_args=JobArguments(region=Region.germany),
         )
 
+        assert (
+            job_status.state == JobState.finished
+        ), f"Was: {job_status.state}, id: {job_status.output_id}"
+
         # THEN the output file has the correct file ending
         file_folder = image_path.parent
-        assert len(os.listdir(file_folder)) == 2
+        file_folder_filelist = os.listdir(file_folder)
+        assert len(file_folder_filelist) == 2, f"Was: {file_folder_filelist}"
 
         result_file = file_folder / f"{image_path.stem}_redacted{file_extension}"
-        assert result_file.exists()
+        assert result_file.exists(), f"Available files were: {file_folder_filelist}"
 
     @pytest.mark.parametrize(
         "output_type,service,file_extension",
@@ -112,7 +117,7 @@ class TestRedactFolder:
     ):
         # GIVEN an input image, service, and output_type
         # WHEN the the file is anonymized
-        redact_file(
+        job_status = redact_file(
             file_path=video_path,
             output_type=output_type,
             service=service,
@@ -121,6 +126,10 @@ class TestRedactFolder:
             ignore_warnings=True,
             job_args=JobArguments(region=Region.germany),
         )
+
+        assert (
+            job_status.state == JobState.finished
+        ), f"Was: {job_status.state}, id: {job_status.output_id}"
 
         # THEN the output file has the correct file ending
         file_folder = video_path.parent
