@@ -10,7 +10,9 @@ API_VERSION = "v4"
 @pytest.mark.parametrize(
     argnames="service", argvalues=[ServiceType.blur, ServiceType.dnat]
 )
-def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType, redact_url):
+def test_proper_job_args_are_sent_to_server(
+    some_image, service: ServiceType, redact_url
+):
     # GIVEN a (mocked) Redact server and a job to send there
     out_type = OutputType.archives
     job_args = JobArguments(

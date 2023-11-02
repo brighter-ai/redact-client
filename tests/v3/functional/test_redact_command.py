@@ -43,7 +43,7 @@ class TestRedactCommand:
                 "--output-path",
                 output_path,
                 "--redact-url",
-                redact_url
+                redact_url,
             ],
         )
 
