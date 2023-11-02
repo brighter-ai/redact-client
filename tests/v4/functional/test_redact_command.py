@@ -23,7 +23,7 @@ class TestRedactCommand:
         return app
 
     def test_redact_file_command_sends_none_values(
-        self, images_path: Path, tmp_path_factory, mocker, redact_file_app
+        self, images_path: Path, tmp_path_factory, mocker, redact_file_app, redact_url
     ):
         output_path = tmp_path_factory.mktemp("imgs_dir_out")
 
@@ -42,6 +42,8 @@ class TestRedactCommand:
                 ServiceType.blur,
                 "--output-path",
                 output_path,
+                "--redact-url",
+                redact_url
             ],
         )
 
@@ -53,7 +55,7 @@ class TestRedactCommand:
             service=ServiceType.blur,
             job_args=JobArguments(),
             licence_plate_custom_stamp_path=None,
-            redact_url=Settings().redact_online_url,
+            redact_url=redact_url,
             api_key=None,
             output_path=str(output_path),
             ignore_warnings=False,

@@ -10,7 +10,7 @@ API_VERSION = "v4"
 @pytest.mark.parametrize(
     argnames="service", argvalues=[ServiceType.blur, ServiceType.dnat]
 )
-def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType):
+def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType, redact_url):
     # GIVEN a (mocked) Redact server and a job to send there
     out_type = OutputType.archives
     job_args = JobArguments(
@@ -22,7 +22,7 @@ def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType):
         single_frame_optimized=False,
         lp_determination_threshold=0.2,
         face_determination_threshold=0.2,
-        status_webhook_url="http://api.brighter.ai",
+        status_webhook_url=redact_url,
     )
 
     with mock_redact_server(
