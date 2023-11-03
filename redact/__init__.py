@@ -5,7 +5,6 @@ Python client for "brighter Redact"
 __version__ = "7.0.0"
 
 from .errors import RedactConnectError, RedactResponseError
-from .v3.data_models import JobLabels
 from .v4.data_models import (
     InputType,
     JobArguments,
@@ -28,7 +27,6 @@ __all__ = [
     redact_folder,
     InputType,
     JobArguments,
-    JobLabels,
     JobPostResponse,
     JobResult,
     JobState,
