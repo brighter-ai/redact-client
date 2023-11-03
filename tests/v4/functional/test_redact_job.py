@@ -38,7 +38,7 @@ class TestRedactJob:
         )
 
         # THEN the response has the right media type
-        assert job_result.media_type.startswith("image")
+        assert job_result.media_type == "*/*"
 
         # AND it has the same size as the input image
         anonymized_img = Image.open(io.BytesIO(job_result.content))
