@@ -89,6 +89,7 @@ small files.
 
 The class `redact.RedactRequests` maps the [API endpoints](https://docs.identity.ps/) to Python methods.
 It is intended to reduce boiler-plate code around the API calls.
+> NOTE: default API version is set to v4. If want to use version v3, please refer to the [Different API version](#Different-API-version)
 
 ### Redact Jobs
 
@@ -109,11 +110,13 @@ from redact import RedactInstance, ServiceType, OutputType
 redact = RedactInstance.create(service=ServiceType.blur, out_type=OutputType.images, redact_url='https://api.brighter.ai/', api_key="VALID_API_KEY")
 ```
 
-In case you use a different api version than the default, you have to import the corresponding classes from the version module instead from `redact`:
+#### Different API version
+In case you use a different api version than the default, you have to import the corresponding classes from the version module instead from `redact`, e.g.:
 
 ```python
-from redact.v4 import RedactInstance, ServiceType, OutputType
+from redact.v3 import RedactInstance, ServiceType, OutputType, JobLabels
 ```
+> IMPORTANT! It is recommended to switch to API version v4, v3 will be removed in the future.   
 
 ### Advanced
 
