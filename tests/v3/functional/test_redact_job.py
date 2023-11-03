@@ -70,7 +70,7 @@ class TestRedactJob:
         assert exc_info.value.status_code == 404
 
     def test_get_status(self, job):
-        job_status = job.get_status()
+        job_status = job.wait_until_finished().get_status()
         assert job_status
         assert job_status.file_name == "obama.jpeg"
         assert job_status.start_timestamp is not None
