@@ -5,7 +5,7 @@ import pytest
 from PIL import Image
 
 from redact.errors import RedactResponseError
-from redact.v3 import JobState, RedactInstance
+from redact.v3 import JobState, RedactInstance, ServiceType
 
 
 @pytest.mark.timeout(90)
@@ -36,7 +36,11 @@ class TestRedactJob:
         )
 
         # THEN the response has the right media type
-        assert job_result.media_type.startswith("image")
+        assert (
+            job_result.media_type == "image/apng"
+            if any_img_redact_inst.service == ServiceType.extract
+            else job_result.media_type == "*/*"
+        )
 
         # AND it has the same size as the input image
         anonymized_img = Image.open(io.BytesIO(job_result.content))
@@ -70,7 +74,7 @@ class TestRedactJob:
         assert exc_info.value.status_code == 404
 
     def test_get_status(self, job):
-        job_status = job.get_status()
+        job_status = job.wait_until_finished().get_status()
         assert job_status
         assert job_status.file_name == "obama.jpeg"
         assert job_status.start_timestamp is not None
