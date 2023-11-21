@@ -1,4 +1,3 @@
-import json
 import time
 import uuid
 from contextlib import contextmanager
@@ -105,5 +104,6 @@ async def _mock_redact_request_handler(
             )
 
     return Response(
-        status_code=200, content=JobPostResponse(output_id=uuid.uuid4()).model_dump_json()
+        status_code=200,
+        content=JobPostResponse(output_id=uuid.uuid4()).model_dump_json(),
     )
