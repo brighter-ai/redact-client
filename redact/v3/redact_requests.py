@@ -101,7 +101,7 @@ class RedactRequests:
 
         custom_labels_filelike: bytes
         if isinstance(custom_labels, JobLabels):
-            custom_labels_filelike = custom_labels.json().encode("utf8")
+            custom_labels_filelike = custom_labels.model_dump_json().encode("utf8")
         elif isinstance(custom_labels, str):
             custom_labels_filelike = custom_labels.encode("utf8")
         else:
@@ -122,7 +122,7 @@ class RedactRequests:
                 debug_uuid=upload_debug_uuid,
                 url=url,
                 files=files,
-                params=job_args.dict(exclude_none=True),
+                params=job_args.model_dump(exclude_none=True),
                 headers=self._headers,
                 timeout=60.0,
             )
