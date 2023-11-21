@@ -69,8 +69,8 @@ class JobStatus(BaseModel):
     start_timestamp: Optional[float] = None
     end_timestamp: Optional[float] = None
     estimated_time_to_completion: Optional[float] = None
-    progress: Optional[confloat(ge=0.0, le=1.0)]
-    total_frames: Optional[conint(ge=1)]
+    progress: Optional[confloat(ge=0.0, le=1.0)] = None
+    total_frames: Optional[conint(ge=1)] = None
     warnings: List[str] = Field(default_factory=list)
     error: Optional[str] = None
     file_name: Optional[str] = None
