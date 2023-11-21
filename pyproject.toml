@@ -11,19 +11,20 @@ redact_file = "redact.main:redact_file_entry_point"
 redact_folder = "redact.main:redact_folder_entry_point"
 
 [tool.poetry.dependencies]
-python = ">= 3.7, < 3.12"
+python = ">= 3.8, < 3.12"
 httpx = "^0.23.0"
 pydantic = "^2.0.0"
 tqdm = "^4.60.0"
 typer = {extras = ["all"], version = "^0.6.1"}
 python-multipart = "^0.0.5"
 StrEnum = "^0.4.9"
+pydantic-settings = "^2.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
 Pillow = "^9.2.0"
 uvicorn = "^0.18.2"
-fastapi = "^0.100.0"
+fastapi = "^0.101.0"
 pytest-timeout = "^2.1.0"
 isort = "^5.10.1"
 black = "^22.10.0"
