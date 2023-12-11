@@ -71,6 +71,7 @@ def redact_folder(
         base_dir_in=in_dir_path,
         base_dir_out=out_dir_path,
         service=service,
+        input_type=input_type,
         output_type=output_type,
         job_args=job_args,
         licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
@@ -159,14 +160,24 @@ def _try_redact_file_with_relative_path(
 
 
 def _redact_file_with_relative_path(
-    relative_file_path: str, base_dir_in: str, base_dir_out: str, **kwargs
+    relative_file_path: str,
+    base_dir_in: str,
+    base_dir_out: str,
+    input_type: InputType,
+    **kwargs,
 ) -> Optional[JobStatus]:
     """This is an internal helper function."""
     in_path = Path(base_dir_in).joinpath(relative_file_path)
     out_path = Path(base_dir_out).joinpath(relative_file_path)
+    waiting_time = 10
+    if input_type is not None and input_type == InputType.images:
+        log.debug(
+            "Detecting images input, lowering waiting time between status checks."
+        )
+        waiting_time = 1.5
     return redact_file(
         file_path=in_path,
         output_path=out_path,
-        waiting_time_between_job_status_checks=10,
+        waiting_time_between_job_status_checks=waiting_time,
         **kwargs,
     )
