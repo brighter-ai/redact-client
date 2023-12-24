@@ -3,7 +3,7 @@ from json import JSONDecodeError
 from typing import List, Optional
 from uuid import UUID
 
-from pydantic import AnyHttpUrl, BaseModel, Field, confloat, conint, validator
+from pydantic import AnyHttpUrl, BaseModel, Field, confloat, conint, field_validator
 from strenum import StrEnum
 
 
@@ -53,7 +53,7 @@ class JobArguments(BaseModel):
     status_webhook_url: Optional[AnyHttpUrl] = None
     areas_of_interest: Optional[List[List[int]]] = None
 
-    @validator("areas_of_interest", pre=True)
+    @field_validator("areas_of_interest", mode="before")
     def _areas_of_interest(
         cls, value: Optional[List[str]]
     ) -> Optional[List[List[int]]]:
@@ -64,7 +64,7 @@ class JobArguments(BaseModel):
             if len(area) != 4:
                 raise ValueError
 
-            if not (area[0] >= 0 and area[1] >= 0 and area[2] > 0 and area[3] > 0):
+            if area[0] < 0 or area[1] < 0 or area[2] <= 0 or area[3] <= 0:
                 raise ValueError
 
             return area
@@ -141,8 +141,8 @@ class JobStatus(BaseModel):
     start_timestamp: Optional[float] = None
     end_timestamp: Optional[float] = None
     estimated_time_to_completion: Optional[float] = None
-    progress: Optional[confloat(ge=0.0, le=1.0)]
-    total_frames: Optional[conint(ge=1)]
+    progress: Optional[confloat(ge=0.0, le=1.0)] = None
+    total_frames: Optional[conint(ge=1)] = None
     warnings: List[str] = Field(default_factory=list)
     error: Optional[str] = None
     file_name: Optional[str] = None

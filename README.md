@@ -13,6 +13,7 @@
     - [(Batch) File Processing](#batch-file-processing)
     - [API Requests](#api-requests)
     - [Redact Jobs](#redact-jobs)
+      - [Switching API Versions in the client](#switching-api-versions-in-the-client)
     - [Advanced](#advanced)
 
 # Overview
