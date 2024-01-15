@@ -67,8 +67,8 @@ class TestRedactFolder:
             [
                 OutputType.overlays,
                 ServiceType.dnat,
-                ".jpeg",
-            ],  # replace with ".png" when the wrong image overlay output format is released
+                ".png",
+            ],
         ],
     )
     def test_image_correct_file_ending(
