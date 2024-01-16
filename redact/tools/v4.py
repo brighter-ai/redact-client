@@ -50,6 +50,11 @@ def redact_file(
         help="Select whether license plates should be anonymized",
         show_default=False,
     ),
+    full_body: Optional[bool] = typer.Option(
+        None,
+        help="Select whether full bodies should be anonymized",
+        show_default=False,
+    ),
     vehicle_recorded_data: Optional[bool] = typer.Option(
         None,
         help="Used to run a job with a variety of optimizations geared toward vehicle recorded data",
@@ -76,6 +81,14 @@ def redact_file(
         help=(
             "Set the threshold between 0 and 1 that the face detection model uses to decide if "
             "an object is a face, a lower value means more likely to classifly an object as a face"
+        ),
+        show_default=False,
+    ),
+    full_body_segmentation_threshold: Optional[float] = typer.Option(
+        None,
+        help=(
+            "Set the threshold between 0 and 1 that the full body segmentation model uses to decide if "
+            "an object is a full body, a lower value means more likely to classifly an object as a full body"
         ),
         show_default=False,
     ),
@@ -127,11 +140,13 @@ def redact_file(
         region=region,
         face=face,
         license_plate=license_plate,
+        full_body=full_body,
         speed_optimized=speed_optimized,
         vehicle_recorded_data=vehicle_recorded_data,
         single_frame_optimized=single_frame_optimized,
         lp_determination_threshold=license_plate_determination_threshold,
         face_determination_threshold=face_determination_threshold,
+        full_body_segmentation_threshold=full_body_segmentation_threshold,
         status_webhook_url=status_webhook_url,
         areas_of_interest=areas_of_interest,
     )
@@ -174,6 +189,11 @@ def redact_folder(
         help="Select whether license plates should be anonymized",
         show_default=False,
     ),
+    full_body: Optional[bool] = typer.Option(
+        None,
+        help="Select whether full bodies should be anonymized",
+        show_default=False,
+    ),
     vehicle_recorded_data: Optional[bool] = typer.Option(
         None,
         help="Used to run a job with a variety of optimizations geared toward vehicle recorded data",
@@ -204,6 +224,14 @@ def redact_folder(
             "Set the threshold between 0 and 1 that the face detection model uses to decide "
             "if an object is a face, a lower value means more likely to classifly an object "
             "as a face"
+        ),
+        show_default=False,
+    ),
+    full_body_segmentation_threshold: Optional[float] = typer.Option(
+        None,
+        help=(
+            "Set the threshold between 0 and 1 that the full body segmentation model uses to decide if "
+            "an object is a full body, a lower value means more likely to classifly an object as a full body"
         ),
         show_default=False,
     ),
@@ -262,11 +290,13 @@ def redact_folder(
         region=region,
         face=face,
         license_plate=license_plate,
+        full_body=full_body,
         speed_optimized=speed_optimized,
         vehicle_recorded_data=vehicle_recorded_data,
         single_frame_optimized=single_frame_optimized,
         lp_determination_threshold=license_plate_determination_threshold,
         face_determination_threshold=face_determination_threshold,
+        full_body_segmentation_threshold=full_body_segmentation_threshold,
         status_webhook_url=status_webhook_url,
         areas_of_interest=areas_of_interest,
     )
