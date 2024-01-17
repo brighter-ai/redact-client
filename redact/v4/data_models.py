@@ -45,11 +45,13 @@ class JobArguments(BaseModel):
     region: Optional[Region] = None
     face: Optional[bool] = None
     license_plate: Optional[bool] = None
+    full_body: Optional[bool] = None
     speed_optimized: Optional[bool] = None
     vehicle_recorded_data: Optional[bool] = None
     single_frame_optimized: Optional[bool] = None
     lp_determination_threshold: Optional[float] = Field(None, ge=0, le=1)
     face_determination_threshold: Optional[float] = Field(None, ge=0, le=1)
+    full_body_segmentation_threshold: Optional[float] = Field(None, ge=0, le=1)
     status_webhook_url: Optional[AnyHttpUrl] = None
     areas_of_interest: Optional[List[List[int]]] = None
 
