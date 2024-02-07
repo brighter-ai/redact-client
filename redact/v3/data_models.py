@@ -8,7 +8,6 @@ from strenum import StrEnum
 class ServiceType(StrEnum):
     blur = "blur"
     dnat = "dnat"
-    extract = "extract"
 
 
 class InputType(StrEnum):

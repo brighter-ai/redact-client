@@ -10,7 +10,6 @@ from strenum import StrEnum
 class ServiceType(StrEnum):
     blur = "blur"
     dnat = "dnat"
-    extract = "extract"
     redact_area = "redact_area"
 
 
