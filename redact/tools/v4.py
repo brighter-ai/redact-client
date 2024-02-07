@@ -2,7 +2,7 @@ from typing import List, Optional
 
 import typer
 
-from redact.commons.utils import setup_logging
+from redact.commons.utils import parse_key_value_pairs, setup_logging
 from redact.settings import Settings
 from redact.v4 import InputType, JobArguments, OutputType, Region, ServiceType
 from redact.v4.tools.redact_file import redact_file as rdct_file
@@ -133,8 +133,14 @@ def redact_file(
         ),
         show_default=False,
     ),
+    header: List[str] = typer.Option(
+        [],
+        help="Key-value pairs in the format key=value which will be added to allr equest header",
+    ),
 ):
     setup_logging(verbose_logging)
+
+    parsed_header = parse_key_value_pairs(header)
 
     job_args = JobArguments(
         region=region,
@@ -163,6 +169,7 @@ def redact_file(
         ignore_warnings=ignore_warnings,
         skip_existing=skip_existing,
         auto_delete_job=auto_delete_job,
+        header=parsed_header,
     )
 
 
@@ -283,8 +290,14 @@ def redact_folder(
             f"{EXPERIMENTAL_WARNING}"
         ),
     ),
+    header: List[str] = typer.Option(
+        [],
+        help="Key-value pairs in the format key=value which will be added to allr equest header",
+    ),
 ):
     setup_logging(verbose_logging)
+
+    parsed_header = parse_key_value_pairs(header)
 
     job_args = JobArguments(
         region=region,
@@ -316,4 +329,5 @@ def redact_folder(
         skip_existing=skip_existing,
         auto_delete_job=auto_delete_job,
         auto_delete_input_file=auto_delete_input_file,
+        header=parsed_header,
     )

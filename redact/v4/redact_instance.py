@@ -1,4 +1,4 @@
-from typing import BinaryIO, Optional
+from typing import BinaryIO, Dict, Optional
 
 from redact.settings import Settings
 from redact.v4.data_models import JobArguments, OutputType, ServiceType
@@ -35,12 +35,16 @@ class RedactInstance:
         redact_url: str = settings.redact_url_default,
         subscription_id: Optional[str] = None,
         api_key: Optional[str] = None,
+        headers: Optional[Dict] = None,
     ) -> "RedactInstance":
         """
         The default way of creating RedactInstance objects.
         """
         redact_requests = RedactRequests(
-            redact_url=redact_url, subscription_id=subscription_id, api_key=api_key
+            redact_url=redact_url,
+            subscription_id=subscription_id,
+            api_key=api_key,
+            headers=headers,
         )
         return cls(redact_requests=redact_requests, service=service, out_type=out_type)
 

@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from typing import Optional, Union
+from typing import Dict, Optional, Union
 
 from redact.commons.utils import normalize_path
 from redact.settings import Settings
@@ -36,6 +36,7 @@ def redact_file(
     auto_delete_input_file: bool = False,
     waiting_time_between_job_status_checks: Optional[float] = None,
     redact_requests_param: Optional[RedactRequests] = None,
+    header: Optional[Dict[str, str]] = None,
 ) -> Optional[JobStatus]:
     """
     If no out_path is given, <input_filename_redacted> will be used.
@@ -79,6 +80,7 @@ def redact_file(
                 out_type=output_type,
                 redact_url=redact_url,
                 api_key=api_key,
+                header=header,
             )
         with open(file_path, "rb") as file:
             job: RedactJob = redact.start_job(

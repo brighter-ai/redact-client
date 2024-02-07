@@ -103,3 +103,26 @@ def setup_logging(verbose_logging: bool) -> None:
     level = logging.DEBUG if verbose_logging else Settings().log_level
 
     logging.basicConfig(format=format, level=level)
+
+
+def parse_key_value_pairs(kv_pairs: List[str]) -> dict:
+    """Parse a list of key-value strings into a dictionary with error handling."""
+    result = {}
+    for item in kv_pairs:
+        # Check if the item contains an equal sign
+        if "=" not in item:
+            raise ValueError(
+                f"Invalid key-value pair: {item}. Expected format: key=value"
+            )
+
+        key, value = item.split("=", 1)  # Split only on the first equal sign
+
+        # Validate key and value
+        if not key:
+            raise ValueError(f"Empty key in pair: {item}")
+        if not value:
+            raise ValueError(f"Empty value in pair: {item}")
+
+        result[key] = value
+
+    return result

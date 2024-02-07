@@ -91,3 +91,28 @@ def test_mock_server_gives_error_on_unexpected_service(some_image):
                 out_type=out_type,
                 job_args=job_args,
             )
+
+
+def test_mock_server_receives_headers(some_image):
+    # GIVEN additional header values
+    service = ServiceType.blur
+    out_type = OutputType.images
+    job_args = JobArguments(face=True)
+
+    additional_headers = {"foo": "boo", "hello": "world"}
+
+    # AND GIVEN a (mocked) Redact server to validate them
+    with mock_redact_server(
+        expected_path=f"{service.value}/{API_VERSION}/{out_type.value}",
+        expected_headers_contain=additional_headers,
+    ):
+        # WHEN request is created with additional headers
+        redact_requests = RedactRequests(headers=additional_headers)
+
+        # THEN the server validates the existance of the additional ehader values beeing present
+        redact_requests.post_job(
+            file=some_image,
+            service=service,
+            out_type=out_type,
+            job_args=job_args,
+        )
