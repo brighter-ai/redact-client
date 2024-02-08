@@ -133,14 +133,14 @@ def redact_file(
         ),
         show_default=False,
     ),
-    header: List[str] = typer.Option(
+    custom_headers: List[str] = typer.Option(
         [],
         help="Key-value pairs in the format key=value which will be added to allr equest header",
     ),
 ):
     setup_logging(verbose_logging)
 
-    parsed_header = parse_key_value_pairs(header)
+    parsed_header = parse_key_value_pairs(custom_headers)
 
     job_args = JobArguments(
         region=region,
@@ -169,7 +169,7 @@ def redact_file(
         ignore_warnings=ignore_warnings,
         skip_existing=skip_existing,
         auto_delete_job=auto_delete_job,
-        header=parsed_header,
+        custom_headers=parsed_header,
     )
 
 
@@ -290,14 +290,14 @@ def redact_folder(
             f"{EXPERIMENTAL_WARNING}"
         ),
     ),
-    header: List[str] = typer.Option(
+    custom_headers: List[str] = typer.Option(
         [],
         help="Key-value pairs in the format key=value which will be added to allr equest header",
     ),
 ):
     setup_logging(verbose_logging)
 
-    parsed_header = parse_key_value_pairs(header)
+    parsed_header = parse_key_value_pairs(custom_headers)
 
     job_args = JobArguments(
         region=region,
@@ -329,5 +329,5 @@ def redact_folder(
         skip_existing=skip_existing,
         auto_delete_job=auto_delete_job,
         auto_delete_input_file=auto_delete_input_file,
-        header=parsed_header,
+        custom_headers=parsed_header,
     )

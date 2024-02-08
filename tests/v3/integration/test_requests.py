@@ -113,15 +113,15 @@ def test_mock_server_receives_headers(some_image):
     out_type = OutputType.images
     job_args = JobArguments(face=True)
 
-    additional_headers = {"foo": "boo", "hello": "world"}
+    custom_headers = {"foo": "boo", "hello": "world"}
 
     # AND GIVEN a (mocked) Redact server to validate them
     with mock_redact_server(
         expected_path=f"{service.value}/{API_VERSION}/{out_type.value}",
-        expected_headers_contain=additional_headers,
+        expected_headers_contain=custom_headers,
     ):
         # WHEN request is created with additional headers
-        redact_requests = RedactRequests(headers=additional_headers)
+        redact_requests = RedactRequests(custom_headers=custom_headers)
 
         # THEN the server validates the existance of the additional ehader values beeing present
         redact_requests.post_job(

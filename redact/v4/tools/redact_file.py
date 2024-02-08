@@ -36,7 +36,7 @@ def redact_file(
     auto_delete_input_file: bool = False,
     waiting_time_between_job_status_checks: Optional[float] = None,
     redact_requests_param: Optional[RedactRequests] = None,
-    header: Optional[Dict[str, str]] = None,
+    custom_headers: Optional[Dict[str, str]] = None,
 ) -> Optional[JobStatus]:
     """
     If no out_path is given, <input_filename_redacted> will be used.
@@ -80,7 +80,7 @@ def redact_file(
                 out_type=output_type,
                 redact_url=redact_url,
                 api_key=api_key,
-                header=header,
+                custom_headers=custom_headers,
             )
         with open(file_path, "rb") as file:
             job: RedactJob = redact.start_job(

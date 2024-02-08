@@ -44,7 +44,7 @@ def redact_folder(
     skip_existing: bool = True,
     auto_delete_job: bool = True,
     auto_delete_input_file: bool = False,
-    header: Optional[Dict[str, str]] = None,
+    custom_headers: Optional[Dict[str, str]] = None,
 ) -> JobsSummary:
     # Normalize paths, e.g.: '~/..' -> '/home'
     in_dir_path = normalize_path(input_dir)
@@ -82,7 +82,7 @@ def redact_folder(
         skip_existing=skip_existing,
         auto_delete_job=auto_delete_job,
         auto_delete_input_file=auto_delete_input_file,
-        header=header,
+        custom_headers=custom_headers,
     )
 
     log.info(f"Starting {n_parallel_jobs} parallel jobs to anonymize files ...")

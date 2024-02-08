@@ -35,7 +35,7 @@ class RedactInstance:
         redact_url: str = settings.redact_url_default,
         subscription_id: Optional[str] = None,
         api_key: Optional[str] = None,
-        headers: Optional[Dict] = None,
+        custom_headers: Optional[Dict] = None,
     ) -> "RedactInstance":
         """
         The default way of creating RedactInstance objects.
@@ -44,7 +44,7 @@ class RedactInstance:
             redact_url=redact_url,
             subscription_id=subscription_id,
             api_key=api_key,
-            headers=headers,
+            custom_headers=custom_headers,
         )
         return cls(redact_requests=redact_requests, service=service, out_type=out_type)
 

@@ -57,7 +57,7 @@ class RedactRequests:
         subscription_id: Optional[str] = None,
         api_key: Optional[str] = None,
         httpx_client: Optional[httpx.Client] = None,
-        headers: Optional[Dict] = None,
+        custom_headers: Optional[Dict] = None,
     ):
         self.redact_url = normalize_url(redact_url)
         self.api_key = api_key
@@ -65,8 +65,8 @@ class RedactRequests:
         self.retry_total_time_limit: float = 600  # 10 minutes in seconds
 
         self._headers = {"Accept": "*/*"}
-        if headers is not None:
-            self._headers.update(headers)
+        if custom_headers is not None:
+            self._headers.update(custom_headers)
 
         if self.api_key:
             self._headers["api-key"] = self.api_key
