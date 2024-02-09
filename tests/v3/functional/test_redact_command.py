@@ -44,6 +44,10 @@ class TestRedactCommand:
                 output_path,
                 "--redact-url",
                 redact_url,
+                "--custom-headers",
+                "foo=boo",
+                "--custom-headers",
+                "hello=world",
             ],
         )
 
@@ -63,6 +67,7 @@ class TestRedactCommand:
             skip_existing=True,
             save_labels=False,
             auto_delete_job=True,
+            custom_headers={"foo": "boo", "hello": "world"},
         )
 
     def test_redact_folder_command_sends_none_values(
@@ -87,6 +92,10 @@ class TestRedactCommand:
                 ServiceType.blur,
                 "--output-dir",
                 output_path,
+                "--custom-headers",
+                "foo=boo",
+                "--custom-headers",
+                "hello=world",
             ],
         )
 
@@ -108,4 +117,5 @@ class TestRedactCommand:
             skip_existing=True,
             auto_delete_job=True,
             auto_delete_input_file=False,
+            custom_headers={"foo": "boo", "hello": "world"},
         )

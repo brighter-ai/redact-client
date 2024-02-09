@@ -5,6 +5,8 @@ from redact.v3 import JobArguments, OutputType, RedactRequests, Region, ServiceT
 from redact.v3.data_models import FrameLabels, JobLabels, Label
 from tests.v3.integration.mock_server import mock_redact_server
 
+API_VERSION = "v3"
+
 
 @pytest.mark.parametrize(
     argnames="service", argvalues=[ServiceType.blur, ServiceType.dnat]
@@ -24,7 +26,7 @@ def test_proper_job_args_are_sent_to_server(some_image, service: ServiceType):
     )
 
     with mock_redact_server(
-        expected_path=f"{service.value}/v3/{out_type.value}",
+        expected_path=f"{service.value}/{API_VERSION}/{out_type.value}",
         expected_job_args=job_args,
         expected_form_content={
             "custom_labels": b'{"frames": [{"index": 1, "faces": [{"bounding_box": [10, 40, 20, 50], "identity": 0, "score": 0.9}], "license_plates": [{"bounding_box": [20, 50, 30, 60], "identity": 0, "score": 0.9}]}]}',
@@ -62,7 +64,7 @@ def test_mock_server_gives_error_on_unexpected_argument(some_image):
 
     # AND GIVEN a (mocked) Redact server to send them to
     with mock_redact_server(
-        expected_path=f"{service.value}/v3/{out_type.value}",
+        expected_path=f"{service.value}/{API_VERSION}/{out_type.value}",
         expected_job_args=expected_job_args,
     ):
         # WHEN a different job is posted
@@ -88,7 +90,7 @@ def test_mock_server_gives_error_on_unexpected_service(some_image):
 
     # AND GIVEN a (mocked) Redact server to send them to
     with mock_redact_server(
-        expected_path=f"{service.value}/v3/{out_type.value}",
+        expected_path=f"{service.value}/{API_VERSION}/{out_type.value}",
         expected_job_args=job_args,
     ):
         # WHEN the job is posted to the wrong service endpoint
@@ -103,3 +105,28 @@ def test_mock_server_gives_error_on_unexpected_service(some_image):
                 out_type=out_type,
                 job_args=job_args,
             )
+
+
+def test_mock_server_receives_headers(some_image):
+    # GIVEN additional header values
+    service = ServiceType.blur
+    out_type = OutputType.images
+    job_args = JobArguments(face=True)
+
+    custom_headers = {"foo": "boo", "hello": "world"}
+
+    # AND GIVEN a (mocked) Redact server to validate them
+    with mock_redact_server(
+        expected_path=f"{service.value}/{API_VERSION}/{out_type.value}",
+        expected_headers_contain=custom_headers,
+    ):
+        # WHEN request is created with additional headers
+        redact_requests = RedactRequests(custom_headers=custom_headers)
+
+        # THEN the server validates the existance of the additional ehader values beeing present
+        redact_requests.post_job(
+            file=some_image,
+            service=service,
+            out_type=out_type,
+            job_args=job_args,
+        )

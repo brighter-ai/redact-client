@@ -3,7 +3,7 @@ import logging
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
@@ -44,6 +44,7 @@ def redact_folder(
     skip_existing: bool = True,
     auto_delete_job: bool = True,
     auto_delete_input_file: bool = False,
+    custom_headers: Optional[Dict[str, str]] = None,
 ) -> JobsSummary:
     # Normalize paths, e.g.: '~/..' -> '/home'
     in_dir_path = normalize_path(input_dir)
@@ -81,6 +82,7 @@ def redact_folder(
         skip_existing=skip_existing,
         auto_delete_job=auto_delete_job,
         auto_delete_input_file=auto_delete_input_file,
+        custom_headers=custom_headers,
     )
 
     log.info(f"Starting {n_parallel_jobs} parallel jobs to anonymize files ...")

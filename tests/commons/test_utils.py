@@ -3,7 +3,12 @@ from pathlib import Path
 
 import pytest
 
-from redact.commons.utils import files_in_dir, images_in_dir, normalize_path
+from redact.commons.utils import (
+    files_in_dir,
+    images_in_dir,
+    normalize_path,
+    parse_key_value_pairs,
+)
 from redact.utils import normalize_url
 
 
@@ -56,3 +61,30 @@ def test_images_in_dir(images_path: Path):
         "sub_dir/img_1.jpeg",
         "sub_dir/img_2.jpeg",
     ]
+
+
+@pytest.mark.parametrize(
+    "input, expected",
+    [
+        ([], {}),
+        (["hello=world"], {"hello": "world"}),
+        (["hello=wor=ld"], {"hello": "wor=ld"}),
+        (["hello=world", "foo=boo"], {"hello": "world", "foo": "boo"}),
+    ],
+)
+def test_parse_key_value_pairs(input, expected):
+    parsed = parse_key_value_pairs(input)
+    assert parsed == expected
+
+
+@pytest.mark.parametrize(
+    "input",
+    [
+        ["helloworld"],
+        ["=world"],
+        ["world="],
+    ],
+)
+def test_parse_key_value_pairs_exception_on_illformatted(input):
+    with pytest.raises(ValueError):
+        _ = parse_key_value_pairs(input)
