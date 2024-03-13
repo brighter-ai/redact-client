@@ -8,7 +8,7 @@ API_VERSION = "v4"
 
 
 @pytest.mark.parametrize(
-    argnames="service", argvalues=[ServiceType.blur, ServiceType.dnat]
+    argnames="service", argvalues=[ServiceType.blur, ServiceType.dnat, ServiceType.mask]
 )
 def test_proper_job_args_are_sent_to_server(
     some_image, service: ServiceType, redact_url

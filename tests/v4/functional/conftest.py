@@ -19,7 +19,7 @@ def redact_requests(redact_url, optional_api_key) -> RedactRequests:
     return RedactRequests(redact_url=redact_url, api_key=optional_api_key)
 
 
-@pytest.fixture(params=[ServiceType.dnat, ServiceType.blur])
+@pytest.fixture(params=[ServiceType.dnat, ServiceType.blur, ServiceType.mask])
 def any_img_redact_inst(redact_url, optional_api_key, request) -> RedactInstance:
     service = request.param
     out_type = OutputType.images
