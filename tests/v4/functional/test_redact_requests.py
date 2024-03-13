@@ -24,6 +24,7 @@ class TestRedactRequests:
             out_type=OutputType.images,
             job_args=JobArguments(region=Region.germany),
         )
+
     @pytest.mark.parametrize(
         "service",
         [
