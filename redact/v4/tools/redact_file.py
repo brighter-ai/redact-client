@@ -173,7 +173,7 @@ def redact_video_as_image_folder(
             log.info(f"Skipping {dir_path} due to existing path {output_path}")
             return None
 
-        if skip_existing == False:
+        if skip_existing is False:
             raise ValueError(
                 "Cannot replace existing results when using redact_video_as_image_folder due to undefined impact to subfolders"
             )

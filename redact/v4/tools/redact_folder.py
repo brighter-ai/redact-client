@@ -1,7 +1,7 @@
 import functools
 import logging
 import os
-from concurrent.futures import ThreadPoolExecutor, as_completed, Future
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -136,7 +136,7 @@ def _parallel_map(
             redact_url, executor = executors[i % len(executors)]
             futures[executor.submit(func, item, redact_url=redact_url)] = item
             i = i + 1
-        log.debug(f"Submitted all jobs to executors")
+        log.debug("Submitted all jobs to executors")
 
         for future in tqdm.tqdm(as_completed(futures), total=len(futures)):
             item = futures[future]

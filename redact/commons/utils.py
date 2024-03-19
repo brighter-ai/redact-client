@@ -135,10 +135,10 @@ def parse_key_value_pairs(kv_pairs: List[str]) -> dict:
 
 def is_folder_with_images(dir_path: Union[str, Path]):
     """Checks that the given path is showing a folder with at least one image."""
-    return (
-        os.path.isdir(dir_path)
-        and len(DirectoryImageFinder().find_images(dir_path)) > 0
-    )
+    if os.path.isdir(dir_path):
+        if len(DirectoryImageFinder().find_images(dir_path)) > 0:
+            return True
+    return False
 
 
 class DirectoryImageFinder:
@@ -222,7 +222,8 @@ class ImageFolderVideoHandler(object):
 
         # open tarfile with the default security filter
         output_tarfile = tarfile.open(self.output_tar, "r")
-        output_tarfile.extractall(self._output_path, filter="data")
+        # TODO use filter="data" parameter when we drop 3.7 support
+        output_tarfile.extractall(self._output_path)
 
         self._check_and_rename_output_files()
 
