@@ -2,6 +2,11 @@ import glob
 import logging
 from pathlib import Path
 from typing import List, Union
+import tempfile
+import tarfile
+import fnmatch
+import os
+import re
 
 from redact.settings import Settings
 
@@ -126,3 +131,131 @@ def parse_key_value_pairs(kv_pairs: List[str]) -> dict:
         result[key] = value
 
     return result
+
+
+def is_folder_with_images(dir_path: Union[str, Path]):
+    """Checks that the given path is showing a folder with at least one image."""
+    return (
+        os.path.isdir(dir_path)
+        and len(DirectoryImageFinder().find_images(dir_path)) > 0
+    )
+
+
+class DirectoryImageFinder:
+    def __init__(self):
+        self._image_re = re.compile(
+            "|".join(
+                [
+                    fnmatch.translate("*.jpeg"),
+                    fnmatch.translate("*.jpg"),
+                    fnmatch.translate("*.png"),
+                ]
+            )
+        )
+
+    def find_images(self, directory: Union[str, Path]):
+        images = []
+        for f in os.listdir(os.path.abspath(directory)):
+            if self.is_image(f):
+                images.append(f)
+        return images
+
+    def is_image(self, f):
+        return self._image_re.match(f.lower()) is not None
+
+
+class ImageFolderVideoHandler(object):
+    def __init__(self, input_dir_path: Union[str, Path], output_path: Union[str, Path]):
+        self._input_file_names: List[str] = []
+        self._input_dir_path = input_dir_path
+        self._output_path = output_path
+        self.input_tar = None
+        self.output_tar = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.remove_input_tar()
+        if self.output_tar is not None and os.path.exists(self.output_tar):
+            os.remove(self.output_tar)
+            self.output_tar = None
+
+    def remove_input_tar(self):
+        if self.input_tar is not None and os.path.exists(self.input_tar):
+            os.remove(self.input_tar)
+            self.input_tar = None
+
+    def prepare_video_image_folder(self):
+        """ "Create temp files and tar the images in the given directory."""
+
+        if not is_folder_with_images(self._input_dir_path):
+            raise ValueError(
+                "Provide a folder with images when using flag video_as_image_folders"
+            )
+        if self._input_dir_path == self._output_path:
+            raise ValueError(
+                "When processing video image folders, output path cannot be equal to input path."
+            )
+
+        with tempfile.NamedTemporaryFile(
+            mode="w+b", dir=self._input_dir_path, delete=False, suffix=".tar"
+        ) as temp_file:
+            self.input_tar = temp_file.name
+        image_finder = DirectoryImageFinder()
+        with tarfile.open(self.input_tar, "w:") as tar:
+            files_in_dir = os.listdir(self._input_dir_path)
+            files_in_dir.sort()
+            for f in files_in_dir:
+                if image_finder.is_image(f):
+                    self._input_file_names.append(f)
+                    # Create the full path to the file
+                    full_path = os.path.join(self._input_dir_path, f)
+                    # Add the file to the tar archive
+                    tar.add(full_path, arcname=f)
+
+        temp_name = tempfile.mktemp()
+        self.output_tar = os.path.join(self._output_path, f"{temp_name}.tar")
+
+    def unpack_and_rename_output(self):
+        """After processing, creates the output folder with the correctly named files."""
+
+        # open tarfile with the default security filter
+        output_tarfile = tarfile.open(self.output_tar, "r")
+        output_tarfile.extractall(self._output_path, filter="data")
+
+        self._check_and_rename_output_files()
+
+    def _check_and_rename_output_files(self):
+        input_images = self._input_file_names.copy()
+        input_images.sort()
+
+        image_finder = DirectoryImageFinder()
+        output_images = image_finder.find_images(self._output_path)
+        output_images.sort()
+
+        if len(output_images) != len(input_images):
+            raise RuntimeError(
+                "Count of images in input dir and images returned from service unequal!"
+            )
+
+        # check if the renaming is still happening, and if it is, then correct here
+        if not input_images == output_images:
+            self._check_for_conflicts(output_images)
+
+            i = 0
+            for output_image in output_images:
+                os.rename(
+                    os.path.join(self._output_path, output_image),
+                    os.path.join(self._output_path, input_images[i]),
+                )
+                i = i + 1
+
+    def _check_for_conflicts(self, output_images):
+        target_set = set(self._input_file_names)
+        for i in output_images:
+            if i in target_set:
+                # TODO should be using subdir or rename during extraction to avoid this conflict
+                raise RuntimeError(
+                    f"Conflict check failed, nothing done: Input filename exists in output already: '{i}'"
+                )

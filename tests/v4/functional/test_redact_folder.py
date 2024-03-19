@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
+import shutil
 from typing import List, Union
+
 
 import pytest
 
@@ -218,3 +220,51 @@ class TestRedactFolder:
         ]
         for file in files_in_out_dir:
             assert file.suffix == ".jpeg"
+
+    def test_redact_folder_with_video_as_image_folders(
+        self,
+        tmp_path_factory,
+        some_image,
+        redact_url,
+        optional_api_key,
+    ):
+        tmp_video_subdirs_path = tmp_path_factory.mktemp("imgs_dir")
+        for i in range(3):
+            output_path_image = tmp_video_subdirs_path / f"img_folder/img_{i}.jpeg"
+            output_path_image.parent.mkdir(parents=True, exist_ok=True)
+            some_image.seek(0)
+            with open(str(output_path_image), "wb") as f:
+                shutil.copyfileobj(fsrc=some_image, fdst=f)
+
+        # GIVEN an input dir (with subdir with images) and an output dir
+        output_path = tmp_path_factory.mktemp("imgs_dir_out")
+
+        # WHEN the whole folder is anonymized
+        jobs_summary = redact_folder(
+            input_dir=tmp_video_subdirs_path,
+            output_dir=output_path,
+            input_type=InputType.videos,
+            output_type=OutputType.videos,
+            service=ServiceType.blur,
+            job_args=JobArguments(region=Region.germany),
+            redact_url=redact_url,
+            api_key=optional_api_key,
+            video_as_image_folders=True,
+        )
+
+        # THEN input leaf folders with images are treated as image folders
+        files_in_in_dir = [
+            str(p.relative_to(tmp_video_subdirs_path))
+            for p in tmp_video_subdirs_path.rglob("*.*")
+        ]
+        files_in_out_dir = [
+            str(p.relative_to(output_path)) for p in output_path.rglob("*.*")
+        ]
+        print(output_path)
+        for file in files_in_in_dir:
+            assert file in files_in_out_dir
+
+        # AND no other files have been created
+        assert len(files_in_out_dir) == len(files_in_in_dir)
+
+        assert jobs_summary.successful == 1

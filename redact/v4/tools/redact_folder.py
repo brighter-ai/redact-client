@@ -15,11 +15,12 @@ from redact.commons.utils import (
     is_image,
     is_video,
     normalize_path,
+    DirectoryImageFinder,
 )
 from redact.errors import RedactConnectError, RedactResponseError
 from redact.settings import Settings
 from redact.v4 import InputType, JobArguments, JobStatus, OutputType, ServiceType
-from redact.v4.tools.redact_file import redact_file
+from redact.v4.tools.redact_file import redact_file, redact_video_as_image_folder
 from redact.v4.utils import calculate_jobs_summary
 
 log = logging.getLogger()
@@ -45,6 +46,7 @@ def redact_folder(
     auto_delete_job: bool = True,
     auto_delete_input_file: bool = False,
     custom_headers: Optional[Dict[str, str]] = None,
+    video_as_image_folders: bool = False,
 ) -> JobsSummary:
     # Normalize paths, e.g.: '~/..' -> '/home'
     in_dir_path = normalize_path(input_dir)
@@ -61,10 +63,15 @@ def redact_folder(
         os.makedirs(out_dir_path)
 
     # List of relative input paths (only img/vid)
-    relative_file_paths = _get_relative_file_paths(
-        input_dir=in_dir_path, input_type=input_type
-    )
-    log.info(f"Found {len(relative_file_paths)} {input_type.value} to process")
+    relative_paths: List[Path]
+    if video_as_image_folders:
+        relative_paths = _get_relative_leaf_directory_paths(input_dir=in_dir_path)
+    else:
+        relative_paths = _get_relative_file_paths(
+            input_dir=in_dir_path, input_type=input_type
+        )
+
+    log.info(f"Found {len(relative_paths)} {input_type.value} to process")
 
     # Fix input arguments to make method mappable
     worker_function = functools.partial(
@@ -83,19 +90,22 @@ def redact_folder(
         auto_delete_job=auto_delete_job,
         auto_delete_input_file=auto_delete_input_file,
         custom_headers=custom_headers,
+        video_as_image_folders=video_as_image_folders,
     )
 
     log.info(f"Starting {n_parallel_jobs} parallel jobs to anonymize files ...")
 
     job_statuses, exceptions = _parallel_map(
-        func=worker_function, items=relative_file_paths, n_parallel_jobs=n_parallel_jobs
+        func=worker_function, items=relative_paths, n_parallel_jobs=n_parallel_jobs
     )
 
     return calculate_jobs_summary(job_statuses, exceptions)
 
 
 def _parallel_map(
-    func, items: List, n_parallel_jobs=1
+    func,
+    items: List,
+    n_parallel_jobs=1,
 ) -> Tuple[List[Optional[JobStatus]], Any]:
     job_statuses = []
     exceptions = []
@@ -139,47 +149,80 @@ def _get_relative_file_paths(input_dir: Path, input_type: InputType) -> List[Pat
     return relative_file_paths
 
 
+def _get_relative_leaf_directory_paths(input_dir: Path) -> List[Path]:
+    """
+    Return a list of all leaf directories with images in in_dir. But only relative to in_dir itself.
+
+    Example: in_dir/sub1/sub2 -> [sub1/sub2]
+    """
+
+    finder = DirectoryImageFinder()
+    leaf_paths = []
+    for dirpath, dirnames, filenames in os.walk(input_dir):
+        if not dirnames:
+            if not finder.find_images(dirpath):
+                log.debug(
+                    f"Ignoring leaf directory without any supported images: {dirpath}"
+                )
+            else:
+                leaf_paths.append(dirpath)
+
+    relative_dir_paths = [Path(fp).relative_to(input_dir) for fp in leaf_paths]
+    return relative_dir_paths
+
+
 def _try_redact_file_with_relative_path(
-    relative_file_path: str, base_dir_in: str, base_dir_out: str, **kwargs
+    relative_path: str, base_dir_in: str, base_dir_out: str, **kwargs
 ) -> Optional[JobStatus]:
     """This is an internal helper function to be run by a thread. We log the exceptions so they don't get lost inside
     the thread."""
 
     try:
         return _redact_file_with_relative_path(
-            relative_file_path=relative_file_path,
+            relative_path=relative_path,
             base_dir_in=base_dir_in,
             base_dir_out=base_dir_out,
             **kwargs,
         )
     except RedactConnectError as e:
-        log.error(f"Connection error while anonymize {relative_file_path}: {str(e)}")
+        log.error(f"Connection error while anonymizing {relative_path}: {str(e)}")
     except RedactResponseError as e:
-        log.error(f"Unexpected response while anonymize {relative_file_path}: {str(e)}")
+        log.error(f"Unexpected response while anonymizing {relative_path}: {str(e)}")
     except Exception as e:
         log.debug(f"Unexpected exception: {e}", exc_info=e)
-        log.error(f"Error while anonymize {relative_file_path}: {str(e)}")
+        log.error(f"Error while anonymizing {relative_path}: {str(e)}")
+    return None
 
 
 def _redact_file_with_relative_path(
-    relative_file_path: str,
+    relative_path: str,
     base_dir_in: str,
     base_dir_out: str,
     input_type: InputType,
+    video_as_image_folders: bool,
     **kwargs,
 ) -> Optional[JobStatus]:
     """This is an internal helper function."""
-    in_path = Path(base_dir_in).joinpath(relative_file_path)
-    out_path = Path(base_dir_out).joinpath(relative_file_path)
+    in_path = Path(base_dir_in).joinpath(relative_path)
+    out_path = Path(base_dir_out).joinpath(relative_path)
     waiting_time = 10
     if input_type is not None and input_type == InputType.images:
         log.debug(
             "Detecting images input, lowering waiting time between status checks."
         )
         waiting_time = 1.5
-    return redact_file(
-        file_path=in_path,
-        output_path=out_path,
-        waiting_time_between_job_status_checks=waiting_time,
-        **kwargs,
-    )
+
+    if video_as_image_folders:
+        return redact_video_as_image_folder(
+            dir_path=in_path,
+            output_path=out_path,
+            waiting_time_between_job_status_checks=waiting_time,
+            **kwargs,
+        )
+    else:
+        return redact_file(
+            file_path=in_path,
+            output_path=out_path,
+            waiting_time_between_job_status_checks=waiting_time,
+            **kwargs,
+        )
