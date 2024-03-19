@@ -1,7 +1,7 @@
 import functools
 import logging
 import os
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor, as_completed, Future
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -38,7 +38,7 @@ def redact_folder(
     service: ServiceType,
     job_args: Optional[JobArguments] = None,
     licence_plate_custom_stamp_path: Optional[str] = None,
-    redact_url: str = settings.redact_url_default,
+    redact_url: Union[str, List[str]] = [settings.redact_url_default],
     api_key: Optional[str] = None,
     n_parallel_jobs: int = 1,
     ignore_warnings: bool = False,
@@ -95,27 +95,52 @@ def redact_folder(
 
     log.info(f"Starting {n_parallel_jobs} parallel jobs to anonymize files ...")
 
+    redact_urls: List[str]
+    if type(redact_url) is list:
+        redact_urls = redact_url
+    else:
+        redact_urls = [redact_url]
+
+    if len(redact_urls) > 1:
+        log.info(
+            f"each for {len(redact_urls)} server URLs with client-side load balancing ..."
+        )
+        log.debug(f"URLs: {redact_urls}")
+
     job_statuses, exceptions = _parallel_map(
-        func=worker_function, items=relative_paths, n_parallel_jobs=n_parallel_jobs
+        func=worker_function,
+        items=relative_paths,
+        redact_urls=redact_urls,
+        n_parallel_jobs=n_parallel_jobs,
     )
 
     return calculate_jobs_summary(job_statuses, exceptions)
 
 
 def _parallel_map(
-    func,
-    items: List,
-    n_parallel_jobs=1,
+    func, items: List, redact_urls: List[str], n_parallel_jobs=1
 ) -> Tuple[List[Optional[JobStatus]], Any]:
     job_statuses = []
-    exceptions = []
+    exceptions: List[Exception] = []
+    futures: Dict = {}
 
-    with logging_redirect_tqdm(), ThreadPoolExecutor(
-        max_workers=n_parallel_jobs
-    ) as executor:
-        futures = {executor.submit(func, item): item for item in items}
+    with logging_redirect_tqdm():
+        executors = [
+            (u, ThreadPoolExecutor(max_workers=n_parallel_jobs)) for u in redact_urls
+        ]
+        log.debug(f"Started executors: {executors}")
+
+        i = 0
+        while i < len(items):
+            item = items[i]
+            redact_url, executor = executors[i % len(executors)]
+            futures[executor.submit(func, item, redact_url=redact_url)] = item
+            i = i + 1
+        log.debug(f"Submitted all jobs to executors")
+
         for future in tqdm.tqdm(as_completed(futures), total=len(futures)):
             item = futures[future]
+            log.debug(f"Got one future completed: {future}:{item}")
             try:
                 job_statuses.append(future.result())
             except Exception as e:
@@ -123,6 +148,9 @@ def _parallel_map(
                     f"An exception occurred while processing the following file '{item}': {e}"
                 )
                 exceptions.append(e)
+
+    for _, executor in executors:
+        executor.shutdown()
 
     return job_statuses, exceptions
 

@@ -278,9 +278,9 @@ def redact_folder(
         help="A URL to call when the status of the Job changes",
         show_default=False,
     ),
-    redact_url: str = typer.Option(
-        settings.redact_online_url,
-        help="Specify http address or ip of the redact instance",
+    redact_url: List[str] = typer.Option(
+        [settings.redact_online_url],
+        help="Specify http address or ip of the redact instance, or multiple for client-side load balancing",
     ),
     api_key: Optional[str] = typer.Option(
         None,

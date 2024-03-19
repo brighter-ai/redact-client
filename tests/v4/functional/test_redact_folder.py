@@ -16,6 +16,25 @@ class TestRedactFolder:
     @pytest.mark.parametrize(
         argnames="n_parallel_jobs", argvalues=[1, 5], ids=["1 job", "5 jobs"]
     )
+    def test_all_images_in_folder_are_anonymized_loadbalanced(
+        self,
+        images_path: Path,
+        tmp_path_factory,
+        redact_url,
+        optional_api_key,
+        n_parallel_jobs: int,
+    ):
+        self.test_all_images_in_folder_are_anonymized(
+            images_path,
+            tmp_path_factory,
+            [redact_url, redact_url],
+            optional_api_key,
+            n_parallel_jobs,
+        )
+
+    @pytest.mark.parametrize(
+        argnames="n_parallel_jobs", argvalues=[1, 5], ids=["1 job", "5 jobs"]
+    )
     def test_all_images_in_folder_are_anonymized(
         self,
         images_path: Path,
