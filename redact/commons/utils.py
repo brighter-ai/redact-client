@@ -214,8 +214,7 @@ class ImageFolderVideoHandler(object):
                     # Add the file to the tar archive
                     tar.add(full_path, arcname=f)
 
-        temp_name = tempfile.mktemp()
-        self.output_tar = os.path.join(self._output_path, f"{temp_name}.tar")
+        self.output_tar = tempfile.mktemp(suffix=".tar", dir=self._output_path)
 
     def unpack_and_rename_output(self):
         """After processing, creates the output folder with the correctly named files."""

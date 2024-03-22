@@ -191,9 +191,9 @@ def redact_video_as_image_folder(
         handler.prepare_video_image_folder()
 
         job_status = redact_file(
-            file_path=handler.input_tar,
+            file_path=Path(handler.input_tar),
             output_type=output_type_translation,
-            output_path=handler.output_tar,
+            output_path=Path(handler.output_tar),
             service=service,
             job_args=job_args,
             licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
