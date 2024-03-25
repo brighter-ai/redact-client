@@ -107,6 +107,7 @@ class TestRedactCommand:
             redact_url=redact_url,
             api_key=None,
             output_path=str(output_path),
+            file_batch_size=1500,
             ignore_warnings=False,
             skip_existing=True,
             auto_delete_job=True,
@@ -161,6 +162,7 @@ class TestRedactCommand:
             auto_delete_input_file=False,
             custom_headers={"foo": "boo", "hello": "world"},
             video_as_image_folders=False,
+            video_as_image_folders_batch_size=1500,
         )
 
     def test_redact_folder_command_works_with_video_as_image_folders(
@@ -210,4 +212,5 @@ class TestRedactCommand:
             auto_delete_input_file=False,
             custom_headers={"foo": "boo"},
             video_as_image_folders=True,
+            video_as_image_folders_batch_size=1500,
         )
