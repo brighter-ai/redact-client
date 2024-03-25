@@ -47,6 +47,7 @@ def redact_folder(
     auto_delete_input_file: bool = False,
     custom_headers: Optional[Dict[str, str]] = None,
     video_as_image_folders: bool = False,
+    video_as_image_folders_batch_size: int = 1500,
 ) -> JobsSummary:
     # Normalize paths, e.g.: '~/..' -> '/home'
     in_dir_path = normalize_path(input_dir)
@@ -91,6 +92,7 @@ def redact_folder(
         auto_delete_input_file=auto_delete_input_file,
         custom_headers=custom_headers,
         video_as_image_folders=video_as_image_folders,
+        video_as_image_folders_batch_size=video_as_image_folders_batch_size,
     )
 
     log.info(f"Starting {n_parallel_jobs} parallel jobs to anonymize files ...")
@@ -228,6 +230,7 @@ def _redact_file_with_relative_path(
     base_dir_out: str,
     input_type: InputType,
     video_as_image_folders: bool,
+    video_as_image_folders_batch_size: int,
     **kwargs,
 ) -> Optional[JobStatus]:
     """This is an internal helper function."""
@@ -245,6 +248,7 @@ def _redact_file_with_relative_path(
             dir_path=in_path,
             output_path=out_path,
             waiting_time_between_job_status_checks=waiting_time,
+            file_batch_size=video_as_image_folders_batch_size,
             **kwargs,
         )
     else:

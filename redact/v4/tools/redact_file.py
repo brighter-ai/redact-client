@@ -157,6 +157,7 @@ def redact_video_as_image_folder(
     waiting_time_between_job_status_checks: Optional[float] = None,
     redact_requests_param: Optional[RedactRequests] = None,
     custom_headers: Optional[Dict[str, str]] = None,
+    file_batch_size: int = 1500,
 ) -> Optional[JobStatus]:
 
     dir_path = normalize_path(dir_path)
@@ -166,7 +167,7 @@ def redact_video_as_image_folder(
     if output_type in (OutputType.videos, OutputType.overlays):
         if output_path is None:
             raise ValueError(
-                "Provide output_path when using redact_video_as_image_folder"
+                "Provide output_path when using redact_video_as_image_folder for overlays and videos"
             )
 
         if skip_existing and os.path.exists(output_path):
@@ -182,34 +183,60 @@ def redact_video_as_image_folder(
         raise ValueError(
             "Cannot handle normal images when using redact_video_as_image_folder"
         )
-    output_type_translation = output_type
+
     if output_type == OutputType.videos:
-        output_type_translation = OutputType.archives
-        os.makedirs(str(output_path))
+        if file_batch_size is None:
+            file_batch_size = -1
+    else:
+        # everything but videos needs special handling of partial batches, so only videos support for now:
+        file_batch_size = -1
 
-    with ImageFolderVideoHandler(dir_path, output_path=output_path) as handler:
-        handler.prepare_video_image_folder()
+    with ImageFolderVideoHandler(
+        dir_path, output_path=output_path, file_batch_size=file_batch_size
+    ) as handler:
+        output_path_path = Path(output_path)
 
-        job_status = redact_file(
-            file_path=Path(handler.input_tar),
-            output_type=output_type_translation,
-            output_path=Path(handler.output_tar),
-            service=service,
-            job_args=job_args,
-            licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
-            redact_url=redact_url,
-            api_key=api_key,
-            ignore_warnings=ignore_warnings,
-            skip_existing=skip_existing,
-            auto_delete_job=auto_delete_job,
-            auto_delete_input_file=True,
-            waiting_time_between_job_status_checks=waiting_time_between_job_status_checks,
-            redact_requests_param=redact_requests_param,
-            custom_headers=custom_headers,
-        )
-
-        handler.remove_input_tar()
+        output_type_translation = output_type
         if output_type == OutputType.videos:
-            handler.unpack_and_rename_output()
+            output_type_translation = OutputType.archives
+            if not os.path.exists(output_path_path):
+                os.makedirs(output_path_path)
+                handler.add_directory_to_clean(output_path_path)
+
+            if file_batch_size is None:
+                file_batch_size = -1
+            else:
+                # everything but videos needs special handling of partial batches, so only videos support for now:
+                file_batch_size = -1
+
+        job_status: Optional[JobStatus]
+        while handler.has_more():
+            handler.prepare_video_image_folder()
+
+            job_status = redact_file(
+                file_path=Path(handler.input_tar),
+                output_type=output_type_translation,
+                output_path=Path(handler.output_tar),
+                service=service,
+                job_args=job_args,
+                licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
+                redact_url=redact_url,
+                api_key=api_key,
+                ignore_warnings=ignore_warnings,
+                skip_existing=skip_existing,
+                auto_delete_job=auto_delete_job,
+                auto_delete_input_file=True,
+                waiting_time_between_job_status_checks=waiting_time_between_job_status_checks,
+                redact_requests_param=redact_requests_param,
+                custom_headers=custom_headers,
+            )
+
+            handler.remove_input_tar()
+            if output_type == OutputType.videos:
+                handler.unpack_and_rename_output()
+
+        if output_type == OutputType.videos:
+            # Done, now the directory need no longer be deleted on handler exit
+            handler.remove_directory_to_clean(output_path_path)
 
         return job_status

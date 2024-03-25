@@ -1,7 +1,8 @@
 import glob
 import logging
 from pathlib import Path
-from typing import List, Union
+import shutil
+from typing import List, Union, Optional
 import tempfile
 import tarfile
 import fnmatch
@@ -165,10 +166,20 @@ class DirectoryImageFinder:
 
 
 class ImageFolderVideoHandler(object):
-    def __init__(self, input_dir_path: Union[str, Path], output_path: Union[str, Path]):
+    def __init__(
+        self,
+        input_dir_path: Union[str, Path],
+        output_path: Union[str, Path],
+        file_batch_size: int,
+    ):
         self._input_file_names: List[str] = []
         self._input_dir_path = input_dir_path
         self._output_path = output_path
+        self._file_batch_size = file_batch_size
+        self._files_to_clean: List[Union[str, Path]] = []
+        self._directories_to_clean: List[Union[str, Path]] = []
+        self._batches: Optional[List[List[str]]] = None
+        self._current_batch = -1
         self.input_tar = None
         self.output_tar = None
 
@@ -176,19 +187,19 @@ class ImageFolderVideoHandler(object):
         return self
 
     def __exit__(self, type, value, traceback):
-        self.remove_input_tar()
-        if self.output_tar is not None and os.path.exists(self.output_tar):
-            os.remove(self.output_tar)
-            self.output_tar = None
+        for f in self._files_to_clean:
+            if os.path.exists(f):
+                os.remove(f)
+        for d in self._directories_to_clean:
+            if os.path.exists(d):
+                shutil.rmtree(d)
 
-    def remove_input_tar(self):
-        if self.input_tar is not None and os.path.exists(self.input_tar):
-            os.remove(self.input_tar)
-            self.input_tar = None
+    def has_more(self) -> bool:
+        if self._batches is None:
+            self._prepare_batches()
+        return (self._current_batch + 1) < len(self._batches)
 
-    def prepare_video_image_folder(self):
-        """ "Create temp files and tar the images in the given directory."""
-
+    def _prepare_batches(self):
         if not is_folder_with_images(self._input_dir_path):
             raise ValueError(
                 "Provide a folder with images when using flag video_as_image_folders"
@@ -198,64 +209,99 @@ class ImageFolderVideoHandler(object):
                 "When processing video image folders, output path cannot be equal to input path."
             )
 
+        files_in_dir = os.listdir(self._input_dir_path)
+        files_in_dir.sort()
+        image_finder = DirectoryImageFinder()
+        input_file_names: List[str] = []
+        for f in files_in_dir:
+            if image_finder.is_image(f):
+                input_file_names.append(f)
+
+        if self._file_batch_size <= 0:
+            self._batches = [input_file_names]
+        else:
+            self._batches = [
+                input_file_names[i : i + self._file_batch_size]
+                for i in range(0, len(input_file_names), self._file_batch_size)
+            ]
+
+    def remove_input_tar(self):
+        if self.input_tar is not None and os.path.exists(self.input_tar):
+            os.remove(self.input_tar)
+            self.input_tar = None
+
+    def add_directory_to_clean(self, dir: Path):
+        """Add a directory that is removed with all files on exit."""
+        self._directories_to_clean.append(dir)
+
+    def remove_directory_to_clean(self, dir: Path):
+        """Remove a directory from the list of dirs to remove on exit."""
+        self._directories_to_clean.remove(dir)
+
+    def prepare_video_image_folder(self):
+        """Create temp files and tar the images in the given directory."""
+        if self._batches is None or not self.has_more():
+            raise RuntimeError("Please call has_more before prepare_video_image_folder")
+
+        self._current_batch += 1
+        current_batch = self._batches[self._current_batch].copy()
+        logging.debug(
+            f"Preparing next batch: {self._current_batch + 1}/{len(self._batches)} of {len(current_batch)} files."
+        )
+
         with tempfile.NamedTemporaryFile(
             mode="w+b", dir=self._input_dir_path, delete=False, suffix=".tar"
         ) as temp_file:
             self.input_tar = temp_file.name
-        image_finder = DirectoryImageFinder()
+            self._files_to_clean.append(self.input_tar)
+
         with tarfile.open(self.input_tar, "w:") as tar:
-            files_in_dir = os.listdir(self._input_dir_path)
-            files_in_dir.sort()
-            for f in files_in_dir:
-                if image_finder.is_image(f):
-                    self._input_file_names.append(f)
-                    # Create the full path to the file
-                    full_path = os.path.join(self._input_dir_path, f)
-                    # Add the file to the tar archive
-                    tar.add(full_path, arcname=f)
+            for f in current_batch:
+                full_path = os.path.join(self._input_dir_path, f)
+                tar.add(full_path, arcname=f)
 
         self.output_tar = tempfile.mktemp(suffix=".tar", dir=self._output_path)
+        self._files_to_clean.append(self.output_tar)
 
     def unpack_and_rename_output(self):
-        """After processing, creates the output folder with the correctly named files."""
+        """After processing, ensures the (batch's) files are in the output folder and correctly named."""
+        temp_folder = tempfile.mkdtemp(dir=self._output_path)
+        self.add_directory_to_clean(Path(temp_folder))
 
         # open tarfile with the default security filter
-        output_tarfile = tarfile.open(self.output_tar, "r")
-        # TODO use filter="data" parameter when we drop 3.7 support
-        output_tarfile.extractall(self._output_path)
+        with tarfile.open(self.output_tar, "r") as output_tarfile:
+            # TODO use filter="data" parameter when we drop 3.7 support
+            output_tarfile.extractall(temp_folder)
+        os.remove(self.output_tar)
 
-        self._check_and_rename_output_files()
+        self._check_and_rename_output_files(temp_folder)
+        os.rmdir(temp_folder)
 
-    def _check_and_rename_output_files(self):
-        input_images = self._input_file_names.copy()
+    def _check_and_rename_output_files(self, temp_folder: str):
+        input_images = self._batches[self._current_batch].copy()
         input_images.sort()
 
         image_finder = DirectoryImageFinder()
-        output_images = image_finder.find_images(self._output_path)
+        output_images = image_finder.find_images(temp_folder)
         output_images.sort()
 
         if len(output_images) != len(input_images):
             raise RuntimeError(
-                "Count of images in input dir and images returned from service unequal!"
+                "Count of images in input batch and images returned from service unequal!"
             )
 
         # check if the renaming is still happening, and if it is, then correct here
         if not input_images == output_images:
-            self._check_for_conflicts(output_images)
 
             i = 0
             for output_image in output_images:
                 os.rename(
-                    os.path.join(self._output_path, output_image),
-                    os.path.join(self._output_path, input_images[i]),
+                    os.path.join(temp_folder, output_image),
+                    os.path.join(temp_folder, input_images[i]),
                 )
                 i = i + 1
 
-    def _check_for_conflicts(self, output_images):
-        target_set = set(self._input_file_names)
-        for i in output_images:
-            if i in target_set:
-                # TODO should be using subdir or rename during extraction to avoid this conflict
-                raise RuntimeError(
-                    f"Conflict check failed, nothing done: Input filename exists in output already: '{i}'"
-                )
+        for image in input_images:
+            shutil.move(
+                os.path.join(temp_folder, image), os.path.join(self._output_path, image)
+            )

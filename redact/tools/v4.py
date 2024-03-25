@@ -145,6 +145,10 @@ def redact_file(
         help="Enable processing of leaf directories with images "
         "as videos with frames in alphabetic order.",
     ),
+    video_as_image_folders_batch_size: int = typer.Option(
+        1500,
+        help="Sets the size of the batches in images.",
+    ),
 ):
     setup_logging(verbose_logging)
 
@@ -179,6 +183,7 @@ def redact_file(
             skip_existing=skip_existing,
             auto_delete_job=auto_delete_job,
             custom_headers=parsed_header,
+            file_batch_size=video_as_image_folders_batch_size,
         )
     else:
         rdct_file(
@@ -323,6 +328,10 @@ def redact_folder(
         help="Enable processing of leaf directories with images "
         "as videos with frames in alphabetic order.",
     ),
+    video_as_image_folders_batch_size: int = typer.Option(
+        1500,
+        help="Sets the size of the batches in images.",
+    ),
 ):
     setup_logging(verbose_logging)
 
@@ -360,4 +369,5 @@ def redact_folder(
         auto_delete_input_file=auto_delete_input_file,
         custom_headers=parsed_header,
         video_as_image_folders=video_as_image_folders,
+        video_as_image_folders_batch_size=video_as_image_folders_batch_size,
     )
