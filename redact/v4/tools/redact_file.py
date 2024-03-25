@@ -1,8 +1,13 @@
 import logging
+import os
 from pathlib import Path
 from typing import Dict, Optional, Union
 
-from redact.commons.utils import normalize_path
+from redact.commons.utils import (
+    normalize_path,
+    ImageFolderVideoHandler,
+    is_folder_with_images,
+)
 from redact.settings import Settings
 from redact.v4 import (
     JobArguments,
@@ -22,13 +27,13 @@ log.debug(f"Settings: {settings}")
 
 
 def redact_file(
-    file_path: str,
+    file_path: Union[str, Path],
     output_type: OutputType,
     service: ServiceType,
     job_args: Optional[JobArguments] = None,
     licence_plate_custom_stamp_path: Optional[str] = None,
     redact_url: str = settings.redact_url_default,
-    output_path: Optional[str] = None,
+    output_path: Optional[Union[str, Path]] = None,
     api_key: Optional[str] = None,
     ignore_warnings: bool = False,
     skip_existing: bool = True,
@@ -53,7 +58,7 @@ def redact_file(
     # skip?
     if skip_existing and Path(output_path).exists():
         log.debug(f"Skipping because output already exists: {output_path}")
-        return
+        return None
 
     # (default) job arguments
     if not job_args:
@@ -125,7 +130,7 @@ def redact_file(
 
 
 def _get_out_path(
-    output_path: Union[str, Path], file_path: Path, output_type: OutputType
+    output_path: Optional[Union[str, Path]], file_path: Path, output_type: OutputType
 ) -> Path:
     if output_path:
         return normalize_path(output_path)
@@ -134,3 +139,104 @@ def _get_out_path(
         f"{file_path.stem}_redacted{file_path.suffix}"
     )
     return normalize_path(anonymized_path)
+
+
+def redact_video_as_image_folder(
+    dir_path: Union[str, Path],
+    output_type: OutputType,
+    service: ServiceType,
+    job_args: Optional[JobArguments] = None,
+    licence_plate_custom_stamp_path: Optional[str] = None,
+    redact_url: str = settings.redact_url_default,
+    output_path: Optional[Union[str, Path]] = None,
+    api_key: Optional[str] = None,
+    ignore_warnings: bool = False,
+    skip_existing: bool = True,
+    auto_delete_job: bool = True,
+    auto_delete_input_file: bool = False,
+    waiting_time_between_job_status_checks: Optional[float] = None,
+    redact_requests_param: Optional[RedactRequests] = None,
+    custom_headers: Optional[Dict[str, str]] = None,
+    file_batch_size: int = 1500,
+) -> Optional[JobStatus]:
+
+    dir_path = normalize_path(dir_path)
+    if not is_folder_with_images(dir_path):
+        raise ValueError("Provide a folder when using redact_video_as_image_folder")
+
+    if output_type in (OutputType.videos, OutputType.overlays):
+        if output_path is None:
+            raise ValueError(
+                "Provide output_path when using redact_video_as_image_folder for overlays and videos"
+            )
+
+        if skip_existing and os.path.exists(output_path):
+            log.info(f"Skipping {dir_path} due to existing path {output_path}")
+            return None
+
+        if skip_existing is False:
+            raise ValueError(
+                "Cannot replace existing results when using redact_video_as_image_folder due to undefined impact to subfolders"
+            )
+
+    if output_type == OutputType.images:
+        raise ValueError(
+            "Cannot handle normal images when using redact_video_as_image_folder"
+        )
+
+    if output_type == OutputType.videos:
+        if file_batch_size is None:
+            file_batch_size = -1
+    else:
+        # everything but videos needs special handling of partial batches, so only videos support for now:
+        file_batch_size = -1
+
+    with ImageFolderVideoHandler(
+        dir_path, output_path=output_path, file_batch_size=file_batch_size
+    ) as handler:
+        output_path_path = Path(output_path)
+
+        output_type_translation = output_type
+        if output_type == OutputType.videos:
+            output_type_translation = OutputType.archives
+            if not os.path.exists(output_path_path):
+                os.makedirs(output_path_path)
+                handler.add_directory_to_clean(output_path_path)
+
+            if file_batch_size is None:
+                file_batch_size = -1
+            else:
+                # everything but videos needs special handling of partial batches, so only videos support for now:
+                file_batch_size = -1
+
+        job_status: Optional[JobStatus]
+        while handler.has_more():
+            handler.prepare_video_image_folder()
+
+            job_status = redact_file(
+                file_path=Path(handler.input_tar),
+                output_type=output_type_translation,
+                output_path=Path(handler.output_tar),
+                service=service,
+                job_args=job_args,
+                licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
+                redact_url=redact_url,
+                api_key=api_key,
+                ignore_warnings=ignore_warnings,
+                skip_existing=skip_existing,
+                auto_delete_job=auto_delete_job,
+                auto_delete_input_file=True,
+                waiting_time_between_job_status_checks=waiting_time_between_job_status_checks,
+                redact_requests_param=redact_requests_param,
+                custom_headers=custom_headers,
+            )
+
+            handler.remove_input_tar()
+            if output_type == OutputType.videos:
+                handler.unpack_and_rename_output()
+
+        if output_type == OutputType.videos:
+            # Done, now the directory need no longer be deleted on handler exit
+            handler.remove_directory_to_clean(output_path_path)
+
+        return job_status

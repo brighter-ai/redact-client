@@ -5,7 +5,10 @@ import typer
 from redact.commons.utils import parse_key_value_pairs, setup_logging
 from redact.settings import Settings
 from redact.v4 import InputType, JobArguments, OutputType, Region, ServiceType
-from redact.v4.tools.redact_file import redact_file as rdct_file
+from redact.v4.tools.redact_file import (
+    redact_file as rdct_file,
+    redact_video_as_image_folder,
+)
 from redact.v4.tools.redact_folder import redact_folder as rdct_folder
 
 settings = Settings()
@@ -137,6 +140,15 @@ def redact_file(
         [],
         help="Key-value pairs in the format key=value which will be added to allr equest header",
     ),
+    video_as_image_folders: bool = typer.Option(
+        False,
+        help="Enable processing of leaf directories with images "
+        "as videos with frames in alphabetic order.",
+    ),
+    video_as_image_folders_batch_size: int = typer.Option(
+        1500,
+        help="Sets the size of the batches in images.",
+    ),
 ):
     setup_logging(verbose_logging)
 
@@ -157,20 +169,37 @@ def redact_file(
         areas_of_interest=areas_of_interest,
     )
 
-    rdct_file(
-        file_path=file_path,
-        output_type=output_type,
-        service=service,
-        job_args=job_args,
-        licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
-        redact_url=redact_url,
-        api_key=api_key,
-        output_path=output_path,
-        ignore_warnings=ignore_warnings,
-        skip_existing=skip_existing,
-        auto_delete_job=auto_delete_job,
-        custom_headers=parsed_header,
-    )
+    if video_as_image_folders:
+        redact_video_as_image_folder(
+            dir_path=file_path,
+            output_type=output_type,
+            service=service,
+            job_args=job_args,
+            licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
+            redact_url=redact_url,
+            api_key=api_key,
+            output_path=output_path,
+            ignore_warnings=ignore_warnings,
+            skip_existing=skip_existing,
+            auto_delete_job=auto_delete_job,
+            custom_headers=parsed_header,
+            file_batch_size=video_as_image_folders_batch_size,
+        )
+    else:
+        rdct_file(
+            file_path=file_path,
+            output_type=output_type,
+            service=service,
+            job_args=job_args,
+            licence_plate_custom_stamp_path=licence_plate_custom_stamp_path,
+            redact_url=redact_url,
+            api_key=api_key,
+            output_path=output_path,
+            ignore_warnings=ignore_warnings,
+            skip_existing=skip_existing,
+            auto_delete_job=auto_delete_job,
+            custom_headers=parsed_header,
+        )
 
 
 @app.command()
@@ -254,9 +283,9 @@ def redact_folder(
         help="A URL to call when the status of the Job changes",
         show_default=False,
     ),
-    redact_url: str = typer.Option(
-        settings.redact_online_url,
-        help="Specify http address or ip of the redact instance",
+    redact_url: List[str] = typer.Option(
+        [settings.redact_online_url],
+        help="Specify http address or ip of the redact instance, or multiple for client-side load balancing",
     ),
     api_key: Optional[str] = typer.Option(
         None,
@@ -294,6 +323,15 @@ def redact_folder(
         [],
         help="Key-value pairs in the format key=value which will be added to allr equest header",
     ),
+    video_as_image_folders: bool = typer.Option(
+        False,
+        help="Enable processing of leaf directories with images "
+        "as videos with frames in alphabetic order.",
+    ),
+    video_as_image_folders_batch_size: int = typer.Option(
+        1500,
+        help="Sets the size of the batches in images.",
+    ),
 ):
     setup_logging(verbose_logging)
 
@@ -330,4 +368,6 @@ def redact_folder(
         auto_delete_job=auto_delete_job,
         auto_delete_input_file=auto_delete_input_file,
         custom_headers=parsed_header,
+        video_as_image_folders=video_as_image_folders,
+        video_as_image_folders_batch_size=video_as_image_folders_batch_size,
     )

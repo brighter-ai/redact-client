@@ -161,6 +161,7 @@ def _try_redact_file_with_relative_path(
     except Exception as e:
         log.debug(f"Unexpected exception: {e}", exc_info=e)
         log.error(f"Error while anonymize {relative_file_path}: {str(e)}")
+    return None
 
 
 def _redact_file_with_relative_path(
