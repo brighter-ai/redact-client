@@ -11,6 +11,7 @@ class ServiceType(StrEnum):
     blur = "blur"
     dnat = "dnat"
     redact_area = "redact_area"
+    mask = "mask"
 
 
 class InputType(StrEnum):
