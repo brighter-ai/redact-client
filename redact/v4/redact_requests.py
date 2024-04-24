@@ -29,8 +29,10 @@ settings = Settings()
 _client_creation_lock = threading.Lock()
 _client_singleton: Optional[httpx.Client] = None  # see get_singleton_client
 
-# limit post requests, because their concurrency seems to put a lot of strain on the API Management
-_post_lock = threading.BoundedSemaphore(2)
+
+_post_locks = {}
+_post_lock_creation_lock = threading.Lock()
+
 
 log = logging.getLogger("redact-requests")
 
@@ -42,6 +44,24 @@ def get_singleton_client():
             _client_singleton = httpx.Client()
         return _client_singleton
 
+def _get_post_lock(url):
+    """
+    With this we limit post requests per-host:port combination.
+    Reason is that their concurrency seems to put a lot of strain on the API Management.
+    """
+    parsed_url = urllib.parse.urlparse(url)
+    port = parsed_url.port
+    if port is None:
+        if parsed_url.scheme == "https":
+            port = 443
+        elif parsed_url.scheme == "http":
+            port = 80
+    lock_key = f"{parsed_url.hostname}:{str(port)}"
+    with _post_lock_creation_lock:
+        if lock_key not in _post_locks:
+            # limit to 2, because this concurrency seems to put a lot of strain on the API Management
+            _post_locks[lock_key] = threading.BoundedSemaphore(2)
+        return _post_locks[lock_key]
 
 class RedactRequests:
     """
@@ -106,7 +126,7 @@ class RedactRequests:
             files["licence_plate_custom_stamp"] = licence_plate_custom_stamp
 
         upload_debug_uuid = uuid.uuid4()
-        with _post_lock:
+        with _get_post_lock(url):
             log.debug(f"Posting to {url} debug id (not output_id): {upload_debug_uuid}")
             # TODO: Remove the timeout when Redact responds quicker after uploading large files
             response = self._retry_on_network_problem_with_backoff(
