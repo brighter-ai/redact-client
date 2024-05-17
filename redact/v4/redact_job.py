@@ -62,7 +62,6 @@ class RedactJob:
         # TODO: Write test for this endpoint
         job_status = self.get_status()
         return {"error": job_status.error}
-        
 
     def wait_until_finished(self, sleep: float = 0.5) -> "RedactJob":
         while self.get_status().is_running():
