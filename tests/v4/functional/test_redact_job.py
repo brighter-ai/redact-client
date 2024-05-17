@@ -68,3 +68,11 @@ class TestRedactJob:
         assert job_status.start_timestamp is not None
         assert job_status.error is None
         assert len(job_status.warnings) == 0
+
+    def test_get_error(self, job):
+        job_error = job.wait_until_finished().get_error()
+        assert type(job_error) == dict
+        assert len(job_error.keys()) == 1
+        error_key = list(job_error.keys())[0]
+        assert error_key == "error"
+        assert not job_error[error_key]

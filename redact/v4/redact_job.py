@@ -59,7 +59,6 @@ class RedactJob:
         )
 
     def get_error(self):
-        # TODO: Write test for this endpoint
         job_status = self.get_status()
         return {"error": job_status.error}
 
