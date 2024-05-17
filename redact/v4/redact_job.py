@@ -60,9 +60,9 @@ class RedactJob:
 
     def get_error(self):
         # TODO: Write test for this endpoint
-        return self.redact.get_error(
-            service=self.service, out_type=self.out_type, output_id=self.output_id
-        )
+        job_status = self.get_status()
+        return {"error": job_status.error}
+        
 
     def wait_until_finished(self, sleep: float = 0.5) -> "RedactJob":
         while self.get_status().is_running():
