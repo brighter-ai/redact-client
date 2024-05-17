@@ -71,7 +71,7 @@ class TestRedactJob:
 
     def test_get_error(self, job):
         job_error = job.wait_until_finished().get_error()
-        assert type(job_error) == dict
+        assert isinstance(job_error, dict)
         assert len(job_error.keys()) == 1
         error_key = list(job_error.keys())[0]
         assert error_key == "error"
