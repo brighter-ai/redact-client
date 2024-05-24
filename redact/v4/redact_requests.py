@@ -272,24 +272,6 @@ class RedactRequests:
 
         return response.json()
 
-    def get_error(
-        self, service: ServiceType, out_type: OutputType, output_id: UUID
-    ) -> Dict:
-        url = urllib.parse.urljoin(
-            self.redact_url,
-            f"{service}/{self.API_VERSION}/{out_type}/{output_id}/error",
-        )
-
-        debug_uuid = uuid.uuid4()
-        response = self._retry_on_network_problem_with_backoff(
-            self._client.get, debug_uuid, url, headers=self._headers
-        )
-
-        if response.status_code != 200:
-            raise RedactResponseError(response=response, msg="Error getting job error")
-
-        return response.json()
-
     def _calculate_retry_backoff(
         self,
         debug_uuid: uuid.UUID,
