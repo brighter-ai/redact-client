@@ -84,7 +84,7 @@ def redact_file(
         ),
         show_default=False,
     ),
-    full_body_segmentation_threshold: Optional[float] = typer.Option(
+    full_body_determination_threshold: Optional[float] = typer.Option(
         None,
         help=(
             "Set the threshold between 0 and 1 that the full body segmentation model uses to decide if "
@@ -152,7 +152,7 @@ def redact_file(
         single_frame_optimized=single_frame_optimized,
         lp_determination_threshold=license_plate_determination_threshold,
         face_determination_threshold=face_determination_threshold,
-        full_body_segmentation_threshold=full_body_segmentation_threshold,
+        full_body_determination_threshold=full_body_determination_threshold,
         status_webhook_url=status_webhook_url,
         areas_of_interest=areas_of_interest,
     )
@@ -234,7 +234,7 @@ def redact_folder(
         ),
         show_default=False,
     ),
-    full_body_segmentation_threshold: Optional[float] = typer.Option(
+    full_body_determination_threshold: Optional[float] = typer.Option(
         None,
         help=(
             "Set the threshold between 0 and 1 that the full body segmentation model uses to decide if "
@@ -309,7 +309,7 @@ def redact_folder(
         single_frame_optimized=single_frame_optimized,
         lp_determination_threshold=license_plate_determination_threshold,
         face_determination_threshold=face_determination_threshold,
-        full_body_segmentation_threshold=full_body_segmentation_threshold,
+        full_body_determination_threshold=full_body_determination_threshold,
         status_webhook_url=status_webhook_url,
         areas_of_interest=areas_of_interest,
     )
