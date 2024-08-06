@@ -36,6 +36,7 @@ class RedactInstance:
         subscription_id: Optional[str] = None,
         api_key: Optional[str] = None,
         custom_headers: Optional[Dict] = None,
+        start_job_timeout: Optional[float] = 60.0,
     ) -> "RedactInstance":
         """
         The default way of creating RedactInstance objects.
@@ -45,6 +46,7 @@ class RedactInstance:
             subscription_id=subscription_id,
             api_key=api_key,
             custom_headers=custom_headers,
+            start_job_timeout=start_job_timeout,
         )
         return cls(redact_requests=redact_requests, service=service, out_type=out_type)
 
@@ -61,6 +63,7 @@ class RedactInstance:
             job_args=job_args,
             licence_plate_custom_stamp=licence_plate_custom_stamp,
         )
+
         return RedactJob(
             redact_requests=self.redact_requests,
             service=self.service,

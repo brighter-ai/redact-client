@@ -37,6 +37,7 @@ def redact_file(
     waiting_time_between_job_status_checks: Optional[float] = None,
     redact_requests_param: Optional[RedactRequests] = None,
     custom_headers: Optional[Dict[str, str]] = None,
+    start_job_timeout: Optional[float] = 60.0,
 ) -> Optional[JobStatus]:
     """
     If no out_path is given, <input_filename_redacted> will be used.
@@ -81,6 +82,7 @@ def redact_file(
                 redact_url=redact_url,
                 api_key=api_key,
                 custom_headers=custom_headers,
+                start_job_timeout=start_job_timeout,
             )
         with open(file_path, "rb") as file:
             job: RedactJob = redact.start_job(
@@ -112,14 +114,15 @@ def redact_file(
         if licence_plate_custom_stamp:
             licence_plate_custom_stamp.close()
 
-    # delete input file
-    if auto_delete_input_file:
-        log.debug(f"Deleting {file_path}")
-        Path(file_path).unlink()
+        # delete input file
+        if auto_delete_input_file:
+            log.debug(f"Deleting {file_path}")
+            Path(file_path).unlink()
 
-    # delete job
-    if auto_delete_job:
-        job.delete()
+        # delete job
+        if auto_delete_job:
+            log.debug(f"Deleting job {job.output_id}")
+            job.delete()
 
     return job_status
 

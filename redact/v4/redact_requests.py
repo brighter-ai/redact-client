@@ -57,13 +57,14 @@ class RedactRequests:
         api_key: Optional[str] = None,
         httpx_client: Optional[httpx.Client] = None,
         custom_headers: Optional[Dict] = None,
-        post_job_timeout: Optional[float] = 60.0,
+        start_job_timeout: Optional[float] = 60.0,
+        retry_total_time_limit: Optional[int] = 600,  # 10 minutes in seconds
     ):
         self.redact_url = normalize_url(redact_url)
         self.api_key = api_key
         self.subscription_id = subscription_id
-        self.retry_total_time_limit: float = 600  # 10 minutes in seconds
-        self.post_job_timeout = post_job_timeout
+        self.retry_total_time_limit: float = retry_total_time_limit
+        self.start_job_timeout = start_job_timeout
 
         self._headers = {"Accept": "*/*"}
         if custom_headers is not None:
@@ -118,7 +119,7 @@ class RedactRequests:
                 files=files,
                 params=job_args.dict(exclude_none=True),
                 headers=self._headers,
-                timeout=self.post_job_timeout,
+                timeout=self.start_job_timeout,
             )
             log.debug(
                 f"Post response to debug id (not output_id) {upload_debug_uuid}: {response}"

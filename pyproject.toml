@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "redact"
-version = "9.0.0"
+version = "9.1.0"
 description = "Command-line and Python client for Brighter AI's Redact"
 authors = ["brighter AI <dev@brighter.ai>"]
 readme = "README.md"

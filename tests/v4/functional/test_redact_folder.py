@@ -4,8 +4,9 @@ from typing import List, Union
 
 import pytest
 
+from redact.errors import RedactConnectError
 from redact.v4 import InputType, JobArguments, OutputType, Region, ServiceType
-from redact.v4.tools.redact_file import redact_file
+from redact.v4.tools.redact_file import RedactRequests, redact_file
 from redact.v4.tools.redact_folder import redact_folder
 from tests.conftest import NUMBER_OF_IMAGES
 
@@ -97,6 +98,42 @@ class TestRedactFolder:
 
         result_file = file_folder / f"{image_path.stem}_redacted{file_extension}"
         assert result_file.exists()
+
+    @pytest.mark.parametrize(
+        "output_type,service",
+        [
+            [OutputType.labels, ServiceType.redact_area],
+            [OutputType.overlays, ServiceType.dnat],
+            [OutputType.images, ServiceType.blur],
+        ],
+    )
+    def test_delete_method_called_on_error(
+        self,
+        image_path: Path,
+        redact_url,
+        optional_api_key,
+        output_type: OutputType,
+        service: ServiceType,
+        mocker,
+    ):
+        mocker.patch.object(
+            RedactRequests, "get_status", side_effect=RedactConnectError("Testing")
+        )
+        redact_request_delete = mocker.patch.object(RedactRequests, "delete_output")
+        # GIVEN an input image, service, and output_type
+        # WHEN the the file is anonymized
+        with pytest.raises(RedactConnectError):
+            redact_file(
+                file_path=image_path,
+                output_type=output_type,
+                service=service,
+                redact_url=redact_url,
+                api_key=optional_api_key,
+                job_args=JobArguments(region=Region.germany),
+            )
+
+        # THEN the delete enpoint is called
+        redact_request_delete.assert_called_once()
 
     @pytest.mark.parametrize(
         "output_type,service,file_extension",

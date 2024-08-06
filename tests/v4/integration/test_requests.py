@@ -1,6 +1,6 @@
 import pytest
 
-from redact.errors import RedactResponseError
+from redact.errors import RedactConnectError, RedactResponseError
 from redact.v4 import JobArguments, OutputType, RedactRequests, Region, ServiceType
 from tests.v4.integration.mock_server import mock_redact_server
 
@@ -116,3 +116,26 @@ def test_mock_server_receives_headers(some_image):
             out_type=out_type,
             job_args=job_args,
         )
+
+
+def test_request_fail_by_timeout(some_image):
+    service = ServiceType.blur
+    out_type = OutputType.images
+    job_args = JobArguments(face=True)
+
+    # GIVEN a (mocked) Redact server with expected timeout
+    with mock_redact_server(
+        expected_path=f"{service.value}/{API_VERSION}/{out_type.value}",
+        expected_timeout=1,
+    ):
+        # WHEN request is created with timeout and retry limit
+        redact_requests = RedactRequests(start_job_timeout=1, retry_total_time_limit=3)
+
+        # THEN the request fails with RedactConnectError because of the timeout
+        with pytest.raises(RedactConnectError):
+            redact_requests.post_job(
+                file=some_image,
+                service=service,
+                out_type=out_type,
+                job_args=job_args,
+            )
