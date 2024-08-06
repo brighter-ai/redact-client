@@ -1,4 +1,4 @@
-VERSION=9.0.0
+VERSION=9.1.0
 
 SHELL := /bin/bash
 
@@ -11,6 +11,13 @@ install:
 	make build
 	pip install . --upgrade
 
+reinstall:
+	make build
+	pip install . --force-reinstall --upgrade
+
+uninstall:
+	pip uninstall redact
+	
 test-functional:
 	poetry run pytest tests/${api_version}/functional/ --api_key $(api_key) --redact_url $(redact_url)
 

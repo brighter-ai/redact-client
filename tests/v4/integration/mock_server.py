@@ -15,6 +15,7 @@ def _mock_server_main(
     expected_job_args: Optional[JobArguments] = None,
     expected_form_content: Optional[dict] = None,
     expected_headers_contain: Optional[dict] = None,
+    expected_timeout: Optional[float] = None,
 ):
     app = FastAPI()
 
@@ -26,6 +27,7 @@ def _mock_server_main(
             expected_job_args=expected_job_args,
             expected_form_content=expected_form_content,
             expected_headers_contain=expected_headers_contain,
+            expected_timeout=expected_timeout,
         )
 
     uvicorn.run(app=app, port=8787)
@@ -37,6 +39,7 @@ def mock_redact_server(
     expected_job_args: Optional[JobArguments] = None,
     expected_form_content: Optional[dict] = None,
     expected_headers_contain: Optional[dict] = None,
+    expected_timeout: Optional[float] = None,
 ):
     """
     Context manager that starts a mock Redact server (127.0.0.1:8787) which returns a 500 error when the request does
@@ -50,6 +53,7 @@ def mock_redact_server(
             expected_job_args,
             expected_form_content,
             expected_headers_contain,
+            expected_timeout,
         ),
         daemon=True,
     )
@@ -66,6 +70,7 @@ async def _mock_redact_request_handler(
     expected_job_args: Optional[JobArguments] = None,
     expected_form_content: Optional[dict] = None,
     expected_headers_contain: Optional[dict] = None,
+    expected_timeout: Optional[float] = None,
 ) -> Response:
     """
     Handle requests by taking a look at the requested path and the query arguments and comparing them to expected ones.
@@ -116,6 +121,9 @@ async def _mock_redact_request_handler(
                 status_code=500,
                 content=f"Received headers content {repr(request.headers)} != expected to contain {repr(expected_headers_contain)}",
             )
+
+    if expected_timeout:
+        time.sleep(expected_timeout + 3)
 
     return Response(
         status_code=200, content=JobPostResponse(output_id=uuid.uuid4()).json()
