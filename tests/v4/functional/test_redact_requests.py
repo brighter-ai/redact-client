@@ -71,7 +71,7 @@ class TestRedactRequests:
 
         # THEN post request was called with the correct timeout value
         _, mock_kwargs = mocked_cls.call_args
-        assert mock_kwargs['timeout'] == expected_timeout
+        assert mock_kwargs["timeout"] == expected_timeout
 
     def test_post_use_start_job_timeout(
         self, redact_requests, some_image, mocker, mocked_response
@@ -93,7 +93,7 @@ class TestRedactRequests:
 
         # THEN post request was called with the start_job_timeout value
         _, mock_kwargs = mocked_cls.call_args
-        assert mock_kwargs['timeout'] == 30
+        assert mock_kwargs["timeout"] == 30
 
     def test_post_no_retry_on_read_timeout(self, redact_requests, some_image, mocker):
         # GIVEN a read timeout will be raised
