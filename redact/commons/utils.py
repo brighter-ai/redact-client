@@ -1,5 +1,8 @@
 import glob
 import logging
+import math
+import os
+from io import BufferedReader, BytesIO, FileIO
 from pathlib import Path
 from typing import List, Union
 
@@ -126,3 +129,14 @@ def parse_key_value_pairs(kv_pairs: List[str]) -> dict:
         result[key] = value
 
     return result
+
+
+def get_filesize_in_gb(file: Union[FileIO, BytesIO, BufferedReader]):
+    if isinstance(file, FileIO) or isinstance(file, BufferedReader):
+        file_size = os.fstat(file.fileno()).st_size
+    elif isinstance(file, BytesIO):
+        file_size = len(file.getbuffer())
+    else:
+        raise ValueError("Only FileIO, BytesIO or BufferedReader are supported.")
+
+    return math.ceil(file_size / (1024 * 1024 * 1024))

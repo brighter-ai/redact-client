@@ -36,7 +36,7 @@ class RedactInstance:
         subscription_id: Optional[str] = None,
         api_key: Optional[str] = None,
         custom_headers: Optional[Dict] = None,
-        start_job_timeout: Optional[float] = 60.0,
+        start_job_timeout: Optional[float] = None,
     ) -> "RedactInstance":
         """
         The default way of creating RedactInstance objects.

@@ -1,10 +1,13 @@
 import os
+import tempfile
+from io import BytesIO
 from pathlib import Path
 
 import pytest
 
 from redact.commons.utils import (
     files_in_dir,
+    get_filesize_in_gb,
     images_in_dir,
     normalize_path,
     parse_key_value_pairs,
@@ -88,3 +91,34 @@ def test_parse_key_value_pairs(input, expected):
 def test_parse_key_value_pairs_exception_on_illformatted(input):
     with pytest.raises(ValueError):
         _ = parse_key_value_pairs(input)
+
+
+@pytest.mark.parametrize("invalid_input", ["this is not a file object", 12345, None])
+def test_get_filesize_in_gb_invalid_type(invalid_input):
+    with pytest.raises(ValueError):
+        get_filesize_in_gb(invalid_input)
+
+
+@pytest.fixture
+def file_io():
+    with tempfile.NamedTemporaryFile() as temp_file:
+        temp_file.write(b"0" * 1024 * 1024)
+        temp_file.flush()
+
+        with open(temp_file.name, "rb") as file:
+            yield file
+
+
+@pytest.fixture
+def bytes_io():
+    data = b"0" * 1024 * 1024
+    return BytesIO(data)
+
+
+@pytest.mark.parametrize(
+    "file_fixture, expected_size", [("file_io", 1), ("bytes_io", 1)]
+)
+def test_get_filesize_in_gb(file_fixture, expected_size, request):
+    file = request.getfixturevalue(file_fixture)
+
+    assert get_filesize_in_gb(file) == expected_size

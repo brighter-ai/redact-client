@@ -27,3 +27,12 @@ class RedactResponseError(Exception):
         if self.msg:
             s = s + " " + self.msg
         return s
+
+
+class RedactReadTimeout(Exception):
+    def __init__(self) -> None:
+        super(RedactReadTimeout, self).__init__()
+        self.msg = "Request timed out. The file upload may have completed successfully despite the timeout. Please check the status endpoint for a new job to confirm whether the upload was successful"
+
+    def __str__(self):
+        return self.msg

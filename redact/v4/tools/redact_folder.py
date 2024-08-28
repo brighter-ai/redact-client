@@ -45,7 +45,7 @@ def redact_folder(
     auto_delete_job: bool = True,
     auto_delete_input_file: bool = False,
     custom_headers: Optional[Dict[str, str]] = None,
-    start_job_timeout: Optional[float] = 60.0,
+    start_job_timeout: Optional[float] = None,
 ) -> JobsSummary:
     # Normalize paths, e.g.: '~/..' -> '/home'
     in_dir_path = normalize_path(input_dir)

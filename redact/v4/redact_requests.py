@@ -7,13 +7,14 @@ import urllib.parse
 import uuid
 from io import FileIO
 from pathlib import Path
-from typing import IO, Any, Dict, Optional
+from typing import IO, Any, Callable, Dict, Optional, Type
 from uuid import UUID
 
 import httpx
 
 from redact.api_versions import REDACT_API_VERSIONS
-from redact.errors import RedactConnectError, RedactResponseError
+from redact.commons.utils import get_filesize_in_gb
+from redact.errors import RedactConnectError, RedactReadTimeout, RedactResponseError
 from redact.settings import Settings
 from redact.utils import normalize_url, retrieve_file_name
 from redact.v4.data_models import (
@@ -39,7 +40,7 @@ def get_singleton_client():
     global _client_singleton
     with _client_creation_lock:
         if _client_singleton is None:
-            _client_singleton = httpx.Client()
+            _client_singleton = httpx.Client(timeout=settings.base_timeout)
         return _client_singleton
 
 
@@ -57,7 +58,7 @@ class RedactRequests:
         api_key: Optional[str] = None,
         httpx_client: Optional[httpx.Client] = None,
         custom_headers: Optional[Dict] = None,
-        start_job_timeout: Optional[float] = 60.0,
+        start_job_timeout: Optional[float] = None,
         retry_total_time_limit: Optional[int] = 600,  # 10 minutes in seconds
     ):
         self.redact_url = normalize_url(redact_url)
@@ -104,12 +105,19 @@ class RedactRequests:
         if not job_args:
             job_args = JobArguments()
 
+        timeout = (
+            settings.base_timeout + (get_filesize_in_gb(file) * 10)
+            if self.start_job_timeout is None
+            else self.start_job_timeout
+        )
+
         files = {"file": file}
         if licence_plate_custom_stamp:
             files["licence_plate_custom_stamp"] = licence_plate_custom_stamp
 
         upload_debug_uuid = uuid.uuid4()
         with _post_lock:
+            error_callbacks = {httpx.ReadTimeout: self._raise_on_readtimeout}
             log.debug(f"Posting to {url} debug id (not output_id): {upload_debug_uuid}")
             # TODO: Remove the timeout when Redact responds quicker after uploading large files
             response = self._retry_on_network_problem_with_backoff(
@@ -119,7 +127,8 @@ class RedactRequests:
                 files=files,
                 params=job_args.dict(exclude_none=True),
                 headers=self._headers,
-                timeout=self.start_job_timeout,
+                timeout=timeout,
+                error_callbacks=error_callbacks,
             )
             log.debug(
                 f"Post response to debug id (not output_id) {upload_debug_uuid}: {response}"
@@ -301,12 +310,22 @@ class RedactRequests:
         )
         return retry_start, retry_delay
 
+    def _raise_on_readtimeout(self, e):
+        raise RedactReadTimeout() from e
+
     def _retry_on_network_problem_with_backoff(
-        self, func, debug_uuid: uuid.UUID, *positional_arguments, **keyword_arguments
+        self,
+        func,
+        debug_uuid: uuid.UUID,
+        *positional_arguments,
+        error_callbacks: Optional[Dict[Type[Exception], Callable]] = None,
+        **keyword_arguments,
     ) -> Any:
+        if error_callbacks is None:
+            error_callbacks = {}
+
         retry_start = -1
         retry_delay = -1
-
         while True:
             try:
                 return func(*positional_arguments, **keyword_arguments)
@@ -315,6 +334,11 @@ class RedactRequests:
                 httpx.TimeoutException,
                 httpx.ProtocolError,
             ) as e:
+                for error_type, callback in error_callbacks.items():
+                    if isinstance(e, error_type):
+                        callback(e)
+                        return
+
                 retry_start, retry_delay = self._calculate_retry_backoff(
                     debug_uuid, retry_start, retry_delay, e
                 )
