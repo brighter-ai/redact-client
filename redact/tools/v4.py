@@ -142,6 +142,7 @@ def redact_file(
         help=(
             "Set the Redact Job creation timeout in seconds, "
             "specifying how long to wait before the request to Redact fails."
+            "If not set, the timeout will be automatically calculated based on the file size."
         ),
     ),
 ):
@@ -307,6 +308,7 @@ def redact_folder(
         help=(
             "Set the Redact Job creation timeout in seconds, "
             "specifying how long to wait before the request to Redact fails."
+            "If not set, the timeout will be automatically calculated based on the file size."
         ),
     ),
 ):
