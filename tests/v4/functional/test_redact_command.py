@@ -66,7 +66,7 @@ class TestRedactCommand:
             skip_existing=True,
             auto_delete_job=True,
             custom_headers={"foo": "boo", "hello": "world"},
-            start_job_timeout=60,
+            start_job_timeout=None,
         )
 
     def test_redact_folder_command_sends_none_values(
@@ -116,5 +116,5 @@ class TestRedactCommand:
             auto_delete_job=True,
             auto_delete_input_file=False,
             custom_headers={"foo": "boo", "hello": "world"},
-            start_job_timeout=60,
+            start_job_timeout=None,
         )

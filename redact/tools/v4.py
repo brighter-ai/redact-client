@@ -138,10 +138,11 @@ def redact_file(
         help="Key-value pairs in the format key=value which will be added to allr equest header",
     ),
     start_job_timeout: Optional[float] = typer.Option(
-        60.0,
+        None,
         help=(
             "Set the Redact Job creation timeout in seconds, "
             "specifying how long to wait before the request to Redact fails."
+            "If not set, the timeout will be automatically calculated based on the file size."
         ),
     ),
 ):
@@ -303,10 +304,11 @@ def redact_folder(
         help="Key-value pairs in the format key=value which will be added to allr equest header",
     ),
     start_job_timeout: Optional[float] = typer.Option(
-        60.0,
+        None,
         help=(
             "Set the Redact Job creation timeout in seconds, "
             "specifying how long to wait before the request to Redact fails."
+            "If not set, the timeout will be automatically calculated based on the file size."
         ),
     ),
 ):
