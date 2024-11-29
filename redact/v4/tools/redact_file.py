@@ -105,8 +105,14 @@ def redact_file(
             for warning in job_status.warnings:
                 log.warning(f"Warning for '{file_path}': {warning}")
         if job_status.state == JobState.failed:
-            error_output_id = f" {job_status.output_id}" if job_status and job_status.output_id else ""
-            log.error(f"Job{error_output_id} failed for '{file_path}': {job_status.error}")
+            error_output_id = (
+                f" {job_status.output_id}"
+                if job_status and job_status.output_id
+                else ""
+            )
+            log.error(
+                f"Job{error_output_id} failed for '{file_path}': {job_status.error}"
+            )
             return job_status
 
         # stream result to file
