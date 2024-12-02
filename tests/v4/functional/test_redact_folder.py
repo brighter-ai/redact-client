@@ -139,7 +139,7 @@ class TestRedactFolder:
         "output_type,service,file_extension",
         [
             [OutputType.labels, ServiceType.redact_area, ".json"],
-            [OutputType.overlays, ServiceType.blur, ".apng"],
+            [OutputType.overlays, ServiceType.blur, ".tar"],
         ],
     )
     def test_video_correct_file_ending(
@@ -174,7 +174,7 @@ class TestRedactFolder:
         "output_type,service,file_extension",
         [
             [OutputType.labels, ServiceType.redact_area, ".json"],
-            [OutputType.overlays, ServiceType.blur, ".apng"],
+            [OutputType.overlays, ServiceType.blur, ".tar"],
         ],
     )
     def test_redact_folder_video_correct_file_ending_for_overlays(

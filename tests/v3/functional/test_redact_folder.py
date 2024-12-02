@@ -85,7 +85,7 @@ class TestRedactFolder:
         file_folder = video_path.parent
         assert len(os.listdir(file_folder)) == 2
 
-        result_file = file_folder / f"{video_path.stem}_redacted.apng"
+        result_file = file_folder / f"{video_path.stem}_redacted.tar"
         assert result_file.exists()
 
     def test_redact_folder_video_correct_file_ending_for_overlays(
@@ -112,4 +112,4 @@ class TestRedactFolder:
             p.relative_to(output_path) for p in output_path.rglob("*.*")
         ]
         for file in files_in_out_dir:
-            assert file.suffix == ".apng"
+            assert file.suffix == ".tar"
