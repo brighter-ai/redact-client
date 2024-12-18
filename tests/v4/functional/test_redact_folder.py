@@ -255,3 +255,70 @@ class TestRedactFolder:
         ]
         for file in files_in_out_dir:
             assert file.suffix == ".jpeg"
+
+    def test_redact_folder_auto_delete_input_only_on_success(
+        self, broken_video_path: Path, redact_url, optional_api_key, tmp_path_factory
+    ):
+        # GIVEN an input dir (with videos) and an output dir
+        videos_path = broken_video_path.parent
+        output_path = tmp_path_factory.mktemp("vid_dir_out")
+
+        files_in_input_dir_at_start = len([p for p in videos_path.rglob("*.*")])
+
+        redact_folder(
+            input_dir=videos_path,
+            output_dir=output_path,
+            input_type=InputType.videos,
+            output_type=OutputType.videos,
+            service=ServiceType.blur,
+            redact_url=redact_url,
+            api_key=optional_api_key,
+            n_parallel_jobs=1,
+            ignore_warnings=True,
+            auto_delete_input_file=True
+        )
+
+        # THEN no input videos are anonymized in the output dir
+        files_in_out_dir = [
+            p.relative_to(output_path) for p in output_path.rglob("*.*")
+        ]
+        assert len(files_in_out_dir) == 0
+
+        # no input videos were deleted
+        files_in_input_dir = [
+            p.relative_to(videos_path) for p in videos_path.rglob("*.*")
+        ]
+        assert len(files_in_input_dir) == files_in_input_dir_at_start
+
+    def test_redact_folder_auto_delete_input_works(
+        self, images_path: Path, redact_url, optional_api_key, tmp_path_factory
+    ):
+        # GIVEN an input dir and an output dir
+        output_path = tmp_path_factory.mktemp("vid_dir_out")
+
+        files_in_input_dir_at_start = len([p for p in images_path.rglob("*.*")])
+
+        redact_folder(
+            input_dir=images_path,
+            output_dir=output_path,
+            input_type=InputType.images,
+            output_type=OutputType.images,
+            service=ServiceType.blur,
+            redact_url=redact_url,
+            api_key=optional_api_key,
+            n_parallel_jobs=3,
+            ignore_warnings=True,
+            auto_delete_input_file=True
+        )
+
+        # THEN no input images are anonymized in the output dir
+        files_in_out_dir = [
+            p.relative_to(output_path) for p in output_path.rglob("*.*")
+        ]
+        assert len(files_in_out_dir) == files_in_input_dir_at_start
+
+        # all input images were deleted
+        files_in_input_dir = [
+            p.relative_to(images_path) for p in images_path.rglob("*.*")
+        ]
+        assert len(files_in_input_dir) == 0
