@@ -104,6 +104,7 @@ def video_path(tmp_path, resource_path):
     video_path = resource_path / "not_starting_with_keyframe.mp4"
     return _copy_file_to_tmp_path(tmp_path=tmp_path, file_path=video_path)
 
+
 @pytest.fixture
 def broken_video_path(tmp_path, resource_path):
     video_path = resource_path / "broken_video.mp4"

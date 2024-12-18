@@ -275,7 +275,7 @@ class TestRedactFolder:
             api_key=optional_api_key,
             n_parallel_jobs=1,
             ignore_warnings=True,
-            auto_delete_input_file=True
+            auto_delete_input_file=True,
         )
 
         # THEN no input videos are anonymized in the output dir
@@ -308,7 +308,7 @@ class TestRedactFolder:
             api_key=optional_api_key,
             n_parallel_jobs=3,
             ignore_warnings=True,
-            auto_delete_input_file=True
+            auto_delete_input_file=True,
         )
 
         # THEN no input images are anonymized in the output dir
