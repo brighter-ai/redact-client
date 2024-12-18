@@ -140,14 +140,14 @@ def redact_file(
         log.debug(f"Deleting {file_path}")
         Path(file_path).unlink()
 
-        try:
-            # delete job
-            if auto_delete_job:
-                log.debug(f"Deleting job {job.output_id}")
-                job.delete()
-        except UnboundLocalError:
-            # if the starting the job failed, there is no job variable and this Exception will be thrown
-            pass
+    try:
+        # delete job
+        if auto_delete_job:
+            log.debug(f"Deleting job {job.output_id}")
+            job.delete()
+    except UnboundLocalError:
+        # if the starting the job failed, there is no job variable and this Exception will be thrown
+        pass
 
     return job_status
 
