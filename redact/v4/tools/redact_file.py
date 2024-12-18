@@ -121,19 +121,21 @@ def redact_file(
         if licence_plate_custom_stamp:
             licence_plate_custom_stamp.close()
 
-        # delete input file
-        if auto_delete_input_file:
-            log.debug(f"Deleting {file_path}")
-            Path(file_path).unlink()
+        # End of finally. Delete input file etc should not be included in finally.
 
-        try:
-            # delete job
-            if auto_delete_job:
-                log.debug(f"Deleting job {job.output_id}")
-                job.delete()
-        except UnboundLocalError:
-            # if the starting the job failed, there is no job variable and this Exception will be thrown
-            pass
+    # delete input file
+    if auto_delete_input_file:
+        log.debug(f"Deleting {file_path}")
+        Path(file_path).unlink()
+
+    try:
+        # delete job
+        if auto_delete_job:
+            log.debug(f"Deleting job {job.output_id}")
+            job.delete()
+    except UnboundLocalError:
+        # if the starting the job failed, there is no job variable and this Exception will be thrown
+        pass
 
     return job_status
 
