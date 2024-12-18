@@ -125,20 +125,23 @@ def redact_file(
 
         # stream result to file
         job.download_result_to_file(file=output_path, ignore_warnings=ignore_warnings)
+
+        # write labels
+        if save_labels:
+            labels = job.get_labels().json()
+            with open(_get_labels_path(output_path), "w") as f:
+                f.write(labels)
+
+        # delete input file only if processing was successful
+        if auto_delete_input_file:
+            log.debug(f"Deleting {file_path}")
+            Path(file_path).unlink()
+
+        return job_status
+
     finally:
         if licence_plate_custom_stamp:
             licence_plate_custom_stamp.close()
-
-    # write labels
-    if save_labels:
-        labels = job.get_labels().json()
-        with open(_get_labels_path(output_path), "w") as f:
-            f.write(labels)
-
-    # delete input file
-    if auto_delete_input_file:
-        log.debug(f"Deleting {file_path}")
-        Path(file_path).unlink()
 
         try:
             # delete job
@@ -148,8 +151,6 @@ def redact_file(
         except UnboundLocalError:
             # if the starting the job failed, there is no job variable and this Exception will be thrown
             pass
-
-    return job_status
 
 
 def _get_out_path(
