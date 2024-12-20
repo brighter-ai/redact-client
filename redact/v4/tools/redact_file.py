@@ -117,17 +117,20 @@ def redact_file(
 
         # stream result to file
         job.download_result_to_file(file=output_path, ignore_warnings=ignore_warnings)
-    finally:
-        if licence_plate_custom_stamp:
-            licence_plate_custom_stamp.close()
 
-        # delete input file
+        # delete input file only if processing was successful
         if auto_delete_input_file:
             log.debug(f"Deleting {file_path}")
             Path(file_path).unlink()
 
+        return job_status
+
+    finally:
+        if licence_plate_custom_stamp:
+            licence_plate_custom_stamp.close()
+
         try:
-            # delete job
+            # delete job in finally, to also delete and cancel server-side jobs if redact-client is killed (e.g. CTRL+C)
             if auto_delete_job:
                 log.debug(f"Deleting job {job.output_id}")
                 job.delete()
@@ -135,7 +138,7 @@ def redact_file(
             # if the starting the job failed, there is no job variable and this Exception will be thrown
             pass
 
-    return job_status
+        # End of finally. Delete input file intentionally not included in finally.
 
 
 def _get_out_path(
