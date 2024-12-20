@@ -1,4 +1,4 @@
-VERSION=9.3.0
+VERSION=10.0.0
 
 SHELL := /bin/bash
 
