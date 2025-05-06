@@ -189,24 +189,20 @@ class RedactRequests:
                     msg=f"Error downloading job result for output_id {output_id}, debug_uuid {debug_uuid}: "
                     f"{response.read().decode()}",
                 )
-            temp_file = tempfile.NamedTemporaryFile(
-                "wb", dir=str(file.parent), delete=False
+
+            file_name = Path(retrieve_file_name(headers=response.headers))
+            anonymized_path = Path(file.parent).joinpath(
+                f"{file.stem}{file_name.suffix}"
             )
             finished = False
             try:
-                with temp_file:
+                with anonymized_path.open("wb"):
                     for chunk in response.iter_bytes():
-                        temp_file.write(chunk)
+                        anonymized_path.write(chunk)
                 finished = True
-            finally:
-                if finished:
-                    file_name = Path(retrieve_file_name(headers=response.headers))
-                    anonymized_path = Path(file.parent).joinpath(
-                        f"{file.stem}{file_name.suffix}"
-                    )
-                    os.rename(temp_file.name, str(anonymized_path))
-                else:
-                    os.unlink(temp_file.name)
+            except Exception as e:
+                log.exception(f"failed to stream binary data into the file {anonymized_path}: {e}")
+                anonymized_path.unlink(missing_ok=True)
 
     def write_output_to_file(
         self,
