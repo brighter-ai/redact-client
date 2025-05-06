@@ -194,9 +194,9 @@ class RedactRequests:
             )
             finished = False
             try:
-                with anonymized_path.open("wb"):
+                with anonymized_path.open("wb") as anonymized_file:
                     for chunk in response.iter_bytes():
-                        anonymized_path.write(chunk)
+                        anonymized_file.write(chunk)
                 finished = True
             except Exception as e:
                 log.exception(
