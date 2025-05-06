@@ -201,7 +201,9 @@ class RedactRequests:
                         anonymized_path.write(chunk)
                 finished = True
             except Exception as e:
-                log.exception(f"failed to stream binary data into the file {anonymized_path}: {e}")
+                log.exception(
+                    f"failed to stream binary data into the file {anonymized_path}: {e}"
+                )
                 anonymized_path.unlink(missing_ok=True)
 
     def write_output_to_file(
