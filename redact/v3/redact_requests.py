@@ -1,6 +1,4 @@
 import logging
-import os
-import tempfile
 import threading
 import time
 import urllib.parse
@@ -204,6 +202,8 @@ class RedactRequests:
                 log.exception(
                     f"failed to stream binary data into the file {anonymized_path}: {e}"
                 )
+
+            if not finished:
                 anonymized_path.unlink(missing_ok=True)
 
     def write_output_to_file(
