@@ -24,6 +24,9 @@ jobs:
       - name: Build & Install Package
         run: |
           make install
+      - name: check packages
+        run: |
+          pip list
       - name: Test CLI Endpoints
         run: |
           make test-cmd-install
