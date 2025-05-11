@@ -62,16 +62,12 @@ class RedactJob:
     def download_result_to_file(
         self, file: Path, ignore_warnings: bool = False
     ) -> Optional[Path]:
-        original_file = self.get_status().file_name
-        if original_file is not None:
-            original_file = Path(original_file)
 
         return self.redact.write_output_to_file(
             service=self.service,
             out_type=self.out_type,
             output_id=self.output_id,
             file=file,
-            original_file=original_file,
             ignore_warnings=ignore_warnings,
         )
 

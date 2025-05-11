@@ -184,7 +184,6 @@ class RedactRequests:
         url,
         params,
         headers,
-        original_file: Path = None,
     ) -> Optional[Path]:
         with self._client.stream(
             "GET", url, params=params, headers=headers
@@ -207,15 +206,9 @@ class RedactRequests:
                 finished = True
             finally:
                 if finished:
-                    if original_file is not None:
-                        log.debug(f"getting original file suffix {original_file}")
-                        anonymized_path = (
-                            file.parent / f"{file.stem}{original_file.suffix}"
-                        )
-                    else:
-                        log.debug(f"getting headers file type suffix {original_file}")
-                        file_name = Path(retrieve_file_name(headers=response.headers))
-                        anonymized_path = file.parent / f"{file.stem}{file_name.suffix}"
+                    file_name = Path(retrieve_file_name(headers=response.headers))
+                    log.debug(f"getting headers file type suffix {file_name}")
+                    anonymized_path = file.parent / f"{file.stem}{file_name.suffix}"
 
                     target_file.rename(anonymized_path)
                     log.debug(
@@ -231,7 +224,6 @@ class RedactRequests:
         out_type: OutputType,
         output_id: UUID,
         file: Path,
-        original_file: Path = None,
         ignore_warnings: bool = False,
     ) -> Optional[Path]:
         """
@@ -251,7 +243,6 @@ class RedactRequests:
             output_id,
             file,
             url,
-            original_file=original_file,
             params=query_params,
             headers=self._headers,
         )
