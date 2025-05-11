@@ -27,3 +27,4 @@ jobs:
       - name: Test CLI Endpoints
         run: |
           make test-cmd-install
+
