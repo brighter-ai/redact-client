@@ -819,4 +819,4 @@ standard = ["PyYAML (>=5.1)", "colorama (>=0.4)", "httptools (>=0.4.0)", "python
 [metadata]
 lock-version = "2.0"
 python-versions = ">= 3.8, < 3.12"
-content-hash = "e37f5d91384ab4c4a84de5435b869132e39b0b80b2fbdc858f0eb2c68c65dc56"
+content-hash = "ca39bfbd4036dc1ffe09dd64b619903263e37ef164ccebfeb785e33344b8539c"
