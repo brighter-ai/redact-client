@@ -13,7 +13,12 @@ import httpx
 
 from redact.api_versions import REDACT_API_VERSIONS
 from redact.commons.utils import get_filesize_in_gb
-from redact.errors import RedactConnectError, RedactReadTimeout, RedactResponseError
+from redact.errors import (
+    FileDownloadError,
+    RedactConnectError,
+    RedactReadTimeout,
+    RedactResponseError,
+)
 from redact.settings import Settings
 from redact.utils import normalize_url, retrieve_file_name
 from redact.v4.data_models import (
