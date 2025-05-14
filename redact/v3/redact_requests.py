@@ -12,7 +12,7 @@ from uuid import UUID
 import httpx
 
 from redact.api_versions import REDACT_API_VERSIONS
-from redact.errors import RedactConnectError, RedactResponseError
+from redact.errors import FileDownloadError, RedactConnectError, RedactResponseError
 from redact.settings import Settings
 from redact.utils import normalize_url, retrieve_file_name
 from redact.v3.data_models import (
@@ -220,7 +220,7 @@ class RedactRequests:
                 else:
                     target_file.unlink(missing_ok=True)
 
-                    raise RuntimeError(f"failed to download the file {file}")
+                    raise FileDownloadError(f"failed to download the file {file}")
 
     def write_output_to_file(
         self,

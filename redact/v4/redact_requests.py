@@ -178,7 +178,7 @@ class RedactRequests:
 
     def _stream_output_to_file(
         self, debug_uuid, output_id, file: Path, url, params, headers
-    ) -> Optional[Path]:
+    ) -> Path:
         with self._client.stream(
             "GET", url, params=params, headers=headers
         ) as response:
@@ -214,7 +214,7 @@ class RedactRequests:
                 else:
                     target_file.unlink(missing_ok=True)
 
-                    raise RuntimeError(f"failed to download the file {file}")
+                    raise FileDownloadError(f"failed to download the file {file}")
 
     def write_output_to_file(
         self,
@@ -223,7 +223,7 @@ class RedactRequests:
         output_id: UUID,
         file: Path,
         ignore_warnings: bool = False,
-    ) -> Optional[Path]:
+    ) -> Path:
         """
         Retrieves job result and streams it to file, greatly reducing memory load
         and resolving memory fragmentation problems.
