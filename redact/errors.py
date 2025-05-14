@@ -36,3 +36,10 @@ class RedactReadTimeout(Exception):
 
     def __str__(self):
         return self.msg
+
+
+class FileDownloadError(Exception):
+    """Raised when a file cannot be downloaded from the backend server."""
+
+    def __init__(self, message):
+        super().__init__(message)
