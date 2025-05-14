@@ -198,7 +198,6 @@ class RedactRequests:
                 with temp_file:
                     for chunk in response.iter_bytes():
                         temp_file.write(chunk)
-                raise Exception("BOO")
                 finished = True
             finally:
                 if finished:
