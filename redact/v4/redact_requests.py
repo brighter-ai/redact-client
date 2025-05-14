@@ -1,5 +1,4 @@
 import logging
-import os
 import tempfile
 import threading
 import time
