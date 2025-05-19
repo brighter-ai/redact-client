@@ -19,13 +19,13 @@ uninstall:
 	pip uninstall redact
 	
 test-functional:
-	poetry run pytest tests/${api_version}/functional/ --api_key $(api_key) --redact_url $(redact_url)
+	poetry run pytest -vvs tests/${api_version}/functional/ --api_key $(api_key) --redact_url $(redact_url)
 
 test-unit:
-	poetry run pytest tests/commons/
+	poetry run pytest -vvs tests/commons/
 
 test-integration:
-	poetry run pytest tests/${api_version}/integration/
+	poetry run pytest -vvs tests/${api_version}/integration/
 
 test-cmd-install:
 	redact_file --help && redact_folder --help && echo "OK: Command-line endpoints installed"

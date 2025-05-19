@@ -151,4 +151,5 @@ class TestRedactToolsWithSubscriptionKey:
             n_parallel_jobs=1,
             api_key=api_key,
             save_labels=False,
+            verbose_logging=True,
         )
