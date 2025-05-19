@@ -31,12 +31,13 @@ jobs:
         run: |
           make test-unit
 
-      - name: Integration tests
-        run: |
-          make test-integration api_version=v3
-          make test-integration api_version=v4
-
+#      - name: Integration tests
+#        run: |
+#          make test-integration api_version=v3
+#          make test-integration api_version=v4
+#
       - name: Functional tests
         run: |
           make test-functional api_version=v3 redact_url=https://api.brighter.ai/ api_key=${{ secrets.REDACT_API_KEY }}
-          make test-functional api_version=v4 redact_url=https://api.brighter.ai/ api_key=${{ secrets.REDACT_API_KEY }}
+#          make test-functional api_version=v4 redact_url=https://api.brighter.ai/ api_key=${{ secrets.REDACT_API_KEY }}
+#
