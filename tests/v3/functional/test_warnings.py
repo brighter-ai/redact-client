@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pytest
 
+from redact.commons.utils import setup_logging
 from redact.errors import RedactResponseError
 from redact.v3 import (
     InputType,
@@ -82,6 +83,7 @@ class TestWarnings:
         # WHEN all videos in the folder are redacted
         tmp_out_path = tmp_path_factory.mktemp("tmp_out")
         print(f"tmp_out_path {tmp_out_path}")
+        setup_logging(verbose_logging=True)
         redact_folder(
             input_dir=tmp_in_path,
             output_dir=tmp_out_path,
@@ -92,7 +94,6 @@ class TestWarnings:
             redact_url=redact_url,
             api_key=optional_api_key,
             ignore_warnings=ignore_warnings,
-            verbose_logging=True,
         )
 
         # THEN the output folder has a video iff warnings are ignored

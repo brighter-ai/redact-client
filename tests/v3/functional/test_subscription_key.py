@@ -1,5 +1,6 @@
 import pytest
 
+from redact.commons.utils import setup_logging
 from redact.errors import RedactResponseError
 from redact.settings import Settings
 from redact.v3 import InputType, OutputType, RedactInstance, RedactRequests, ServiceType
@@ -141,6 +142,7 @@ class TestRedactToolsWithSubscriptionKey:
         output_path = tmp_path_factory.mktemp("imgs_dir_out")
 
         # WHEN the folder is anonymized through Redact Online with valid api key
+        setup_logging(verbose_logging=True)
         redact_folder(
             input_dir=images_path,
             output_dir=output_path,
@@ -151,5 +153,4 @@ class TestRedactToolsWithSubscriptionKey:
             n_parallel_jobs=1,
             api_key=api_key,
             save_labels=False,
-            verbose_logging=True,
         )
