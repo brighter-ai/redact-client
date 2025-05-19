@@ -1,6 +1,5 @@
 import time
 from pathlib import Path
-from typing import Optional
 from uuid import UUID
 
 from redact.settings import Settings
@@ -47,7 +46,7 @@ class RedactJob:
 
     def download_result_to_file(
         self, file: Path, ignore_warnings: bool = False
-    ) -> Optional[Path]:
+    ) -> Path:
         return self.redact.write_output_to_file(
             service=self.service,
             out_type=self.out_type,

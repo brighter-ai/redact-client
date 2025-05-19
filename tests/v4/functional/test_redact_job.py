@@ -1,10 +1,14 @@
 import io
+import logging
+from pathlib import Path
 from typing import IO
 
 import pytest
 from PIL import Image
+from pytest_mock import MockerFixture
 
-from redact.errors import RedactResponseError
+from redact.api_versions import REDACT_API_VERSIONS
+from redact.errors import FileDownloadError, RedactResponseError
 from redact.v4 import JobArguments, JobState, RedactInstance, Region
 
 
@@ -45,6 +49,80 @@ class TestRedactJob:
         some_image.seek(0)
         original_img = Image.open(some_image)
         assert anonymized_img.size == original_img.size
+
+    @pytest.mark.parametrize(
+        argnames="ignore_warnings",
+        argvalues=[False, True],
+        ids=["do not ignore warnings", "ignore warnings"],
+    )
+    def test_download_result_into_file(
+        self,
+        tmp_path: Path,
+        any_img_redact_inst: RedactInstance,
+        some_image: IO[bytes],
+        ignore_warnings: bool,
+    ):
+        # GIVEN an image and the corresponding Redact job
+        job = any_img_redact_inst.start_job(some_image)
+
+        output_path = (
+            tmp_path
+            / f"{REDACT_API_VERSIONS.v4}_{job.service}_{job.out_type}_redacted_{ignore_warnings}"  # noqa W503
+        )
+
+        # WHEN the job is finished and the result downloaded
+        job_result = job.wait_until_finished().download_result_to_file(
+            file=output_path, ignore_warnings=ignore_warnings
+        )
+        print(f"job_result {job_result}")
+        logging.info(f"job_result {job_result}")
+
+        # THEN the response exists
+        assert job_result.is_file()
+
+    @pytest.mark.parametrize(
+        argnames="ignore_warnings",
+        argvalues=[False, True],
+        ids=["do not ignore warnings", "ignore warnings"],
+    )
+    def test_download_result_into_file_raises(
+        self,
+        tmp_path: Path,
+        any_img_redact_inst: RedactInstance,
+        some_image: IO[bytes],
+        ignore_warnings: bool,
+        mocker: MockerFixture,
+    ):
+        # GIVEN an image and the corresponding Redact job
+        job = any_img_redact_inst.start_job(some_image)
+
+        output_path = (
+            tmp_path
+            / f"{REDACT_API_VERSIONS.v4}_{job.service}_{job.out_type}_redacted_{ignore_warnings}"  # noqa W503
+        )
+
+        mock_response = mocker.MagicMock()
+        mock_response.status_code = 200
+        mock_response.iter_bytes = mocker.MagicMock(
+            return_value=Exception("Test"), side_effect=Exception("Test")
+        )
+
+        mock_httpx_client_stream_context = mocker.MagicMock()
+        mock_httpx_client_stream_context.__enter__ = mocker.MagicMock(
+            return_value=mock_response
+        )
+
+        mock_httpx_client_stream = mocker.MagicMock(
+            return_value=mock_httpx_client_stream_context
+        )
+
+        job.redact._client.stream = mock_httpx_client_stream
+
+        # THEN the request raises the FileDownloadError
+        with pytest.raises(FileDownloadError):
+            job.wait_until_finished().download_result_to_file(
+                file=output_path, ignore_warnings=ignore_warnings
+            )
 
     def test_delete(self, job):
         # GIVEN an Redact job
