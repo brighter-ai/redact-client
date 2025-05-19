@@ -19,8 +19,9 @@ uninstall:
 	pip uninstall redact
 	
 test-functional:
-	poetry run pytest -vvs  "tests/v3/functional/test_warnings.py::TestWarnings::test_redact_folder_with_ignore_warnings" --api_key $(api_key) --redact_url $(redact_url)
-	poetry run pytest -vvs  "tests/v3/functional/test_subscription_key.py::TestRedactToolsWithSubscriptionKey::test_redact_file_with_valid_api_key" --api_key $(api_key) --redact_url $(redact_url)
+	poetry run pytest -vvs tests/${api_version}/functional/ --api_key $(api_key) --redact_url $(redact_url)
+	#poetry run pytest -vvs  "tests/v3/functional/test_warnings.py::TestWarnings::test_redact_folder_with_ignore_warnings" --api_key $(api_key) --redact_url $(redact_url)
+	#poetry run pytest -vvs  "tests/v3/functional/test_subscription_key.py::TestRedactToolsWithSubscriptionKey::test_redact_file_with_valid_api_key" --api_key $(api_key) --redact_url $(redact_url)
 
 test-unit:
 	poetry run pytest -vvs tests/commons/

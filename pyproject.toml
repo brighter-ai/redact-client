@@ -31,6 +31,12 @@ black = "^22.10.0"
 flake8 = "^5.0.4"
 pytest-mock = "^3.10.0"
 
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "DEBUG"
+log_cli_format = "%(asctime)s [%(levelname)8s] (%(filename)s:%(lineno)s) message: %(message)s"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
