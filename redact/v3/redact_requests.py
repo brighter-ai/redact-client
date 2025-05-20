@@ -12,7 +12,7 @@ from uuid import UUID
 import httpx
 
 from redact.api_versions import REDACT_API_VERSIONS
-from redact.errors import RedactConnectError, RedactResponseError
+from redact.errors import FileDownloadError, RedactConnectError, RedactResponseError
 from redact.settings import Settings
 from redact.utils import normalize_url, retrieve_file_name
 from redact.v3.data_models import (
@@ -208,7 +208,9 @@ class RedactRequests:
                 if finished:
                     file_name = Path(retrieve_file_name(headers=response.headers))
                     log.debug(f"getting headers file type suffix {file_name}")
-                    anonymized_path = file.parent / f"{file.stem}{file_name.suffix}"
+                    anonymized_path = (
+                        Path(file).parent / f"{file.stem}{file_name.suffix}"
+                    )
 
                     target_file.rename(anonymized_path)
                     log.debug(
@@ -217,6 +219,8 @@ class RedactRequests:
                     return anonymized_path
                 else:
                     target_file.unlink(missing_ok=True)
+
+                    raise FileDownloadError(f"failed to download the file {file}")
 
     def write_output_to_file(
         self,

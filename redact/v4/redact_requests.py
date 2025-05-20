@@ -1,5 +1,4 @@
 import logging
-import os
 import tempfile
 import threading
 import time
@@ -14,7 +13,12 @@ import httpx
 
 from redact.api_versions import REDACT_API_VERSIONS
 from redact.commons.utils import get_filesize_in_gb
-from redact.errors import RedactConnectError, RedactReadTimeout, RedactResponseError
+from redact.errors import (
+    FileDownloadError,
+    RedactConnectError,
+    RedactReadTimeout,
+    RedactResponseError,
+)
 from redact.settings import Settings
 from redact.utils import normalize_url, retrieve_file_name
 from redact.v4.data_models import (
@@ -179,7 +183,7 @@ class RedactRequests:
 
     def _stream_output_to_file(
         self, debug_uuid, output_id, file: Path, url, params, headers
-    ):
+    ) -> Path:
         with self._client.stream(
             "GET", url, params=params, headers=headers
         ) as response:
@@ -193,6 +197,7 @@ class RedactRequests:
                 "wb", dir=str(file.parent), delete=False
             )
             finished = False
+            target_file = Path(temp_file.name)
             try:
                 with temp_file:
                     for chunk in response.iter_bytes():
@@ -201,12 +206,20 @@ class RedactRequests:
             finally:
                 if finished:
                     file_name = Path(retrieve_file_name(headers=response.headers))
-                    anonymized_path = Path(file.parent).joinpath(
-                        f"{file.stem}{file_name.suffix}"
+                    log.debug(f"getting headers file type suffix {file_name}")
+                    anonymized_path = (
+                        Path(file).parent / f"{file.stem}{file_name.suffix}"
                     )
-                    os.rename(temp_file.name, str(anonymized_path))
+
+                    target_file.rename(anonymized_path)
+                    log.debug(
+                        f"temp file {target_file} has been renamed into {anonymized_path}"
+                    )
+                    return anonymized_path
                 else:
-                    os.unlink(temp_file.name)
+                    target_file.unlink(missing_ok=True)
+
+                    raise FileDownloadError(f"failed to download the file {file}")
 
     def write_output_to_file(
         self,
@@ -215,7 +228,7 @@ class RedactRequests:
         output_id: UUID,
         file: Path,
         ignore_warnings: bool = False,
-    ) -> None:
+    ) -> Path:
         """
         Retrieves job result and streams it to file, greatly reducing memory load
         and resolving memory fragmentation problems.
@@ -226,7 +239,7 @@ class RedactRequests:
         query_params = self._get_output_download_query_params(ignore_warnings)
 
         debug_uuid = uuid.uuid4()
-        self._retry_on_network_problem_with_backoff(
+        return self._retry_on_network_problem_with_backoff(
             self._stream_output_to_file,
             debug_uuid,
             debug_uuid,

@@ -44,8 +44,10 @@ class RedactJob:
             ignore_warnings=ignore_warnings,
         )
 
-    def download_result_to_file(self, file: Path, ignore_warnings: bool = False):
-        self.redact.write_output_to_file(
+    def download_result_to_file(
+        self, file: Path, ignore_warnings: bool = False
+    ) -> Path:
+        return self.redact.write_output_to_file(
             service=self.service,
             out_type=self.out_type,
             output_id=self.output_id,
