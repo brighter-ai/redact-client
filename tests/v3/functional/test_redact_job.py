@@ -110,17 +110,16 @@ class TestRedactJob:
             return_value=mock_response
         )
 
-        mock_httpx_client_stream = mocker.MagicMock(
-            return_value=mock_httpx_client_stream_context
-        )
-
-        job.redact._client.stream = mock_httpx_client_stream
-
         # THEN the request raises the FileDownloadError
-        with pytest.raises(FileDownloadError):
+        with mocker.patch(
+            f"redact.{REDACT_API_VERSIONS.v3.value}.redact_requests.httpx.Client.stream",
+            return_value=mock_httpx_client_stream_context,
+        ) as stream_context, pytest.raises(FileDownloadError):
             job.wait_until_finished().download_result_to_file(
                 file=output_path, ignore_warnings=ignore_warnings
             )
+
+            stream_context.assert_called_once()
 
     def test_download_labels(self, job):
         # GIVEN an Redact job
