@@ -82,6 +82,7 @@ class TestWarnings:
 
         # WHEN all videos in the folder are redacted
         tmp_out_path = tmp_path_factory.mktemp("tmp_out")
+        tmp_out_path = tmp_out_path.parent / f"{tmp_out_path.name}_redact_folder_with_ignore_warnings_{ignore_warnings}"
         print(f"tmp_out_path {tmp_out_path}")
         setup_logging(verbose_logging=True)
         redact_folder(
