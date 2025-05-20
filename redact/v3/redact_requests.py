@@ -185,6 +185,20 @@ class RedactRequests:
         params,
         headers,
     ) -> Optional[Path]:
+        print(f"debug_uuid {debug_uuid}")
+        print(f"output_id {output_id}")
+        print(f"file {file}")
+        print(f"url {url}")
+        print(f"params {params}")
+        print(f"headers {headers}")
+        print("+++++++++++++++++++++")
+        log.info(f"debug_uuid {debug_uuid}")
+        log.info(f"output_id {output_id}")
+        log.info(f"file {file}")
+        log.info(f"url {url}")
+        log.info(f"params {params}")
+        log.info(f"headers {headers}")
+
         with self._client.stream(
             "GET", url, params=params, headers=headers
         ) as response:
