@@ -202,6 +202,7 @@ class RedactRequests:
         with self._client.stream(
             "GET", url, params=params, headers=headers
         ) as response:
+            log.info("inside streaming into a file")
             if response.status_code != 200:
                 raise RedactResponseError(
                     response=response,
@@ -214,11 +215,14 @@ class RedactRequests:
             finished = False
             target_file = Path(temp_file.name)
             try:
+                log.info("trying to write to a file")
                 with temp_file:
                     for chunk in response.iter_bytes():
                         temp_file.write(chunk)
                 finished = True
+                log.info("wrote to a file successfully")
             finally:
+                log.info(f"in finally with finished {finished}")
                 if finished:
                     file_name = Path(retrieve_file_name(headers=response.headers))
                     log.debug(f"getting headers file type suffix {file_name}")
