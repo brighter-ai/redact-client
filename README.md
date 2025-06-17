@@ -56,6 +56,8 @@ Usage:
 ```
 For extended logs you can use for example `--verbose-logging`.
 
+For using Redact Online you will need to provide a valid api_key. Simply add `--redact_url='<https://api.brighter.ai/>' --api_key="VALID_API_KEY"`
+
 ### Examples
 
 Anonymize an individual image from the command line:
