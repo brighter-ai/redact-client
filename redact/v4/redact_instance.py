@@ -37,6 +37,7 @@ class RedactInstance:
         api_key: Optional[str] = None,
         custom_headers: Optional[Dict] = None,
         start_job_timeout: Optional[float] = None,
+        insecure: bool = False,
     ) -> "RedactInstance":
         """
         The default way of creating RedactInstance objects.
@@ -47,6 +48,7 @@ class RedactInstance:
             api_key=api_key,
             custom_headers=custom_headers,
             start_job_timeout=start_job_timeout,
+            insecure=insecure,
         )
         return cls(redact_requests=redact_requests, service=service, out_type=out_type)
 

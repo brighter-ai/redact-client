@@ -36,6 +36,7 @@ class RedactInstance:
         subscription_id: Optional[str] = None,
         api_key: Optional[str] = None,
         custom_headers: Optional[Dict] = None,
+        insecure: bool = False,
     ) -> "RedactInstance":
         """
         The default way of creating RedactInstance objects.
@@ -45,6 +46,7 @@ class RedactInstance:
             subscription_id=subscription_id,
             api_key=api_key,
             custom_headers=custom_headers,
+            insecure=insecure,
         )
         return cls(redact_requests=redact_requests, service=service, out_type=out_type)
 
