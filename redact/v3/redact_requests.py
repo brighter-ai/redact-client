@@ -57,8 +57,9 @@ class RedactRequests:
         api_key: Optional[str] = None,
         httpx_client: Optional[httpx.Client] = None,
         custom_headers: Optional[Dict] = None,
+        insecure: bool = False,
     ):
-        self.redact_url = normalize_url(redact_url)
+        self.redact_url = normalize_url(redact_url, allow_http=insecure)
         self.api_key = api_key
         self.subscription_id = subscription_id
         self.retry_total_time_limit: float = 600  # 10 minutes in seconds

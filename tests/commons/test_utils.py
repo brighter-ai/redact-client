@@ -18,16 +18,35 @@ from redact.utils import normalize_url
 @pytest.mark.parametrize(
     "input_url, output_url",
     [
-        ("192.168.11.22", "http://192.168.11.22"),
-        ("192.168.11.22:42", "http://192.168.11.22:42"),
-        ("http://192.168.11.22", "http://192.168.11.22"),
+        ("192.168.11.22", "https://192.168.11.22"),
+        ("192.168.11.22:42", "https://192.168.11.22:42"),
         ("https://192.168.11.22", "https://192.168.11.22"),
-        ("foo.org/bar", "http://foo.org/bar"),
-        ("foo.org/bar/", "http://foo.org/bar/"),
+        ("foo.org/bar", "https://foo.org/bar"),
+        ("foo.org/bar/", "https://foo.org/bar/"),
     ],
 )
 def test_normalize_url(input_url: str, output_url: str):
     assert normalize_url(input_url) == output_url
+
+
+@pytest.mark.parametrize(
+    "url",
+    ["http://192.168.11.22", "http://foo.org/bar"],
+)
+def test_normalize_url_rejects_plaintext_http_by_default(url: str):
+    with pytest.raises(ValueError, match="cleartext"):
+        normalize_url(url)
+
+
+def test_normalize_url_allows_http_with_opt_in_and_warns():
+    with pytest.warns(UserWarning, match="cleartext"):
+        assert (
+            normalize_url("http://192.168.11.22", allow_http=True)
+            == "http://192.168.11.22"
+        )
+    with pytest.warns(UserWarning, match="cleartext"):
+        # Bare host + opt-in still picks http
+        assert normalize_url("foo.org", allow_http=True) == "http://foo.org"
 
 
 @pytest.mark.parametrize(

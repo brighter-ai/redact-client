@@ -64,8 +64,9 @@ class RedactRequests:
         custom_headers: Optional[Dict] = None,
         start_job_timeout: Optional[float] = None,
         retry_total_time_limit: Optional[int] = 600,  # 10 minutes in seconds
+        insecure: bool = False,
     ):
-        self.redact_url = normalize_url(redact_url)
+        self.redact_url = normalize_url(redact_url, allow_http=insecure)
         self.api_key = api_key
         self.subscription_id = subscription_id
         self.retry_total_time_limit: float = retry_total_time_limit
