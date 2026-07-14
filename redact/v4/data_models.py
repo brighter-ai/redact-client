@@ -3,7 +3,7 @@ from json import JSONDecodeError
 from typing import List, Optional
 from uuid import UUID
 
-from pydantic import AnyHttpUrl, BaseModel, Field, confloat, conint, validator
+from pydantic import AnyHttpUrl, BaseModel, Field, confloat, conint, field_validator
 from strenum import StrEnum
 
 
@@ -55,7 +55,8 @@ class JobArguments(BaseModel):
     status_webhook_url: Optional[AnyHttpUrl] = None
     areas_of_interest: Optional[List[List[int]]] = None
 
-    @validator("areas_of_interest", pre=True)
+    @field_validator("areas_of_interest", mode="before")
+    @classmethod
     def _areas_of_interest(
         cls, value: Optional[List[str]]
     ) -> Optional[List[List[int]]]:
@@ -109,7 +110,12 @@ class JobArguments(BaseModel):
 
             return areas_of_interest
 
-        except (JSONDecodeError, ValueError):
+        except (JSONDecodeError, ValueError, TypeError):
+            # pydantic 2's field validators only auto-convert ValueError/AssertionError into a
+            # ValidationError (unlike pydantic 1, which also caught bare TypeError). Malformed
+            # areas_of_interest input (e.g. a str where an int is expected) raises TypeError from
+            # the comparisons above, so it is caught explicitly here and turned into the same
+            # friendly ValueError message as before.
             raise ValueError(
                 (
                     "Areas of interest must be a list of lists of 4 integers. "
@@ -143,8 +149,8 @@ class JobStatus(BaseModel):
     start_timestamp: Optional[float] = None
     end_timestamp: Optional[float] = None
     estimated_time_to_completion: Optional[float] = None
-    progress: Optional[confloat(ge=0.0, le=1.0)]
-    total_frames: Optional[conint(ge=1)]
+    progress: Optional[confloat(ge=0.0, le=1.0)] = None
+    total_frames: Optional[conint(ge=1)] = None
     warnings: List[str] = Field(default_factory=list)
     error: Optional[str] = None
     file_name: Optional[str] = None
