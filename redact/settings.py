@@ -4,10 +4,6 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     log_level: str = "INFO"
-    # Kept as plain `str` (not AnyUrl) on purpose: pydantic 2's AnyUrl is no longer a str
-    # subclass, and several call sites use these as `redact_url: str = settings.redact_url_default`
-    # default parameter values that are later passed to urllib.parse / httpx / typer, all of
-    # which expect a plain string. The `_must_be_valid_url` validator still enforces URL format.
     redact_online_url: str = "https://api.brighter.ai/"
     redact_url_default: str = "http://127.0.0.1:8787/"
     base_timeout: int = 60

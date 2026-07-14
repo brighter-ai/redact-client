@@ -111,11 +111,6 @@ class JobArguments(BaseModel):
             return areas_of_interest
 
         except (JSONDecodeError, ValueError, TypeError):
-            # pydantic 2's field validators only auto-convert ValueError/AssertionError into a
-            # ValidationError (unlike pydantic 1, which also caught bare TypeError). Malformed
-            # areas_of_interest input (e.g. a str where an int is expected) raises TypeError from
-            # the comparisons above, so it is caught explicitly here and turned into the same
-            # friendly ValueError message as before.
             raise ValueError(
                 (
                     "Areas of interest must be a list of lists of 4 integers. "
