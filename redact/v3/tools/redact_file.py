@@ -128,7 +128,7 @@ def redact_file(
 
         # write labels
         if save_labels:
-            labels = job.get_labels().json()
+            labels = job.get_labels().model_dump_json()
             with open(_get_labels_path(output_path), "w") as f:
                 f.write(labels)
 

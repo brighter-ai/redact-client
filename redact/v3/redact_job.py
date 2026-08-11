@@ -61,7 +61,6 @@ class RedactJob:
     def download_result_to_file(
         self, file: Path, ignore_warnings: bool = False
     ) -> Path:
-
         return self.redact.write_output_to_file(
             service=self.service,
             out_type=self.out_type,

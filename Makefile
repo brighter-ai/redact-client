@@ -1,31 +1,29 @@
-VERSION=10.1.0
+VERSION=11.0.0
 
 SHELL := /bin/bash
 
 .PHONY: build install test-functional test-unit test-integration test-cmd-install
 
 build:
-	poetry build
+	uv build
 
 install:
-	make build
-	pip install . --upgrade
+	uv sync --dev
 
 reinstall:
-	make build
-	pip install . --force-reinstall --upgrade
+	uv sync --dev --reinstall
 
 uninstall:
 	pip uninstall redact
 	
 test-functional:
-	poetry run pytest tests/${api_version}/functional/ --api_key $(api_key) --redact_url $(redact_url)
+	uv run pytest tests/${api_version}/functional/ --api_key $(api_key) --redact_url $(redact_url)
 
 test-unit:
-	poetry run pytest tests/commons/
+	uv run pytest tests/commons/
 
 test-integration:
-	poetry run pytest tests/${api_version}/integration/
+	uv run pytest tests/${api_version}/integration/
 
 test-cmd-install:
-	redact_file --help && redact_folder --help && echo "OK: Command-line endpoints installed"
+	uv run redact_file --help && uv run redact_folder --help && echo "OK: Command-line endpoints installed"
