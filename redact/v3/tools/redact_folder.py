@@ -102,9 +102,10 @@ def _parallel_map(
     job_statuses = []
     exceptions = []
 
-    with logging_redirect_tqdm(), ThreadPoolExecutor(
-        max_workers=n_parallel_jobs
-    ) as executor:
+    with (
+        logging_redirect_tqdm(),
+        ThreadPoolExecutor(max_workers=n_parallel_jobs) as executor,
+    ):
         futures = {executor.submit(func, item): item for item in items}
         for future in tqdm.tqdm(as_completed(futures), total=len(futures)):
             item = futures[future]

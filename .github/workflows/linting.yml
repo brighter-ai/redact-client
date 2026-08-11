@@ -24,6 +24,8 @@ jobs:
 
       - name: black
         uses: psf/black@stable
+        with:
+          version: "25.11.0"
 
       - name: flake8
         uses: py-actions/flake8@v2

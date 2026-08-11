@@ -111,10 +111,13 @@ class TestRedactJob:
         )
 
         # THEN the request raises the FileDownloadError
-        with mocker.patch(
-            f"redact.{REDACT_API_VERSIONS.v3.value}.redact_requests.httpx.Client.stream",
-            return_value=mock_httpx_client_stream_context,
-        ) as stream_context, pytest.raises(FileDownloadError):
+        with (
+            mocker.patch(
+                f"redact.{REDACT_API_VERSIONS.v3.value}.redact_requests.httpx.Client.stream",
+                return_value=mock_httpx_client_stream_context,
+            ) as stream_context,
+            pytest.raises(FileDownloadError),
+        ):
             job.wait_until_finished().download_result_to_file(
                 file=output_path, ignore_warnings=ignore_warnings
             )

@@ -29,7 +29,7 @@ dev = [
     "fastapi>=0.115.6",
     "pytest-timeout>=2.1.0",
     "isort>=5.10.1",
-    "black>=22.10.0",
+    "black>=25.1.0,<26",
     "flake8>=5.0.4",
     "pytest-mock>=3.10.0",
 ]
