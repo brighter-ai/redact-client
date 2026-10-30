@@ -86,7 +86,7 @@ async def _mock_redact_request_handler(
         )
 
     # job_args
-    actual_job_args = JobArguments.parse_obj(request.query_params)
+    actual_job_args = JobArguments.model_validate(request.query_params)
     if expected_job_args and actual_job_args != expected_job_args:
         return Response(
             status_code=500,

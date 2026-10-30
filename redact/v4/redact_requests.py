@@ -129,7 +129,7 @@ class RedactRequests:
                 debug_uuid=upload_debug_uuid,
                 url=url,
                 files=files,
-                params=job_args.dict(exclude_none=True),
+                params=job_args.model_dump(exclude_none=True, mode="json"),
                 headers=self._headers,
                 timeout=timeout,
                 error_callbacks=error_callbacks,
